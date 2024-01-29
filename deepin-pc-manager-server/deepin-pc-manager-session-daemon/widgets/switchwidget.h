@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2011 ~ 2018 Deepin Technology Co., Ltd.
+ *
+ * Author:     sbw <sbw@sbw.so>
+ *             kirigaya <kirigaya@mkacg.com>
+ *             Hualet <mr.asianwang@gmail.com>
+ *
+ * Maintainer: sbw <sbw@sbw.so>
+ *             kirigaya <kirigaya@mkacg.com>
+ *             Hualet <mr.asianwang@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef SWITCHWIDGET_H
+#define SWITCHWIDGET_H
+
+#include "widgets/settingsitem.h"
+
+#include <dswitchbutton.h>
+
+#include <QHBoxLayout>
+
+QT_BEGIN_NAMESPACE
+class QLabel;
+QT_END_NAMESPACE
+
+namespace def {
+namespace widgets {
+
+class SwitchWidget : public SettingsItem
+{
+    Q_OBJECT
+
+public:
+    //    explicit SwitchWidget(QWidget *parent = nullptr);
+    explicit SwitchWidget(const QString &title, QWidget *parent = nullptr);
+    explicit SwitchWidget(QWidget *parent = nullptr, QWidget *widget = nullptr);
+
+    void setChecked(const bool checked = true);
+    void setTitle(const QString &title);
+    bool checked() const;
+
+    QWidget *leftWidget() const { return m_leftWidget; }
+    QHBoxLayout *mainLayout();
+    // 设置父对象标签名称
+    virtual void setParentAccessibleName(const QString &name) override;
+
+public:
+    inline DTK_WIDGET_NAMESPACE::DSwitchButton *switchButton() const { return m_switchBtn; }
+
+Q_SIGNALS:
+    void checkedChanged(bool checked) const;
+    void clicked();
+
+protected:
+    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+
+private:
+    QHBoxLayout *m_mainLayout;
+    QWidget *m_leftWidget;
+    Dtk::Widget::DSwitchButton *m_switchBtn;
+};
+
+} // namespace widgets
+} // namespace def
+
+#endif // SWITCHWIDGET_H

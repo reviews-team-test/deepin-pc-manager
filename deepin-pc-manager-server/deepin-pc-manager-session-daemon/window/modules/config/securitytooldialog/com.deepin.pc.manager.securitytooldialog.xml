@@ -1,0 +1,57 @@
+<node>
+  <interface name="com.deepin.pc.manager.securitytooldialog">
+  <!-- 设置安全中心主题 -->
+  <method name="SetDefenderPaletteType">
+    <arg name="type" type="i" direction="in"/>
+  </method>
+  <!-- 显示自启动管理弹框 -->
+  <method name="ShowStartup">
+  </method>
+  <!--响应更新应用信息请求-->
+  <method name="OnRequestUpdateToolsInfo">
+  </method>
+  <!--响应工具安装请求-->
+  <method name="OnInstallPackage">
+    <arg name="strPackageKey" type="s" direction="in"/>
+  </method>
+  <!--响应工具卸载请求-->
+  <method name="OnUnInstallPackage">
+    <arg name="strPackageKey" type="s" direction="in"/>
+  </method>
+  <!--响应工具更新请求-->
+  <method name="OnUpdatePackage">
+    <arg name="strPackageKey" type="s" direction="in"/>
+  </method>
+  <!--响应工具打开请求-->
+  <method name="OnShowTool">
+    <arg name="strPackageKey" type="s" direction="in"/>
+    <arg name="strParams" type="as" direction="in"/>
+  </method>
+  <!--得到正在安装/更新/卸载的app-->
+  <method name="GetInstallingApps">
+    <arg name="installingapps" type="as" direction="out"/>
+    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QStringList"/>
+  </method>
+  <method name="GetUpdatingApps">
+    <arg name="updatingapps" type="as" direction="out"/>
+    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QStringList"/>
+  </method>
+  <method name="GetUninstallingApps">
+    <arg name="uninstallingapps" type="as" direction="out"/>
+    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QStringList"/>
+  </method>
+  <!--应用信息获取完成-->
+  <signal name="notifyToolsInfoUpdate">
+    <arg name="infos" type="a(sssssssbbisss)" direction="out"/>
+    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="DEFSECURITYTOOLINFOLIST"/>
+  </signal>
+  <!--应用程序状态改变-->
+  <signal name="notifyAppStatusChanged">
+    <arg name="strPackageKey" type="s" direction="out"/>
+    <arg name="status" type="i" direction="out"/>
+  </signal>
+  <!--应用程序状态改变完成-->
+  <signal name="notifyStatusCheckFinished">
+  </signal>
+  </interface>
+</node>

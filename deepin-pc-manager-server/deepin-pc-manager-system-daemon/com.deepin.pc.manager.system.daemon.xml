@@ -1,0 +1,66 @@
+<node>
+  <interface name="com.deepin.pc.manager.system.daemon">
+  <!--  <property access="read" type="(sddiss)" name="singleFuncData"/>-->
+  <!--  <property access="read" type="d" name="globalRecv"/>-->
+    <method name="StartApp">
+    </method>
+    <method name="ExitApp">
+    </method>
+    <!-- 设置系统配置 -->
+    <method name="SetSysSettingValue">
+    <arg name="key" type="s" direction="in"></arg>
+    <arg name="value" type="v" direction="in"></arg>
+    <arg name="succeed" type="b" direction="out"></arg>
+    </method>
+    <!-- 得到系统配置 -->
+    <method name="GetSysSettingValue">
+    <arg name="key" type="s" direction="in"></arg>
+    <arg name="value" type="v" direction="out"></arg>
+    </method>
+    <!-- 系统配置改变 -->
+    <signal name="SysSettingValueChanged">
+    <arg name="key" type="s"></arg>
+    <arg name="value" type="v"></arg>
+    </signal>
+    <method name="getProExePath">
+        <arg name="sId" type="s" direction="in"></arg>
+        <arg name="value" type="s" direction="out"></arg>
+    </method>
+    <!-- 获取磁盘信息 -->
+    <!-- 获取磁盘设备路径列表 -->
+    <method name="GetDiskDevicePathList">
+        <arg name="pathList" type="as" direction="out"></arg>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QStringList"/>
+    </method>
+    <!-- 清理选中垃圾 -->
+    <method name="CleanSelectFile">
+        <arg name="pathList" type="as" direction="in"></arg>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QStringList"/>
+    </method>
+    <!-- journal垃圾清理 -->
+    <method name="CleanJournal">
+    </method>
+    <!-- 应用程序包名解析 -->
+    <method name="QueryPackageName">
+        <arg name="sBinaryFile" type="s" direction="in"></arg>
+        <arg name="sPkgName" type="s" direction="out"></arg>
+    </method>
+    <method name="RefreshPackageTable">
+    </method>
+    <signal name="NotifySqlInsertFinish">
+    </signal>
+    <!-- 垃圾清理插入卸载应用数据 -->
+    <method name="InsertUninstalledAppRecord">
+        <arg name="sAppID" type="s" direction="in"/>
+        <arg name="sAppName" type="s" direction="in"/>
+    </method>
+    <!-- 垃圾清理删除卸载应用数据 -->
+    <method name="DeleteUninstalledAppRecord">
+        <arg name="sAppID" type="s" direction="in"/>
+    </method>
+    <!--垃圾清理获取已卸载应用数据 -->
+    <method name="GetUnInstalledApps">
+           <arg type="av" direction="out"/>
+    </method>
+</interface>
+</node>
