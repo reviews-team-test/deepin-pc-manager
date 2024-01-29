@@ -169,7 +169,6 @@ HEADERS += \
     ../../deepin-pc-manager/src/window/modules/common/firewallcommon/firewallcommon.h \
     ../../deepin-pc-manager/src/window/modules/securitytools/defsecuritytoolinfo.h
 
-LIBS += -L"libprocps" -lprocps -lcrypt
 
 # 数据处理dbus接口相关文件
 datainterfacedbus.files += \

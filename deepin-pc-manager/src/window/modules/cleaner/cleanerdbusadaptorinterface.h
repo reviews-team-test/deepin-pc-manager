@@ -1,23 +1,7 @@
-/*
- * Copyright (C) 2021 ~ 2021 Deepin Technology Co., Ltd.
- *
- * Author:     xuxin <xuxina@uniontech.com>
- *
- * Maintainer: xuxin <xuxina@uniontech.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright (C) 2021 ~ 2021 Deepin Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*
  * 因为unit test的需求，将后端分离以完成mock工作，提供虚函数使得gmock框架可以模拟dbus的输入与输出
