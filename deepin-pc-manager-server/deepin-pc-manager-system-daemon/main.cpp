@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "writedbusdata.h"
+#include "netcheck/netcheckdbusinter.h"
 
 #include <DLog>
 
@@ -24,5 +25,6 @@ int main(int argc, char *argv[])
     DLogManager::registerFileAppender();
 
     WriteDBusData dbusData;
+    NetCheckDBusInter netCheckDBusInter;
     return a.exec();
 }

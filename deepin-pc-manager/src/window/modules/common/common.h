@@ -309,6 +309,46 @@ struct PinyinInfo {
     QString simpliyiedPinYin;
 };
 
+// 硬件检测结果
+enum ServiceResult {
+    ServiceBlock = 0,
+    NoFound,
+    CheckSucessed
+};
+
+// 网络设置检测结果
+enum NetSettingResult {
+    NoNetConn = 0,
+    NetSettingSkip,
+    NetSettingCheckFailed,
+    NetSettingCheckSucessed
+};
+
+// DHCP检测结果
+enum DHCPResult {
+    DHCPCheckFailed = 0,
+    DHCPCheckSucessed
+};
+
+// DNS检测结果
+enum DNSResult {
+    DNSCheckError = 0,
+    DNSCheckAbnormal,
+    DNSCheckSucessed
+};
+
+// host检测结果
+enum HostResult {
+    HostCheckFailed = 0,
+    HostCheckSucessed
+};
+
+// 网络连接访问结果
+enum NetConnResult {
+    NetConnFailed = 0,
+    NetConnSucessed
+};
+
 namespace Utils {
 //字符换行
 QString wordwrapText(const QFontMetrics &font, const QString &text, int nLabelSize);

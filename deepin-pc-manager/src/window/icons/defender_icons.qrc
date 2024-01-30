@@ -184,5 +184,8 @@
         <file>icons/Data Usage_48px.svg</file>
         <file>icons/def_superior_protection_350px.svg</file>
         <file>icons/No_related_tool_is_found_96px.svg</file>
+        <file>icons/def_net_check_tool_96px.svg</file>
+        <file>icons/def_net_check_96px.svg</file>
+        <file>icons/Netcheck_Programs_48xp.svg</file>
     </qresource>
 </RCC>

@@ -7,6 +7,9 @@
   <!-- 显示自启动管理弹框 -->
   <method name="ShowStartup">
   </method>
+  <!-- 显示网络检测弹框 -->
+  <method name="ShowNetCheck">
+  </method>
   <!--响应更新应用信息请求-->
   <method name="OnRequestUpdateToolsInfo">
   </method>

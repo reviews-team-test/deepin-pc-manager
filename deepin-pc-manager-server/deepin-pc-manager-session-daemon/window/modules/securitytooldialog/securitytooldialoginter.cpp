@@ -22,6 +22,7 @@ SecurityToolDialogInter::SecurityToolDialogInter(QObject *parent)
     , m_gsetting(new QGSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, QByteArray(), this))
     , m_adaptor(nullptr)
     , m_autoStartupMwnd(nullptr)
+    , m_netCheckMwnd(nullptr)
 {
     m_adaptor = new SecuritytooldialogAdaptor(this);
     m_pToolBusLineMgr = new DefSecurityToolsBusLineMgr;
@@ -47,6 +48,10 @@ SecurityToolDialogInter::~SecurityToolDialogInter()
     if (m_autoStartupMwnd) {
         m_autoStartupMwnd->deleteLater();
         m_autoStartupMwnd = nullptr;
+    }
+    if (m_netCheckMwnd) {
+        m_netCheckMwnd->deleteLater();
+        m_netCheckMwnd = nullptr;
     }
 
     if (m_pToolBusLineMgr) {
@@ -86,6 +91,21 @@ void SecurityToolDialogInter::ShowStartup()
 
     m_autoStartupMwnd->show();
     m_autoStartupMwnd->activateWindow();
+}
+
+// 显示网络检测弹框
+void SecurityToolDialogInter::ShowNetCheck()
+{
+    if (!m_netCheckMwnd) {
+        m_netCheckMwnd = new NetCheckMainWindow;
+        connect(m_netCheckMwnd, &NetCheckMainWindow::sendWindowClose, this, [=] {
+            m_netCheckMwnd->deleteLater();
+            m_netCheckMwnd = nullptr;
+        });
+    }
+
+    m_netCheckMwnd->show();
+    m_netCheckMwnd->activateWindow();
 }
 
 void SecurityToolDialogInter::OnRequestUpdateToolsInfo()

@@ -7,6 +7,7 @@
 
 #include "securitytooldialog_adaptor.h"
 #include "window/modules/securitytooldialog/startupdialog/startupwidget.h"
+#include "window/modules/securitytooldialog/netcheckdialog/netcheckwidget.h"
 #include "window/modules/securitytools/defsecuritytoolinfo.h"
 #include "securitytoolbackend/defsecuritytoolsbuslinemgr.h"
 #include "../../window/modules/common/gsettingkey.h"
@@ -35,6 +36,9 @@ Q_SIGNALS:
 public Q_SLOTS:
     // 显示自启动管理弹框
     void ShowStartup();
+    // 显示网络检测弹框
+    void ShowNetCheck();
+
     // 响应更新工具信息请求
     void OnRequestUpdateToolsInfo();
     // 响应工具包安装请求
@@ -66,6 +70,7 @@ private:
 
     SecuritytooldialogAdaptor *m_adaptor;
     StartupMainWindow *m_autoStartupMwnd;
+    NetCheckMainWindow *m_netCheckMwnd;
     DefSecurityToolsBusLineMgr *m_pToolBusLineMgr;
 
     QStringList m_appInstalling;

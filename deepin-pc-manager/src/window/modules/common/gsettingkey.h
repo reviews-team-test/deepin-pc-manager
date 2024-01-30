@@ -19,3 +19,7 @@
 
 // 安全中心主题类型
 #define DEFENDER_PALETTE_TYPE "defender-palette-type"
+
+// 网络检测
+#define NET_CHECK_TYPE "net-check-type"
+#define NET_CHECK_INTRANET_DOMAIN "net-check-intranet-domain"

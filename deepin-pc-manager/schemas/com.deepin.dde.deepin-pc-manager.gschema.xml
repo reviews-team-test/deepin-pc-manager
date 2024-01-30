@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
-
-SPDX-License-Identifier: GPL-3.0-or-later
--->
-
 <schemalist>
         <schema path="/com/deepin/dde/deepin-pc-manager/" id="com.deepin.dde.deepin-pc-manager">
                 <key name="auto-scan-usb" type="i">
@@ -56,6 +49,17 @@ SPDX-License-Identifier: GPL-3.0-or-later
                         <default>0</default>
 			<range min="0" max="2"></range>
 			<summary>主题类型，0未知类型，1浅色类型，2深色类型</summary>
+                </key>
+                <!--网络检测类型-->
+                <key name="net-check-type" type="i">
+                        <default>0</default>
+                        <range min="0" max="1"></range>
+                        <summary>0公网，1内网</summary>
+                </key>
+                <!--网络检测内网域名/ip-->
+                <key name="net-check-intranet-domain" type="s">
+                        <default>''</default>
+                        <summary>内网域名/ip</summary>
                 </key>
         </schema>
 </schemalist>

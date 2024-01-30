@@ -24,11 +24,16 @@ Copyright: None
 License: CC0-1.0
 
 # xml
-Files:  *.xml
+Files:  *.xml *.json
 Copyright: None
 License: CC0-1.0
 
 # translation
 Files: deepin-pc-manager/translations/*  deepin-pc-manager-server/deepin-pc-manager-session-daemon/translations/*
 Copyright: UnionTech Software Technology Co., Ltd.
+License: CC0-1.0
+
+# svg
+Files: deepin-pc-manager/src/window/icons/*.svg deepin-pc-manager/src/window/icons/*.png
+Copyright: None
 License: CC0-1.0

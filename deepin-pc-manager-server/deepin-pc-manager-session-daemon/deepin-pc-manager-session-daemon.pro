@@ -57,6 +57,9 @@ SOURCES += \
     window/modules/securitytooldialog/securitytooldialoginter.cpp \
     window/modules/securitytooldialog/startupdialog/autostartmodel.cpp \
     window/modules/securitytooldialog/startupdialog/startupwidget.cpp \
+    window/modules/securitytooldialog/netcheckdialog/netcheckwidget.cpp \
+    window/modules/securitytooldialog/netcheckdialog/netcheckmodel.cpp \
+    window/modules/securitytooldialog/netcheckdialog/netcheckitem.cpp \
     window/modules/securitytooldialog/securitytoolbackend/defsecuritytoolsbuslinemgr.cpp \
     window/modules/securitytooldialog/securitytoolbackend/installer/defsecuritytoolsbaseinstaller.cpp \
     window/modules/securitytooldialog/securitytoolbackend/installer/defsecuritytoolsdbusinstaller.cpp \
@@ -135,6 +138,9 @@ HEADERS += \
     window/modules/securitytooldialog/securitytooldialoginter.h \
     window/modules/securitytooldialog/startupdialog/autostartmodel.h \
     window/modules/securitytooldialog/startupdialog/startupwidget.h \
+    window/modules/securitytooldialog/netcheckdialog/netcheckwidget.h \
+    window/modules/securitytooldialog/netcheckdialog/netcheckmodel.h \
+    window/modules/securitytooldialog/netcheckdialog/netcheckitem.h \
     window/modules/securitytooldialog/securitytoolbackend/defsecuritytoolsbuslinemgr.h \
     window/modules/securitytooldialog/securitytoolbackend/installer/defsecuritytoolsbaseinstaller.h \
     window/modules/securitytooldialog/securitytoolbackend/installer/defsecuritytoolsdbusinstaller.h \
