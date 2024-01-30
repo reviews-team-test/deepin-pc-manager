@@ -86,5 +86,5 @@ unix:!macx: LIBS += \
     -L/lib/ -lparted
 
 
-INCLUDEPATH += /usr/include/pcap
-DEPENDPATH += /usr/include/pcap
+INCLUDEPATH += /usr/include/parted
+DEPENDPATH += /usr/include/parted

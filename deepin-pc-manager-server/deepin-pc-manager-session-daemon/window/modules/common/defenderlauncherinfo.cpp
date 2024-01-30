@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "defenderlauncherinfo.h"
 
 // 重载launcher dbus GetAllItemInfos获取的结构体操作符函数
