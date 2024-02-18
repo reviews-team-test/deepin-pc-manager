@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON/网络检测入口</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="98.1071419%" id="linearGradient-1">
+            <stop stop-color="#00EAFF" offset="0%"></stop>
+            <stop stop-color="#0070FF" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="40" cy="40" r="40"></circle>
+        <filter x="-13.7%" y="-10.0%" width="127.5%" height="128.7%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.17254902   0 0 0 0 0.654901961   0 0 0 0 0.97254902  0 0 0 0.4 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#00FEFF" offset="0%"></stop>
+            <stop stop-color="#0053FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#FF9295" offset="0%"></stop>
+            <stop stop-color="#FF4B00" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="87.9145511%" y1="22.4958999%" x2="0.804049194%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#00FFF0" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#009AFF" offset="100%"></stop>
+        </linearGradient>
+        <path d="M40,0 C62.09139,0 80,17.90861 80,40 C80,40.1086188 79.9995671,40.2171365 79.9987028,40.3255514 L40,40.325 L40,0 Z" id="path-7"></path>
+        <filter x="-27.5%" y="-17.4%" width="155.0%" height="154.6%" filterUnits="objectBoundingBox" id="filter-8">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.17254902   0 0 0 0 0.654901961   0 0 0 0 0.97254902  0 0 0 0.4 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-9">
+            <stop stop-color="#00E9FF" offset="0%"></stop>
+            <stop stop-color="#0070FF" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-10" cx="40" cy="40" r="5"></circle>
+        <filter x="-80.0%" y="-70.0%" width="260.0%" height="260.0%" filterUnits="objectBoundingBox" id="filter-11">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0.768203676   0 0 0 0 1  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON/网络检测入口" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="矩形" fill="#FF6969" opacity="0" x="0" y="0" width="96" height="96"></rect>
+        <g id="编组" transform="translate(8.000000, 9.000000)">
+            <g id="椭圆形">
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                <circle stroke="url(#linearGradient-1)" stroke-width="2" stroke-linejoin="square" fill="#FBFFFF" fill-rule="evenodd" cx="40" cy="40" r="39"></circle>
+                <circle stroke-opacity="0.5" stroke="#FFFFFF" stroke-width="3" cx="40" cy="40" r="41.5"></circle>
+            </g>
+            <circle id="椭圆形" stroke="url(#linearGradient-4)" fill="#DEFCFF" cx="40" cy="40" r="19.5"></circle>
+            <circle id="椭圆形" fill="url(#linearGradient-5)" cx="68" cy="33" r="2"></circle>
+            <circle id="椭圆形" fill="url(#linearGradient-5)" cx="23" cy="62" r="3"></circle>
+            <circle id="椭圆形" fill="url(#linearGradient-5)" cx="32.5" cy="28.5" r="1.5"></circle>
+            <g id="形状结合" opacity="0.669999957">
+                <use fill="black" fill-opacity="1" filter="url(#filter-8)" xlink:href="#path-7"></use>
+                <use fill="url(#linearGradient-6)" fill-rule="evenodd" xlink:href="#path-7"></use>
+            </g>
+            <g id="椭圆形">
+                <use fill="black" fill-opacity="1" filter="url(#filter-11)" xlink:href="#path-10"></use>
+                <use fill="url(#linearGradient-9)" fill-rule="evenodd" xlink:href="#path-10"></use>
+            </g>
+        </g>
+    </g>
+</svg>

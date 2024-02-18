@@ -198,6 +198,73 @@
     </message>
 </context>
 <context>
+    <name>DefSecurityToolsFrontUnit</name>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="91"/>
+        <source>Supported by %1</source>
+        <translation>由%1提供服务</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="255"/>
+        <source>Open</source>
+        <comment>button</comment>
+        <translation>打 开</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="257"/>
+        <source>Update</source>
+        <comment>button</comment>
+        <translation>更 新</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="259"/>
+        <source>Install</source>
+        <comment>button</comment>
+        <translation>安 装</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="260"/>
+        <source>UnInstall</source>
+        <comment>button</comment>
+        <translation>卸 载</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="355"/>
+        <source>Startup Programs</source>
+        <translation>Startup Programs</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="356"/>
+        <source>Network Detection</source>
+        <translation>网络检测</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="359"/>
+        <source>Manage auto-startup programs</source>
+        <translation>管理应用自启动权限</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="360"/>
+        <source>One-click detection, comprehensive network troubleshooting</source>
+        <translation>快速检测网络异常原因</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.h" line="72"/>
+        <source>Failed to install the tool. Please try later.</source>
+        <translation>模块安装失败，请稍后重试。</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.h" line="73"/>
+        <source>Failed to update the tool. Please try later.</source>
+        <translation>模块更新失败，请稍后重试。</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.h" line="74"/>
+        <source>Failed to uninstall the tool. Please try later.</source>
+        <translation>模块卸载失败，请稍后重试。</translation>
+    </message>
+</context>
+<context>
     <name>DialogManage</name>
     <message>
         <location filename="src/window/dialogmanage.cpp" line="52"/>

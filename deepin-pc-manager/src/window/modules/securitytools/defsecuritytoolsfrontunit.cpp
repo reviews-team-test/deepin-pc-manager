@@ -351,29 +351,13 @@ void DefSecurityToolsFrontUnit::initTranslation()
 {
     transMap.clear();
 
-    //模块名称
-    transMap.insert("Security Level", tr("Security Level"));
-    transMap.insert("Execution Prevention", tr("Execution Prevention"));
-    transMap.insert("Superior Protection", tr("Superior Protection"));
-    transMap.insert("Block Removal of Kernel Modules", tr("Block Removal of Kernel Modules"));
-    transMap.insert("Login Safety", tr("Login Safety"));
-    transMap.insert("Internet Control", tr("Internet Control"));
-    transMap.insert("Data Usage", tr("Data Usage"));
-    transMap.insert("Firewall", tr("Firewall"));
+    // 模块名称
     transMap.insert("Startup Programs", tr("Startup Programs"));
-    transMap.insert("USB Connection", tr("USB Connection"));
+    transMap.insert("Network Detection", tr("Network Detection"));
 
-    //模块描述
-    transMap.insert("Switch system security levels with one click", tr("Switch system security levels with one click"));
-    transMap.insert("Protect executable files from being tampered with", tr("Protect executable files from being tampered with"));
-    transMap.insert("Enable or disable privilege separation", tr("Enable or disable privilege separation"));
-    transMap.insert("Protect third-party kernel modules", tr("Protect third-party kernel modules"));
-    transMap.insert("Keep user login secure", tr("Keep user login secure"));
-    transMap.insert("Control the Internet access of apps", tr("Control the Internet access of apps"));
-    transMap.insert("Monitor data usage details", tr("Monitor data usage details"));
-    transMap.insert("Manage system firewalls", tr("Manage system firewalls"));
+    // 模块描述
     transMap.insert("Manage auto-startup programs", tr("Manage auto-startup programs"));
-    transMap.insert("Control permissions of USB storage devices", tr("Control permissions of USB storage devices"));
+    transMap.insert("One-click detection, comprehensive network troubleshooting", tr("One-click detection, comprehensive network troubleshooting"));
 }
 
 QString DefSecurityToolsFrontUnit::getTranslation(const QString &strKey)

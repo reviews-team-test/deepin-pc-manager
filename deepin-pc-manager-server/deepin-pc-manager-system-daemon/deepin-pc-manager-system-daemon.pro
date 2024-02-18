@@ -23,7 +23,8 @@ INCLUDEPATH += \
 DEFINES += QT_DEPRECATED_WARNINGS
 
 dbus.files += \
-    com.deepin.pc.manager.system.daemon.xml
+    com.deepin.pc.manager.system.daemon.xml \
+    $$PWD/config/netcheck/com.deepin.pc.manager.netcheck.xml
 dbus.header_flags += \
     -i ../deepin-pc-manager-session-daemon/window/modules/common/defenderprocinfolist.h \
     -i ../../deepin-pc-manager/src/window/modules/common/common.h
@@ -37,6 +38,8 @@ SOURCES += \
     disk/disk.cpp \
     localcache/securitypkgnamesql.cpp \
     localcache/settingssql.cpp \
+    netcheck/netcheckdbusinter.cpp \
+    netcheck/netchecksyssrvmodel.cpp \
     ../../deepin-pc-manager/src/window/modules/common/common.cpp \
     ../../deepin-pc-manager/src/window/modules/common/systemloginfo.cpp \
     ../../deepin-pc-manager/src/window/modules/common/database/defenderdatabaseoperationbase.cpp \
@@ -53,6 +56,8 @@ HEADERS += \
     disk/disk.h \
     localcache/securitypkgnamesql.h \
     localcache/settingssql.h \
+    netcheck/netcheckdbusinter.h \
+    netcheck/netchecksyssrvmodel.h \
     ../../deepin-pc-manager/src/window/modules/common/common.h \
     ../../deepin-pc-manager/src/window/modules/common/systemloginfo.h \
     ../../deepin-pc-manager/src/window/modules/common/database/defenderdatabaseoperationbase.h \
@@ -66,14 +71,18 @@ HEADERS += \
 
 DISTFILES += \
     com.deepin.pc.manager.system.daemon.xml \
-    com.deepin.pc.manager.system.daemon.conf
+    com.deepin.pc.manager.system.daemon.conf \
+    $$PWD/config/netcheck/com.deepin.pc.manager.netcheck.xml \
+    $$PWD/config/netcheck/com.deepin.pc.manager.netcheck.conf
 message("current dir:" + $$PWD)
 system_dbus_conf.files += \
-    $$PWD/com.deepin.pc.manager.system.daemon.conf
+    $$PWD/com.deepin.pc.manager.system.daemon.conf \
+    $$PWD/config/netcheck/com.deepin.pc.manager.netcheck.conf
 system_dbus_conf.path = /usr/share/dbus-1/system.d
 
 install_service.files += \
-    $$PWD/com.deepin.pc.manager.system.daemon.service
+    $$PWD/com.deepin.pc.manager.system.daemon.service  \
+    $$PWD/config/netcheck/com.deepin.pc.manager.netcheck.service
 install_service.path = /usr/share/dbus-1/system-services
 
 target.path=/usr/bin

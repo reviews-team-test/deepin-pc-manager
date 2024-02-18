@@ -71,7 +71,7 @@
 #define UPDATE_VERSION_ICON "dcc_update_version" //更新图标图标
 #define WHITE_GARBAGE_ICON "def_delete" //白名单删除图标
 #define SCHEDULE_ICON "icon_schedulescan" //定时扫描图标
-#define USBSCAN_ICON "icon_usbscan" //USB扫描图标
+#define USBSCAN_ICON "icon_usbscan" // USB扫描图标
 #define SCANSETTING_ICON "icon_scansetting" //扫描设置图标
 #define SCANSETTING_LIGHT_ICON "icon_scansetting_light" //扫描设置图标
 #define SCANSETTING_DARK_ICON "icon_scansetting_dark" //扫描设置图标
@@ -90,6 +90,7 @@
 #define USB_CONTROL_ADD_ICON "def_usb_storage_add_whitelist" // usb白名单移除
 #define USB_CONTROL_REMOVE_ICON "def_usb_storage_remove_whitelist" // usb白名单移除
 #define SECURITYLEVEL_NOTICE_ICON "def_securitylevel_privilege" //三权分立问号图标
+#define FILE_NET_CHECK_ICON "def_net_check" // 网络检测图标
 
 // 登陆安全
 #define LOGIN_SAFETY_ICON "def_login_safety" // 流量管理
