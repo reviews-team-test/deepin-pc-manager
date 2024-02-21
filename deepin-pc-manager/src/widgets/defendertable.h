@@ -8,17 +8,18 @@
 #include <DFrame>
 #include <DTableView>
 
-#include <QVBoxLayout>
-#include <QStandardItemModel>
 #include <QHeaderView>
-#include <QTableView>
 #include <QScrollBar>
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
 
 #define ROW_HEIGHT 30 // 初始化高度
 
 class DefenderTableHeaderView;
+
 namespace def {
 namespace widgets {
 
@@ -48,13 +49,13 @@ protected:
 private:
     DefenderTableHeaderView *m_headerDelegate; // 表头代理类
 
-    DFrame *m_mainBackgroundWidgt; // 填充背景的frame控件
+    DFrame *m_mainBackgroundWidgt;    // 填充背景的frame控件
     QStandardItemModel *m_tableModel; // 数据模型
-    DTableView *m_table; // 表格
-    QList<DFrame *> m_backgroundLst; // 背景列表
+    DTableView *m_table;              // 表格
+    QList<DFrame *> m_backgroundLst;  // 背景列表
 
     int m_rowHeight; // 行高
-    int m_rowCount; // 总共的行数
+    int m_rowCount;  // 总共的行数
 };
 
 } // namespace widgets

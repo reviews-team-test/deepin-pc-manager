@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "daemon_adaptor.h"
 #include "window/modules/common/defenderlauncherinfo.h"
+#include "daemon_adaptor.h"
 
 #include <DGuiApplicationHelper>
 
@@ -28,6 +28,7 @@ using namespace def;
 
 DCORE_USE_NAMESPACE
 class AppsStartToEnd;
+
 class OperateDBusData : public QObject
     , protected QDBusContext
 {
@@ -44,16 +45,12 @@ public Q_SLOTS:
     void ExitApp();
     void preInitialize();
 
-    // 初始化
-    void initialize();
-
     // 开机自启动管理
     bool startLauncherManage();
     QString getAppsInfoEnable();
     QString getAppsInfoDisable();
     bool isAutostart(QString sPath);
     bool exeAutostart(int nStatus, QString sPath);
-    void refreshData(bool bAdd, QString sID);
 
     // 垃圾清理 回收站/日志/缓存/痕迹
     QStringList GetTrashInfoList();
@@ -63,31 +60,32 @@ public Q_SLOTS:
     QString GetBrowserCookiesInfoList();
     QString GetAppTrashInfoList();
     void DeleteSpecifiedFiles(QStringList);
-    void OnLauncherItemChanged(const QString &, const LauncherItemInfo &, qint64);
-
-    // 递归函数-获取目录下所有文件
-    void scanFile(const QString &path);
-    // 首页体检垃圾清理项大小
-    double GetCleanerSum();
-
-    // 首页体检清理所有垃圾
-    void DeleteAllCleaner();
 
     // 请求开始垃圾文件扫描
     void RequestStartTrashScan();
     // 请求清理选中的垃圾文件
     void RequestCleanSelectTrash();
 
-    // 初始化获取系统架构
-    void initSystemArchitecture();
     QString GetSystemArchitecture();
 
     void RequestAuthWithID(const QString &, int);
     void ModulesRequestAuthorityActived();
 
 private:
+    // 初始化
+    void initialize();
     // 校验调用者
     bool isValidInvoker();
+    void refreshData(bool bAdd, QString sID);
+    void OnLauncherItemChanged(const QString &, const LauncherItemInfo &, qint64);
+    // 初始化获取系统架构
+    void initSystemArchitecture();
+    // 递归函数-获取目录下所有文件
+    void scanFile(const QString &path);
+    // 首页体检垃圾清理项大小
+    double GetCleanerSum();
+    // 首页体检清理所有垃圾
+    void DeleteAllCleaner();
 
 Q_SIGNALS:
     // 开机自启动管理
@@ -97,10 +95,13 @@ Q_SIGNALS:
     void NotifyAuthFinished();
     void NotifyAuthResult(const QString &, int, bool);
 
+    void CleanSelectTrashFinished();
+    void TrashScanFinished(double);
+
 private:
+    DaemonAdaptor *m_daemonAdaptor;
     QGSettings *m_gsetting; // gsetting配置对象
     SystemSettings *m_sysSettings; // 系统配置
-    DaemonAdaptor *m_adaptpr;
 
     // 开机自启动管理
     QMap<QString, QString> m_mapEnable; // 不允许自启动数据容器

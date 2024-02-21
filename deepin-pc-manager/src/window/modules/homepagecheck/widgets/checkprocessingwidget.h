@@ -10,14 +10,14 @@
 
 #include <DFrame>
 #include <DLabel>
-#include <DTipLabel>
 #include <DProgressBar>
 #include <DPushButton>
+#include <DTipLabel>
 
-#include <QWidget>
+#include <QDateTime>
 #include <QProgressBar>
 #include <QTimer>
-#include <QDateTime>
+#include <QWidget>
 
 class CheckProcessingWidget : public Dtk::Widget::DFrame
 {

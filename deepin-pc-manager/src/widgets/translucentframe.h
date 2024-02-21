@@ -18,7 +18,7 @@ public:
     explicit TranslucentFrame(QWidget *parent = nullptr);
 };
 
-}
-} // namespace dcc
+} // namespace widgets
+} // namespace def
 
 #endif // DCC_TRANSLUCENTFRAME_H

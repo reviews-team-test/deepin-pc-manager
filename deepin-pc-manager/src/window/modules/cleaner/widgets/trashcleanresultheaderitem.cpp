@@ -5,9 +5,9 @@
 
 #include "trashcleanresultheaderitem.h"
 
+#include <DFontSizeManager>
 #include <DPalette>
 #include <DPaletteHelper>
-#include <DFontSizeManager>
 
 #include <QGridLayout>
 
@@ -23,9 +23,9 @@ TrashCleanResultHeaderItem::TrashCleanResultHeaderItem(QWidget *parent)
     this->setFixedSize(750, 146);
 
     this->setLineWidth(0);
-    this->setBackgroundRole(DPalette::Background);
+    this->setBackgroundRole(DPalette::Window);
     DPalette dpa = DPaletteHelper::instance()->palette(this, this->palette());
-    dpa.setColor(DPalette::Background, QColor::fromRgb(163, 211, 255, int(0.13 * 255)));
+    dpa.setColor(DPalette::Window, QColor::fromRgb(163, 211, 255, int(0.13 * 255)));
     DPaletteHelper::instance()->setPalette(this, dpa);
 
     initUI();
@@ -92,7 +92,8 @@ void TrashCleanResultHeaderItem::initUI()
     m_scanIcon = new DLabel(this);
     m_scanIcon->setFixedHeight(146);
     m_scanIcon->setAccessibleName("headerIcon");
-    m_scanIcon->setPixmap(QPixmap("/home/test/defender-parts/dcc_antiav_whitelist_16px.svg").scaledToHeight(116));
+    m_scanIcon->setPixmap(
+        QPixmap("/home/test/defender-parts/dcc_antiav_whitelist_16px.svg").scaledToHeight(116));
 
     m_actionInfo = new DTipLabel("", this);
     m_actionInfo->setAccessibleName("headerActionInfo");

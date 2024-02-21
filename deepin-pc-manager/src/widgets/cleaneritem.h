@@ -5,18 +5,19 @@
 
 #pragma once
 
-#include "window/namespace.h"
 #include "dtkwidget_global.h"
+#include "window/namespace.h"
 
-#include <DFrame>
 #include <DCheckBox>
+#include <DFrame>
 #include <DTipLabel>
 
-#include <QWidget>
 #include <QLabel>
 #include <QTimer>
+#include <QWidget>
 
 DWIDGET_USE_NAMESPACE
+
 class CleanerItem : public DFrame
 {
     Q_OBJECT

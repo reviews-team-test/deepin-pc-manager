@@ -12,15 +12,21 @@
 #include <QtDBus/QDBusReply>
 
 // interface
-class DBusInvoker : public QObject
-    , public DBusInvokerInterface
+class DBusInvoker : public QObject, public DBusInvokerInterface
 {
     Q_OBJECT
 public:
-    DBusInvoker(const QString &service, const QString &path, const QString &interface, ConnectType type = ConnectType::SESSION, QObject *parent = nullptr);
+    DBusInvoker(const QString &service,
+                const QString &path,
+                const QString &interface,
+                ConnectType type = ConnectType::SESSION,
+                QObject *parent = nullptr);
 
-    virtual QDBusMessage Invoke(const QString &name, const QList<QVariant> &functionParams = QList<QVariant>(), BlockMode mode = BlockMode::BLOCKWITHGUI) override;
-    virtual bool EmitSignal(const QString &name, const QList<QVariant> &arguments = QList<QVariant>()) override;
+    virtual QDBusMessage Invoke(const QString &name,
+                                const QList<QVariant> &functionParams = QList<QVariant>(),
+                                BlockMode mode = BlockMode::BLOCKWITHGUI) override;
+    virtual bool EmitSignal(const QString &name,
+                            const QList<QVariant> &arguments = QList<QVariant>()) override;
     virtual bool Connect(const QString &signal, QObject *reciver, const char *slot) override;
     virtual bool Disconnect(const QString &signal, QObject *reciver, const char *slot) override;
     virtual ~DBusInvoker() override;

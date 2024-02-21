@@ -1,9 +1,11 @@
+// Copyright (C) 2023 ~ 2023 Deepin Technology Co., Ltd.
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "netcheckwidget.h"
-#include "common/compixmap.h"
-#include "common/common.h"
+#include "window/modules/common/common.h"
+#include "window/modules/common/compixmap.h"
 #include "netcheckitem.h"
 
 #include <DLabel>
@@ -569,11 +571,11 @@ void NetCheckWidget::updateTime()
 {
     m_countTime++;
 
-    //小时
+    // 小时
     int h = m_countTime / 3600;
-    //分钟
+    // 分钟
     int m = (m_countTime - h * 3600) / 60;
-    //秒
+    // 秒
     int s = (m_countTime - h * 3600 - m * 60) % 60;
     m_timeLabel->setText(QString(": %1:%2:%3")
                              .arg(h, 2, 10, QChar('0'))

@@ -12,11 +12,7 @@ class TrashCleanUninstallAppSql : public DefenderDatabaseOperationBase
 {
     Q_OBJECT
 public:
-    enum UninstalledAppSqlCmdType {
-        GET_ALL_RECORDS,
-        INSERT_A_RECORD,
-        DELETE_A_RECORD
-    };
+    enum UninstalledAppSqlCmdType { GET_ALL_RECORDS, INSERT_A_RECORD, DELETE_A_RECORD };
 
 public:
     typedef QList<QPair<QString, QString>> QueryRecordsList;

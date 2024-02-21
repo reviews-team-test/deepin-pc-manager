@@ -4,42 +4,39 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "trashcleanwidget.h"
-#include "trashcleanitem.h"
-#include "dtkwidget_global.h"
-#include "widgets/cleanerresultitemwidget.h"
-#include "cleanerdbusadaptorinterface.h"
-#include "trashcleanwidget.h"
-#include "../../deepin-pc-manager/src/window/modules/common/common.h"
-#include "../../deepin-pc-manager/src/window/modules/common/compixmap.h"
-#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
-#include "../../deepin-pc-manager/src/widgets/scoreprogressbar.h"
-#include "../../deepin-pc-manager/src/widgets/cleaneritem.h"
-#include "../../deepin-pc-manager/src/widgets/titlelabel.h"
-#include "../../deepin-pc-manager/src/widgets/titlebuttonitem.h"
-#include "../../deepin-pc-manager/src/widgets/labels/tipslabel.h"
-#include "../../deepin-pc-manager/src/widgets/labels/smalllabel.h"
 
+#include "cleanerdbusadaptorinterface.h"
+#include "dtkwidget_global.h"
+#include "src/widgets/cleaneritem.h"
+#include "src/widgets/titlelabel.h"
+#include "src/window/modules/common/common.h"
+#include "src/window/modules/common/compixmap.h"
+#include "src/window/modules/common/gsettingkey.h"
+#include "trashcleanitem.h"
+#include "trashcleanwidget.h"
+#include "widgets/cleanerresultitemwidget.h"
+
+#include <DFontSizeManager>
 #include <DFrame>
 #include <DLabel>
+#include <DProgressBar>
 #include <DPushButton>
 #include <DSpinner>
-#include <DProgressBar>
 #include <DSuggestButton>
-#include <DTreeWidget>
-#include <DFontSizeManager>
 #include <DTrashManager>
+#include <DTreeWidget>
 
-#include <QDebug>
-#include <QVBoxLayout>
-#include <QJsonDocument>
-#include <QJsonParseError>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QTimer>
-#include <QDateTime>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
 #include <QApplication>
+#include <QDateTime>
+#include <QDebug>
+#include <QFuture>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QtConcurrent/QtConcurrent>
 
 #define SYS_CHECK_INDEX 0
 #define APP_CHECK_INDEX 1
@@ -80,7 +77,10 @@ TrashCleanWidget::TrashCleanWidget(QWidget *parent, CleanerDBusAdaptorInterface 
     this->setAccessibleName("rightWidget_trashCleanWidget");
 
     // 主题变换 改变部分图标颜色
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TrashCleanWidget::setPixmapByTheme);
+    connect(DGuiApplicationHelper::instance(),
+            &DGuiApplicationHelper::themeTypeChanged,
+            this,
+            &TrashCleanWidget::setPixmapByTheme);
 
     // 固定窗口
     setFixedSize(QSize(732, 570));
@@ -108,7 +108,7 @@ TrashCleanWidget::TrashCleanWidget(QWidget *parent, CleanerDBusAdaptorInterface 
     m_resultFrame->setFixedSize(QSize(710, 380));
     initResultFrame();
 
-    //底部按键
+    // 底部按键
     m_bottomFrame = new DFrame(this);
     m_bottomFrame->setAccessibleName("trashCleanWidget_bottomFrame");
     m_bottomFrame->setLineWidth(0);
@@ -131,22 +131,46 @@ TrashCleanWidget::TrashCleanWidget(QWidget *parent, CleanerDBusAdaptorInterface 
     addRootCheckItems();
 
     foreach (auto item, m_rootItems) {
-        connect(this, &TrashCleanWidget::prepare, item, &TrashCleanItem::prepare); // 移除上一次扫描数据
+        connect(this,
+                &TrashCleanWidget::prepare,
+                item,
+                &TrashCleanItem::prepare); // 移除上一次扫描数据
         connect(this, &TrashCleanWidget::startWork, item, &TrashCleanItem::startScan); // 开始扫描
-        connect(this, &TrashCleanWidget::showScanResult, item, &TrashCleanItem::showScanResult); //  扫描完成后展示结果
-        connect(this, &TrashCleanWidget::stopShowResult, item, &TrashCleanItem::stopShowResult); // 停止展示，响应“中止扫描”
+        connect(this,
+                &TrashCleanWidget::showScanResult,
+                item,
+                &TrashCleanItem::showScanResult); //  扫描完成后展示结果
+        connect(this,
+                &TrashCleanWidget::stopShowResult,
+                item,
+                &TrashCleanItem::stopShowResult); // 停止展示，响应“中止扫描”
         connect(this, &TrashCleanWidget::startClean, item, &TrashCleanItem::clean); // 开始清理
 
-        connect(item, &TrashCleanItem::showScanResultFinished, this, &TrashCleanWidget::showScanResultFinished); // 开始展示扫描结果
-        connect(item, &TrashCleanItem::scanFinished, this, &TrashCleanWidget::scanDone); // 根项扫描结束
-        connect(item, &TrashCleanItem::noticeFileName, this, &TrashCleanWidget::setScanTitleName); // 根项通知主界面当前展示的文件名称
+        connect(item,
+                &TrashCleanItem::showScanResultFinished,
+                this,
+                &TrashCleanWidget::showScanResultFinished); // 开始展示扫描结果
+        connect(item,
+                &TrashCleanItem::scanFinished,
+                this,
+                &TrashCleanWidget::scanDone); // 根项扫描结束
+        connect(item,
+                &TrashCleanItem::noticeFileName,
+                this,
+                &TrashCleanWidget::setScanTitleName); // 根项通知主界面当前展示的文件名称
         connect(item, &TrashCleanItem::recounted, this, &TrashCleanWidget::recount);
         connect(item, &TrashCleanItem::cleanFinished, this, &TrashCleanWidget::onCleanFinished);
 
         // 后台服务文件删除功能
-        connect(item, &TrashCleanItem::deleteUserFiles, this, &TrashCleanWidget::DeleteSpecifiedFiles);
+        connect(item,
+                &TrashCleanItem::deleteUserFiles,
+                this,
+                &TrashCleanWidget::DeleteSpecifiedFiles);
         // 后台卸载应用数据库删除
-        connect(item, &TrashCleanItem::noticeAppName, this, &TrashCleanWidget::DeleteSpecifiedAppRecord);
+        connect(item,
+                &TrashCleanItem::noticeAppName,
+                this,
+                &TrashCleanWidget::DeleteSpecifiedAppRecord);
     }
 
     // 全没有选中时需要置灰左按键
@@ -269,7 +293,7 @@ void TrashCleanWidget::initHeaderFrame()
     wid->setLayout(hlayout1);
 
     mainLayout->addWidget(wid);
-    //添加分割线
+    // 添加分割线
     QFrame *line = new QFrame(this);
     line->setAccessibleName("topFrame_lineFrame");
     line->setFrameShape(QFrame::HLine);
@@ -292,8 +316,16 @@ void TrashCleanWidget::initConfigFrame()
     configLayout->setContentsMargins(26, 0, 0, 0);
     configLayout->setSpacing(10);
 
-    QStringList itemNames = {tr("System junk"), tr("Useless files created by the system"), tr("Application junk"), tr("Unneeded files created by applications"), tr("Traces"), tr("Activity traces of the system and applications"), tr("Cookies"), tr("Cookies from Internet browsers")};
-    QStringList itemAccessibleNames = {"systemJunkFrame", "appJunkFrame", "tracesFrame", "cookiesFrame"};
+    QStringList itemNames = {
+        tr("System junk"),      tr("Useless files created by the system"),
+        tr("Application junk"), tr("Unneeded files created by applications"),
+        tr("Traces"),           tr("Activity traces of the system and applications"),
+        tr("Cookies"),          tr("Cookies from Internet browsers")
+    };
+    QStringList itemAccessibleNames = { "systemJunkFrame",
+                                        "appJunkFrame",
+                                        "tracesFrame",
+                                        "cookiesFrame" };
 
     for (int i = 0; i < itemNames.length(); i += 2) {
         CleanerItem *ci = new CleanerItem(this);
@@ -326,10 +358,13 @@ void TrashCleanWidget::initConfigFrame()
     m_configLogo->setGeometry(405, 0, 300, 300);
 
     // 跟随系统主题设置
-    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::LightType) {
-        m_configLogo->setPixmap(QIcon::fromTheme(TRASH_CLEAN_CONFIG_BIG_LOGO_LIGHT).pixmap(300, 300));
+    if (DGuiApplicationHelper::instance()->themeType()
+        == DGuiApplicationHelper::ColorType::LightType) {
+        m_configLogo->setPixmap(
+            QIcon::fromTheme(TRASH_CLEAN_CONFIG_BIG_LOGO_LIGHT).pixmap(300, 300));
     } else {
-        m_configLogo->setPixmap(QIcon::fromTheme(TRASH_CLEAN_CONFIG_BIG_LOGO_DARK).pixmap(300, 300));
+        m_configLogo->setPixmap(
+            QIcon::fromTheme(TRASH_CLEAN_CONFIG_BIG_LOGO_DARK).pixmap(300, 300));
     }
 
     vLayout->addWidget(m_configLogo);
@@ -351,7 +386,7 @@ void TrashCleanWidget::initResultFrame()
     m_treeWidget->setFrameShape(QFrame::NoFrame);
     m_treeWidget->setIndentation(16);
     m_treeWidget->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
-    m_treeWidget->setBackgroundRole(QPalette::Background);
+    m_treeWidget->setBackgroundRole(QPalette::Window);
     m_treeWidget->setHeaderHidden(true);
     m_treeWidget->setColumnCount(1);
     m_treeWidget->setFocusPolicy(Qt::NoFocus);
@@ -373,7 +408,7 @@ void TrashCleanWidget::initBottomFrame()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(CONTENT_FRAME_LEFT_MARGINS, 0, 0, 0);
 
-    //添加下部分割线
+    // 添加下部分割线
     m_bottomLine = new DFrame(this);
     m_bottomLine->setAccessibleName("bottomFrame_lineFrame");
     m_bottomLine->setFrameShape(QFrame::HLine);
@@ -413,7 +448,10 @@ void TrashCleanWidget::initBottomFrame()
     // 下部左按键和右按键分开处理
     // 左按键为扫描功能相关，右按键为清理相关
     connect(m_leftButton, &QPushButton::clicked, this, &TrashCleanWidget::changeStageByLeftButton);
-    connect(m_rightButton, &QPushButton::clicked, this, &TrashCleanWidget::changeStageByRightButton);
+    connect(m_rightButton,
+            &QPushButton::clicked,
+            this,
+            &TrashCleanWidget::changeStageByRightButton);
 }
 
 // 在界面上添加固定的根检查项
@@ -421,8 +459,10 @@ void TrashCleanWidget::addRootCheckItems()
 {
     // 添加根项检查点
     // 根项只有标题，没有说明
-    QStringList itemlist = {tr("System junk"), tr("Application junk"), tr("Traces"), tr("Cookies")};
-    int i = 0;
+    QStringList itemlist = { tr("System junk"),
+                             tr("Application junk"),
+                             tr("Traces"),
+                             tr("Cookies") };
     foreach (auto item, itemlist) {
         TrashCleanItem *trash = new TrashCleanItem(nullptr);
         trash->setTitle(item);
@@ -431,7 +471,6 @@ void TrashCleanWidget::addRootCheckItems()
         treeItem->setData(0, Qt::DisplayRole, "treeWidget_rootItem");
         treeItem->setHidden(true);
         m_treeWidget->setItemWidget(treeItem, 0, trash->itemWidget());
-        i++;
     }
 }
 
@@ -445,14 +484,26 @@ void TrashCleanWidget::addChildrenCheckItems()
 
     // 系统扫描项为固定目录
     // 垃圾箱
-    addChildItem(SYS_CHECK_INDEX, tr("Trash"), tr("Make sure all files in the trash can be deleted"), m_trashInfoList);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("Trash"),
+                 tr("Make sure all files in the trash can be deleted"),
+                 m_trashInfoList);
     // 系统缓存
-    addChildItem(SYS_CHECK_INDEX, tr("System caches"), tr("Caches created by the system"), m_cacheInfoLIst);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("System caches"),
+                 tr("Caches created by the system"),
+                 m_cacheInfoLIst);
     // 系统日志
-    addChildItem(SYS_CHECK_INDEX, tr("System logs"), tr("Log files created by the system"), m_logInfoList);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("System logs"),
+                 tr("Log files created by the system"),
+                 m_logInfoList);
 
     // 痕迹扫描项为固定目录
-    addChildItem(HISTORY_CHECK_INDEX, tr("System and Application traces"), tr(""), m_historyInfoList);
+    addChildItem(HISTORY_CHECK_INDEX,
+                 tr("System and Application traces"),
+                 tr(""),
+                 m_historyInfoList);
 
     // 根据服务返回清单，建立应用扫描项
     addAppCheckItems();
@@ -497,7 +548,12 @@ void TrashCleanWidget::addAppCheckItems()
         // 应用的缷载标志
         bool isInstalled = app[CLEANER_APP_INSTALL_FLAG].toBool();
         QString pkgName = app[CLEANER_APP_COM_NAME].toString();
-        addChildItem(APP_CHECK_INDEX, app[CLEANER_APP_NAME].toString(), pkgName, QString(""), paths, isInstalled);
+        addChildItem(APP_CHECK_INDEX,
+                     app[CLEANER_APP_NAME].toString(),
+                     pkgName,
+                     QString(""),
+                     paths,
+                     isInstalled);
     }
 }
 
@@ -529,7 +585,12 @@ void TrashCleanWidget::addBrowserCookies()
 // 将子项检查内容添加到根项
 // 根据需求如果子项大小为0则不显示子项
 // 这里根据文件数实现，如果文件数为0,即大小为0
-void TrashCleanWidget::addChildItem(int rootIndex, const QString &title, const QString &pkgName, const QString &tip, const QList<QStringList> &paths, bool isInstalled)
+void TrashCleanWidget::addChildItem(int rootIndex,
+                                    const QString &title,
+                                    const QString &pkgName,
+                                    const QString &tip,
+                                    const QList<QStringList> &paths,
+                                    bool isInstalled)
 {
     if (rootIndex >= m_rootItems.size() || rootIndex < 0)
         return;
@@ -593,7 +654,10 @@ void TrashCleanWidget::addChildItem(int rootIndex, const QString &title, const Q
     }
 }
 
-void TrashCleanWidget::addChildItem(int rootIndex, const QString &title, const QString &tip, const QStringList &paths)
+void TrashCleanWidget::addChildItem(int rootIndex,
+                                    const QString &title,
+                                    const QString &tip,
+                                    const QStringList &paths)
 {
     if (rootIndex >= m_rootItems.size() || rootIndex < 0)
         return;
@@ -675,10 +739,8 @@ void TrashCleanWidget::changeStageByRightButton()
     switch (m_stage) {
     // 扫描结束时，按下开始进行清理
     case SCAN_FINISHED:
-        if (m_rootItems[0]->isSelected()
-            || m_rootItems[1]->isSelected()
-            || m_rootItems[2]->isSelected()
-            || m_rootItems[3]->isSelected()) {
+        if (m_rootItems[0]->isSelected() || m_rootItems[1]->isSelected()
+            || m_rootItems[2]->isSelected() || m_rootItems[3]->isSelected()) {
             Q_EMIT stageChanged(CLEAN_STARTED);
         }
         break;
@@ -780,7 +842,9 @@ void TrashCleanWidget::recount()
     m_lastScannedSize = TrashCleanItem::fileSizeToString(m_totalSize);
 
     if (SCAN_FINISHED == m_stage || SCAN_STARTED == m_stage) {
-        m_scanResultStr = tr("%1 junk files, %2 selected").arg(m_lastScannedSize).arg(TrashCleanItem::fileSizeToString(fileSize));
+        m_scanResultStr = tr("%1 junk files, %2 selected")
+                              .arg(m_lastScannedSize)
+                              .arg(TrashCleanItem::fileSizeToString(fileSize));
         setHeadTextWithElidedText(m_scanResultStr);
         m_tipTitle->setText(tr("Scanned: %1 files").arg(m_totalScannedFiles));
     }
@@ -899,9 +963,15 @@ void TrashCleanWidget::setWidgetScanStart()
         QTimer scanTimer;
         QDateTime currentTime = QDateTime::currentDateTime();
         connect(&scanTimer, &QTimer::timeout, this, [=] {
-            QDateTime duration = QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch() - currentTime.toSecsSinceEpoch()).toUTC();
+            QDateTime duration =
+                QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch()
+                                              - currentTime.toSecsSinceEpoch())
+                    .toUTC();
             // 格式来自于需求，可能是翻译要求
-            m_scanTime->setText(tr("Time elapsed %1:%2:%3").arg(duration.toString("hh")).arg(duration.toString("mm")).arg(duration.toString("ss")));
+            m_scanTime->setText(tr("Time elapsed %1:%2:%3")
+                                    .arg(duration.toString("hh"))
+                                    .arg(duration.toString("mm"))
+                                    .arg(duration.toString("ss")));
         });
         scanTimer.start(1000);
 
@@ -913,7 +983,8 @@ void TrashCleanWidget::setWidgetScanStart()
         }
 
         // 从树上移除所有子项目,等待重新插入
-        QList<QTreeWidgetItem *> childrenItem = m_treeWidget->topLevelItem(SYS_CHECK_INDEX)->takeChildren();
+        QList<QTreeWidgetItem *> childrenItem =
+            m_treeWidget->topLevelItem(SYS_CHECK_INDEX)->takeChildren();
         childrenItem.append(m_treeWidget->topLevelItem(APP_CHECK_INDEX)->takeChildren());
         childrenItem.append(m_treeWidget->topLevelItem(HISTORY_CHECK_INDEX)->takeChildren());
         childrenItem.append(m_treeWidget->topLevelItem(BROWSER_CACHE_CHECK_INDEX)->takeChildren());
@@ -967,7 +1038,10 @@ void TrashCleanWidget::setWidgetScanFinish()
         m_isbScan = false;
         // 添加安全日志
         if (m_dataInterface) {
-            m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER, tr("Scanned: %1 files, junk files: %2").arg(m_totalScannedFiles).arg(m_lastScannedSize));
+            m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER,
+                                            tr("Scanned: %1 files, junk files: %2")
+                                                .arg(m_totalScannedFiles)
+                                                .arg(m_lastScannedSize));
         }
     }
 }
@@ -997,7 +1071,8 @@ void TrashCleanWidget::setWidgetCleanStart()
 
     // 添加安全日志
     if (m_dataInterface) {
-        m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER, tr("Removed: %1 junk files").arg(m_lastCleanedSize));
+        m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER,
+                                        tr("Removed: %1 junk files").arg(m_lastCleanedSize));
     }
 }
 
@@ -1129,7 +1204,9 @@ MyItemDelegateTree::MyItemDelegateTree(QObject *parent)
 }
 
 // 重绘操作
-void MyItemDelegateTree::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void MyItemDelegateTree::paint(QPainter *painter,
+                               const QStyleOptionViewItem &option,
+                               const QModelIndex &index) const
 {
     Q_UNUSED(painter);
     Q_UNUSED(option);
@@ -1154,7 +1231,9 @@ void TrashCleanWidget::setHeadTextWithElidedText(const QString &headStr)
         int scanTimeWidth = scanTimeFontmet.horizontalAdvance(m_scanTime->text(), -1);
         QFontMetrics headFontmet(m_headerTitle->font());
         QString elidedStr;
-        elidedStr = headFontmet.elidedText(headStr, Qt::TextElideMode::ElideRight, MAX_HEAD_TITLE_WIDTH - scanTimeWidth - 10);
+        elidedStr = headFontmet.elidedText(headStr,
+                                           Qt::TextElideMode::ElideRight,
+                                           MAX_HEAD_TITLE_WIDTH - scanTimeWidth - 10);
         m_headerTitle->setText(elidedStr);
     }
 }

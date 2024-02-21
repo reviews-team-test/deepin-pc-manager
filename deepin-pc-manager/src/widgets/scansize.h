@@ -6,8 +6,9 @@
 #ifndef SCANSIZE_H
 #define SCANSIZE_H
 
-#include <QWidget>
 #include <DLineEdit>
+
+#include <QWidget>
 
 class QLabel;
 class QLineEdit;
@@ -45,10 +46,10 @@ signals:
     void notifyCheckBoxChange(int status);
 
 private:
-    QLabel      *m_context;             // 内容
-    QLabel      *m_unit;                // 单位
-    DLineEdit   *m_pLineEdit;           // 编辑器
-    QCheckBox   *m_check;               // 选择框
+    QLabel *m_context;      // 内容
+    QLabel *m_unit;         // 单位
+    DLineEdit *m_pLineEdit; // 编辑器
+    QCheckBox *m_check;     // 选择框
 };
 
 #endif // SCANSIZE_H

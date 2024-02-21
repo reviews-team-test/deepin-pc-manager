@@ -4,12 +4,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "trashcleanitem.h"
+
 #include "widgets/cleanerresultitemwidget.h"
 
+#include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QThread>
-#include <QApplication>
 
 #define KILOBYTE 1024
 #define SHOWDELAY 5
@@ -34,9 +35,7 @@ TrashCleanItem::TrashCleanItem(TrashCleanItem *parentItem)
     initItemWidget();
 }
 
-TrashCleanItem::~TrashCleanItem()
-{
-}
+TrashCleanItem::~TrashCleanItem() { }
 
 // 将文件大小由字节数转换为对应单位
 // 最大单位在需求文档上没有明确，暂时定义为GB
@@ -122,7 +121,8 @@ void TrashCleanItem::stageChanged(bool isItemSelected)
             tmp = tmp->m_parent;
         }
     } else {
-        // bug https://pms.uniontech.com/zentao/bug-view-60687.html,如果所有子项目被取消，父项目也应取消
+        // bug
+        // https://pms.uniontech.com/zentao/bug-view-60687.html,如果所有子项目被取消，父项目也应取消
         // 子项被取消时，在此同步父项目的标志
         TrashCleanItem *tmp = m_parent;
         // 更新父结点的状态，需要遍历父结点下所有结点
@@ -195,7 +195,8 @@ void TrashCleanItem::setFilePaths(const QList<QString> &paths)
 {
     m_scanPaths = paths;
     // 路径内容去掉重复项
-    m_scanPaths.toSet().toList();
+    QSet<QString> set(m_scanPaths.begin(), m_scanPaths.end());
+    m_scanPaths = set.values();
 }
 
 void TrashCleanItem::setPkgName(const QString &pkgName)
@@ -298,7 +299,9 @@ void TrashCleanItem::scanFile(const QString &path)
             m_deletePaths.append(info.absoluteFilePath());
         } else if (info.isDir()) {
             QDir dir(path);
-            for (const QFileInfo &i : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks)) {
+            for (const QFileInfo &i :
+                 dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden
+                                   | QDir::NoSymLinks)) {
                 // 递归扫描目录内容
                 scanFile(i.absoluteFilePath());
             }
@@ -667,19 +670,40 @@ void TrashCleanItem::initItemWidget()
     // 通知窗口清空内容，隐藏控件以准备新的扫描
     connect(this, &TrashCleanItem::prepareWidget, m_itemWidget, &CleanerResultItemWidget::prepare);
     // 通知窗口开始或停止展示
-    connect(this, &TrashCleanItem::scanStarted, m_itemWidget, &CleanerResultItemWidget::setWorkStarted);
+    connect(this,
+            &TrashCleanItem::scanStarted,
+            m_itemWidget,
+            &CleanerResultItemWidget::setWorkStarted);
     // 将结果显示在依赖窗口下
-    connect(this, &TrashCleanItem::setScanResult, m_itemWidget, &CleanerResultItemWidget::setScanResult);
+    connect(this,
+            &TrashCleanItem::setScanResult,
+            m_itemWidget,
+            &CleanerResultItemWidget::setScanResult);
     // 同步是否选中
-    connect(this, &TrashCleanItem::setWidgetItemSelected, m_itemWidget, &CleanerResultItemWidget::setCheckBoxStatus);
+    connect(this,
+            &TrashCleanItem::setWidgetItemSelected,
+            m_itemWidget,
+            &CleanerResultItemWidget::setCheckBoxStatus);
     // 设置检查项已经被清理
-    connect(this, &TrashCleanItem::setCleanDone, m_itemWidget, &CleanerResultItemWidget::setCleanDone);
+    connect(this,
+            &TrashCleanItem::setCleanDone,
+            m_itemWidget,
+            &CleanerResultItemWidget::setCleanDone);
     // 子项已完成清理或没有被扫描时,设置为不可选中的状态
-    connect(this, &TrashCleanItem::setUncheckable, m_itemWidget, &CleanerResultItemWidget::setUncheckable);
+    connect(this,
+            &TrashCleanItem::setUncheckable,
+            m_itemWidget,
+            &CleanerResultItemWidget::setUncheckable);
 
     // 涉及到根选项的状态变化
     // 子项被选中时，让根项被选中
     // 根项被点击时，让所有子项选中、反选
-    connect(m_itemWidget, &CleanerResultItemWidget::rootClicked, this, &TrashCleanItem::setChildSelected);
-    connect(m_itemWidget, &CleanerResultItemWidget::childClicked, this, &TrashCleanItem::stageChanged);
+    connect(m_itemWidget,
+            &CleanerResultItemWidget::rootClicked,
+            this,
+            &TrashCleanItem::setChildSelected);
+    connect(m_itemWidget,
+            &CleanerResultItemWidget::childClicked,
+            this,
+            &TrashCleanItem::stageChanged);
 }

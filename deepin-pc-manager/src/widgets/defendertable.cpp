@@ -4,15 +4,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "defendertable.h"
+
 #include "defendertableheaderview.h"
 
+#include <DApplicationHelper>
 #include <DFrame>
 #include <DLabel>
-#include <DApplicationHelper>
 
 #include <QtDebug>
 
 DWIDGET_USE_NAMESPACE
+
 namespace def {
 namespace widgets {
 
@@ -36,9 +38,7 @@ DefenderTable::DefenderTable(QWidget *parent, int height)
     initUI();
 }
 
-DefenderTable::~DefenderTable()
-{
-}
+DefenderTable::~DefenderTable() { }
 
 void DefenderTable::initUI()
 {
@@ -47,7 +47,7 @@ void DefenderTable::initUI()
     mainLayout->setContentsMargins(2, 2, 2, 2);
     setLayout(mainLayout);
 
-    //创建主题风格背景
+    // 创建主题风格背景
     m_mainBackgroundWidgt = new DFrame(this);
     m_mainBackgroundWidgt->setAccessibleName(accessibleName() + "_bgWidget");
     m_mainBackgroundWidgt->lower();
@@ -232,11 +232,11 @@ void DefenderTable::setTableAndModel(DTableView *table, QStandardItemModel *mode
     });
 }
 
-//废弃于2020.4.30
+// 废弃于2020.4.30
 void DefenderTable::setRowHeight(int height)
 {
     m_rowHeight = height;
-    //设置每一行的高度
+    // 设置每一行的高度
     for (int i = 0; i < m_rowCount; i++)
         m_table->setRowHeight(i, m_rowHeight);
 }
@@ -252,7 +252,8 @@ void DefenderTable::resizeEvent(QResizeEvent *event)
     for (int i = 0; i < m_rowCount; i++) {
         int rowHeight = m_table->rowHeight(i);
         m_table->setRowHeight(i, rowHeight);
-        m_backgroundLst[i]->setFixedWidth(m_table->width() + m_table->horizontalScrollBar()->maximum() - 1);
+        m_backgroundLst[i]->setFixedWidth(m_table->width()
+                                          + m_table->horizontalScrollBar()->maximum() - 1);
         m_backgroundLst[i]->setFixedHeight(rowHeight);
         m_backgroundLst[i]->move(-m_table->horizontalScrollBar()->value(),
                                  initY + i * rowHeight - m_table->verticalScrollBar()->value());
@@ -268,7 +269,8 @@ void DefenderTable::paintEvent(QPaintEvent *event)
     for (int i = 0; i < m_rowCount; i++) {
         int rowHeight = m_table->rowHeight(i);
         m_table->setRowHeight(i, rowHeight);
-        m_backgroundLst[i]->setFixedWidth(m_table->width() + m_table->horizontalScrollBar()->maximum() - 1);
+        m_backgroundLst[i]->setFixedWidth(m_table->width()
+                                          + m_table->horizontalScrollBar()->maximum() - 1);
         m_backgroundLst[i]->setFixedHeight(rowHeight);
         m_backgroundLst[i]->move(-m_table->horizontalScrollBar()->value(),
                                  initY + i * rowHeight - m_table->verticalScrollBar()->value());

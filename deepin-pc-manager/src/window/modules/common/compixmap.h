@@ -21,6 +21,7 @@
 #define DIALOG_CARE_TIP_YELLOW "dcc_care_tip" // 提示框---黄色感叹号(小图片)
 #define DIALOG_OK_TIP_GREEN "dcc_ok_tip" // 提示框---绿色感叹号(小图片)
 #define DIALOG_DEFENDER "deepin-defender" // 提示框---安全中心
+#define DIALOG_PC_MANAGER "deepin-pc-manager" // 提示框---电脑管家
 
 /********************导航栏*****************************/
 #define HOMEPAGE_MODEL_LIGHT "dcc_home" // 首页模块--浅色
@@ -62,19 +63,19 @@
 #define ANTIAV_QUARANTINE_DARK "dcc_antiav_quarantine_dark" // 隔离区图标--深色
 #define ANTIAV_TRUST_LIGHT "dcc_antiav_whitelist" // 信任区图标--浅色
 #define ANTIAV_TRUST_DARK "dcc_antiav_whitelist_dark" // 信任区图标--深色
-#define ANTIAV_WHITELIST_LIGHT "def_Icon_Whitelist" //白名单图标--浅色
+#define ANTIAV_WHITELIST_LIGHT "def_Icon_Whitelist" // 白名单图标--浅色
 #define ANTIAV_LOG_DETAIL_LIGHT "dcc_natiav_log_details" // 日志详情--浅色
 #define ANTIAV_LOG_DETAIL_DARK "icon_log_details_dark" // 日志详情--深色
 #define ANTIAV_OPERATION_SUCCESS "dcc_antiav_normal" // 操作状态操作成功以后
 #define ANTIAV_RISING_LOG "dcc_rising_logo" // 瑞星log
 #define ANTIAV_AH_LOG "dcc_Ahprotector_log" // 安恒log
-#define UPDATE_VERSION_ICON "dcc_update_version" //更新图标图标
-#define WHITE_GARBAGE_ICON "def_delete" //白名单删除图标
-#define SCHEDULE_ICON "icon_schedulescan" //定时扫描图标
+#define UPDATE_VERSION_ICON "dcc_update_version" // 更新图标图标
+#define WHITE_GARBAGE_ICON "def_delete" // 白名单删除图标
+#define SCHEDULE_ICON "icon_schedulescan" // 定时扫描图标
 #define USBSCAN_ICON "icon_usbscan" // USB扫描图标
-#define SCANSETTING_ICON "icon_scansetting" //扫描设置图标
-#define SCANSETTING_LIGHT_ICON "icon_scansetting_light" //扫描设置图标
-#define SCANSETTING_DARK_ICON "icon_scansetting_dark" //扫描设置图标
+#define SCANSETTING_ICON "icon_scansetting" // 扫描设置图标
+#define SCANSETTING_LIGHT_ICON "icon_scansetting_light" // 扫描设置图标
+#define SCANSETTING_DARK_ICON "icon_scansetting_dark" // 扫描设置图标
 
 /*******************安全工具********************/
 #define DATA_USAGE_ICON "def_data_usage" // 流量管理
@@ -89,7 +90,7 @@
 #define USB_CONTROL_DETAIL_ICON "def_usb_storage_detail" // usb白名单详情
 #define USB_CONTROL_ADD_ICON "def_usb_storage_add_whitelist" // usb白名单移除
 #define USB_CONTROL_REMOVE_ICON "def_usb_storage_remove_whitelist" // usb白名单移除
-#define SECURITYLEVEL_NOTICE_ICON "def_securitylevel_privilege" //三权分立问号图标
+#define SECURITYLEVEL_NOTICE_ICON "def_securitylevel_privilege" // 三权分立问号图标
 #define FILE_NET_CHECK_ICON "def_net_check" // 网络检测图标
 
 // 登陆安全

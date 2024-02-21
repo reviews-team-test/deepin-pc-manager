@@ -4,62 +4,55 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
-#include "src/window/modules/common/gsettingkey.h"
-#include "src/window/modules/common/compixmap.h"
+
+#include "modules/common/invokers/invokerfactory.h"
 #include "src/window/modules/common/common.h"
-#include "window/modules/common/invokers/invokerfactory.h"
-#include "window/modules/common/systemsettings/systemsettings.h"
+#include "src/window/modules/common/compixmap.h"
+#include "src/window/modules/common/gsettingkey.h"
 
 // 首页模块
-#include "window/modules/homepagecheck/homepagemodule.h"
-#include "window/modules/homepagecheck/homepagemodel.h"
+#include "modules/homepagecheck/homepagemodel.h"
+#include "modules/homepagecheck/homepagemodule.h"
 // 垃圾清理模块
-#include "window/modules/cleaner/cleanermodule.h"
+#include "modules/cleaner/cleanermodule.h"
 // 安全工具模块
-#include "window/modules/securitytools/securitytoolsmodule.h"
+#include "modules/securitytools/securitytoolsmodule.h"
 
 // 重启安全中心弹框
-#include "restartdefenderdialog.h"
-
-#include "../widgets/scansize.h"
-#include "../window/dialogmanage.h"
-#include "../widgets/updateaddressitem.h"
 #include "../widgets/multiselectlistview.h"
-#include "../widgets/viruswhitelistscan.h"
-#include "../widgets/avcpulimitation.h"
 
-#include <DSettingsDialog>
+#include <qsettingbackend.h>
+
+#include <DApplicationHelper>
 #include <DBackgroundGroup>
+#include <DCheckBox>
+#include <DDialog>
+#include <DFloatingMessage>
 #include <DGuiApplicationHelper>
 #include <DListView>
-#include <DStandardItem>
-#include <DApplicationHelper>
-#include <DTitlebar>
-#include <DDialog>
-#include <DRadioButton>
-#include <DCheckBox>
-#include <DSysInfo>
-#include <DWarningButton>
-#include <DSettingsWidgetFactory>
-#include <DSettingsOption>
-#include <DFloatingMessage>
 #include <DMessageManager>
+#include <DRadioButton>
+#include <DSettingsDialog>
+#include <DSettingsOption>
+#include <DSettingsWidgetFactory>
+#include <DStandardItem>
+#include <DSysInfo>
+#include <DTitlebar>
+#include <DWarningButton>
 
-#include <QDateTime>
-#include <QHBoxLayout>
-#include <QMetaEnum>
-#include <QDebug>
-#include <QStandardItemModel>
-#include <QPushButton>
-#include <QLocale>
-#include <QLinearGradient>
-#include <QWidget>
-#include <QResizeEvent>
-#include <qsettingbackend.h>
-#include <QGSettings>
 #include <QDBusInterface>
-#include <QObject>
+#include <QDateTime>
+#include <QDebug>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLinearGradient>
+#include <QLocale>
+#include <QMetaEnum>
+#include <QObject>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QStandardItemModel>
+#include <QWidget>
 
 DEF_USING_NAMESPACE
 DTK_USE_NAMESPACE
@@ -68,7 +61,7 @@ DCORE_USE_NAMESPACE
 const int WidgetMinimumWidget = 950;
 const int WidgetMinimumHeight = 640;
 
-//此处为带边距的宽度
+// 此处为带边距的宽度
 const int first_widget_min_width = 179;
 
 const QMargins navItemMargin(5, 3, 5, 3);
@@ -118,8 +111,8 @@ MainWindow::MainWindow(QWidget *parent)
     // 初始化托盘
     initTray();
 
-    QTimer::singleShot(0, this, &MainWindow::initAllModule); //初始化所有模块
-    QTimer::singleShot(0, this, &MainWindow::modulePreInitialize); //模块初始化前准备
+    QTimer::singleShot(0, this, &MainWindow::initAllModule); // 初始化所有模块
+    QTimer::singleShot(0, this, &MainWindow::modulePreInitialize); // 模块初始化前准备
 }
 
 MainWindow::~MainWindow()
@@ -149,7 +142,7 @@ void MainWindow::initUI()
     m_contentLayout->setContentsMargins(0, 0, 0, 0);
     m_contentLayout->setMargin(0);
     m_contentLayout->setSpacing(0);
-    //左边list
+    // 左边list
     m_navView = new MultiSelectListView(this);
     m_navView->setLineWidth(0);
     m_navView->setAccessibleName("contentWidget_selectListView");
@@ -158,15 +151,16 @@ void MainWindow::initUI()
     m_navView->setIconSize(QSize(48, 48));
     m_navView->setFrameShape(QFrame::Shape::NoFrame);
     m_navView->setEditTriggers(QListView::NoEditTriggers);
-    m_navView->setAutoScroll(true); //滚动条
+    m_navView->setAutoScroll(true); // 滚动条
     m_navView->setTabKeyNavigation(false); // tab按键是否有效
-    m_navView->setViewportMargins(QMargins(10, 0, 10, 0)); //滚动区域边框大小
-    m_navView->setFixedWidth(first_widget_min_width); //固定窗口值
+    m_navView->setViewportMargins(QMargins(10, 0, 10, 0)); // 滚动区域边框大小
+    m_navView->setFixedWidth(first_widget_min_width); // 固定窗口值
     m_navView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     m_navView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_navView->setAutoFillBackground(true);
-    m_navView->setBackgroundType(DStyledItemDelegate::BackgroundType(DStyledItemDelegate::BackgroundType::RoundedBackground
-                                                                     | DStyledItemDelegate::BackgroundType::NoNormalState));
+    m_navView->setBackgroundType(
+        DStyledItemDelegate::BackgroundType(DStyledItemDelegate::BackgroundType::RoundedBackground
+                                            | DStyledItemDelegate::BackgroundType::NoNormalState));
     m_navView->setItemSpacing(0);
     m_contentLayout->addWidget(m_navView);
 
@@ -195,24 +189,31 @@ void MainWindow::initUI()
 // 初始化数据
 void MainWindow::initData()
 {
-    m_pSecurityToolDBusInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.securitytooldialog",
-                                                                           "/com/deepin/pc/manager/securitytooldialog",
-                                                                           "com.deepin.pc.manager.securitytooldialog",
-                                                                           ConnectType::SESSION, this);
+    m_pSecurityToolDBusInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.securitytooldialog",
+                                                    "/com/deepin/pc/manager/securitytooldialog",
+                                                    "com.deepin.pc.manager.securitytooldialog",
+                                                    ConnectType::SESSION,
+                                                    this);
 
     // 初始化安全中心gsetting配置
-    m_gsetting = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, QByteArray(), this);
+    m_gsetting = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH,
+                                                              QByteArray(),
+                                                              this);
 
     // 设置安装时间
     setInstallTime();
 
     // 主题变换
     m_guiHelper = DGuiApplicationHelper::instance();
-    connect(m_guiHelper, SIGNAL(themeTypeChanged(ColorType)), this, SLOT(themeTypeChange(ColorType)));
+    connect(m_guiHelper,
+            SIGNAL(themeTypeChanged(ColorType)),
+            this,
+            SLOT(themeTypeChange(ColorType)));
 
-    //标题栏
+    // 标题栏
     DTitlebar *titlebar = this->titlebar();
-    titlebar->setIcon(QIcon::fromTheme(DIALOG_DEFENDER));
+    titlebar->setIcon(QIcon::fromTheme(DIALOG_PC_MANAGER));
 
     auto menu = titlebar->menu();
     menu->setFont(Utils::getFixFontSize(14));
@@ -235,7 +236,7 @@ void MainWindow::initData()
         connect(userReplyAction, &QAction::triggered, this, &MainWindow::showUserReplyDialog);
     }
 
-    m_backwardBtn = new DIconButton(this); //上一步按钮
+    m_backwardBtn = new DIconButton(this); // 上一步按钮
     m_backwardBtn->setAccessibleName("backwardButton");
     m_backwardBtn->setIcon(QStyle::SP_ArrowBack);
     titlebar->addWidget(m_backwardBtn, Qt::AlignLeft | Qt::AlignVCenter);
@@ -297,9 +298,11 @@ void MainWindow::pushWidget(ModuleInterface *const inter, QWidget *const w)
 
 void MainWindow::setModuleVisible(ModuleInterface *const inter, const bool visible)
 {
-    auto find_it = std::find_if(m_modules.cbegin(), m_modules.cend(), [=](const QPair<ModuleInterface *, QString> &pair) {
-        return pair.first == inter;
-    });
+    auto find_it = std::find_if(m_modules.cbegin(),
+                                m_modules.cend(),
+                                [=](const QPair<ModuleInterface *, QString> &pair) {
+                                    return pair.first == inter;
+                                });
 
     if (find_it != m_modules.cend()) {
         m_navView->setRowHidden(find_it - m_modules.cbegin(), !visible);
@@ -375,7 +378,7 @@ int MainWindow::getModuleCount()
     return m_modules.count();
 }
 
-//初始化模块
+// 初始化模块
 void MainWindow::initAllModule()
 {
     // 首页体检模块
@@ -422,7 +425,7 @@ void MainWindow::initAllModule()
     }
 }
 
-//模块初始化前准备
+// 模块初始化前准备
 void MainWindow::modulePreInitialize()
 {
     for (auto it = m_modules.cbegin(); it != m_modules.cend(); ++it) {
@@ -433,17 +436,17 @@ void MainWindow::modulePreInitialize()
 
     QModelIndex index0 = m_navModel->index(0, 0);
     if (index0.isValid()) {
-        onFirstItemClick(index0); //默认点击首页
+        onFirstItemClick(index0); // 默认点击首页
     }
 }
 
-//左侧列表的点击
+// 左侧列表的点击
 void MainWindow::onFirstItemClick(const QModelIndex &index)
 {
     m_navView->setCurrentIndex(index);
     ModuleInterface *inter = m_modules[index.row()].first;
 
-    //有数据  并且最后一个和现在点击的一致
+    // 有数据  并且最后一个和现在点击的一致
     if (!m_contentStack.isEmpty() && m_contentStack.last().first == inter) {
         return;
     }
@@ -496,7 +499,7 @@ void MainWindow::popAndDelWidget()
     if (!m_contentStack.size())
         return;
 
-    QWidget *w = m_contentStack.pop().second; //栈的顶栈的widget
+    QWidget *w = m_contentStack.pop().second; // 栈的顶栈的widget
     if (w) {
         m_rightContentLayout->removeWidget(w);
         w->hide();
@@ -513,7 +516,7 @@ void MainWindow::popWidget()
     // 反激活切换前的模块 - widget是否需要delete，由各个模块的module自己决定
 
     // 掩藏/移除切换前的模块
-    QWidget *w = m_contentStack.pop().second; //栈的顶栈的widget
+    QWidget *w = m_contentStack.pop().second; // 栈的顶栈的widget
     if (w) {
         w->hide();
         m_rightContentLayout->removeWidget(w);
@@ -532,7 +535,7 @@ void MainWindow::showDefaultSettingDialog()
 // 显示用户反馈弹框
 void MainWindow::showUserReplyDialog()
 {
-    //创建（或new）对象连接服务
+    // 创建（或new）对象连接服务
     QDBusInterface interFace("com.deepin.dde.ServiceAndSupport",
                              "/com/deepin/dde/ServiceAndSupport",
                              "com.deepin.dde.ServiceAndSupport",
@@ -557,7 +560,7 @@ void MainWindow::showSettingDialog(const QString &groupKey)
     // 脚本直接设置的部分
     /* 基础设置 */
     // 基础设置-根据关闭窗口属性gsetting配置，更新设置界面选项
-    //优先显示每次询问按钮是否选中
+    // 优先显示每次询问按钮是否选中
     if (0 == this->getAskType()) {
         settings->setOption(SETTING_BASE_CLOSE_WINDOW, getCloseType());
     } else if (1 == this->getAskType()) {
@@ -566,17 +569,20 @@ void MainWindow::showSettingDialog(const QString &groupKey)
 
     // 连接设置信号
     // 脚本直接设置的部分
-    connect(settings, &Dtk::Core::DSettings::valueChanged, this, [=](const QString &key, const QVariant &value) {
-        if (key.contains(SETTING_CLOSE_WINDOW_TYPE)) {
-            int type = value.toInt();
-            if (type >= Tray && type <= Exit) {
-                this->setCloseType(type); // 设置关闭类型 托盘还是推出
-                this->setAskType(0); // 设置访问类型
-            } else if (type == Ask) {
-                this->setAskType(1); // 设置访问类型是每次访问
-            }
-        }
-    });
+    connect(settings,
+            &Dtk::Core::DSettings::valueChanged,
+            this,
+            [=](const QString &key, const QVariant &value) {
+                if (key.contains(SETTING_CLOSE_WINDOW_TYPE)) {
+                    int type = value.toInt();
+                    if (type >= Tray && type <= Exit) {
+                        this->setCloseType(type); // 设置关闭类型 托盘还是推出
+                        this->setAskType(0); // 设置访问类型
+                    } else if (type == Ask) {
+                        this->setAskType(1); // 设置访问类型是每次访问
+                    }
+                }
+            });
 
     // 设置弹窗
     m_dsd = new DSettingsDialog(this);
@@ -628,10 +634,10 @@ void MainWindow::onTrayActivated(QSystemTrayIcon::ActivationReason state)
 {
     if (state == QSystemTrayIcon::ActivationReason::Trigger) {
         if (!this->isVisible()) {
-            //页面隐藏，点击托盘重新show
+            // 页面隐藏，点击托盘重新show
             this->show();
         } else {
-            //页面能显示的时候，点击托盘会＂正常/最小化＂切换窗口
+            // 页面能显示的时候，点击托盘会＂正常/最小化＂切换窗口
             if (this->isMinimized()) {
                 this->setWindowState(Qt::WindowState::WindowActive);
             } else {
@@ -706,7 +712,7 @@ void MainWindow::initTray()
     // 设置系统托盘提示信息、托盘图标
     QString name = tr("Security Center");
     m_pSystemTray->setToolTip(name);
-    m_pSystemTray->setIcon(QIcon::fromTheme(DIALOG_DEFENDER));
+    m_pSystemTray->setIcon(QIcon::fromTheme(DIALOG_PC_MANAGER));
     connect(m_pSystemTray, &QSystemTrayIcon::activated, this, &MainWindow::onTrayActivated);
 
     m_pSystemTray->show();
@@ -718,7 +724,7 @@ void MainWindow::initCloseDialog(QCloseEvent *event)
     m_trayDialag = new DDialog(this);
     m_trayDialag->setAccessibleName("trayDialog");
     m_trayDialag->setModal(true);
-    m_trayDialag->setIcon(QIcon::fromTheme(DIALOG_DEFENDER));
+    m_trayDialag->setIcon(QIcon::fromTheme(DIALOG_PC_MANAGER));
     DRadioButton *radioExit = new DRadioButton(tr("Exit"), this);
     radioExit->setAccessibleName("trayDialog_exitButton");
     DRadioButton *radioMin = new DRadioButton(tr("Minimize to system tray"), this);
@@ -727,7 +733,7 @@ void MainWindow::initCloseDialog(QCloseEvent *event)
     radioAsk->setAccessibleName("trayDialog_askButton");
     closeType nChoose = static_cast<closeType>(getCloseType());
 
-    //根据GSettings设置settings页面的默认值
+    // 根据GSettings设置settings页面的默认值
     switch (nChoose) {
     case Exit:
         radioExit->setChecked(true);
@@ -768,10 +774,10 @@ void MainWindow::initCloseDialog(QCloseEvent *event)
         return;
     } else {
         // 确认按钮点击
-        if (radioMin->isChecked()) { //最小花点击
+        if (radioMin->isChecked()) { // 最小花点击
             this->hide();
             event->ignore();
-        } else if (radioExit->isChecked()) { //退出点击
+        } else if (radioExit->isChecked()) { // 退出点击
             closeWindow();
             event->ignore();
         }
@@ -783,7 +789,7 @@ void MainWindow::initCloseDialog(QCloseEvent *event)
             setCloseType(Exit);
         }
 
-        //只有当选择radioAsk后才会设置不再询问
+        // 只有当选择radioAsk后才会设置不再询问
         if (radioAsk->isChecked()) {
             setAskType(0);
         }
@@ -890,8 +896,7 @@ void MainWindow::updateBackwardBtn()
 
     // 只对 病毒查杀页、安全工具、防火墙页 作后退按钮判断
     QString sModuleName = m_contentStack.top().first->name();
-    if (MODULE_SECURITY_TOOLS_NAME == sModuleName
-        || MODULE_DISK_CLEANER_NAME == sModuleName
+    if (MODULE_SECURITY_TOOLS_NAME == sModuleName || MODULE_DISK_CLEANER_NAME == sModuleName
         || MODULE_HOMEPAGE_NAME == sModuleName) {
         if (1 < m_contentStack.count()) {
             m_backwardBtn->setVisible(true);
@@ -914,7 +919,7 @@ void MainWindow::setInstallTime()
     QString lasttime = m_gsetting->GetValue(INSTALL_TIME).toString();
     QString defaultTime = "-1";
     if (lasttime == defaultTime) {
-        //当前时间
+        // 当前时间
         QDateTime date = QDateTime::currentDateTime();
         QString installTime = date.toString("yyyy-MM-dd hh:mm:ss");
         m_gsetting->SetValue(INSTALL_TIME, installTime);

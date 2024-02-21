@@ -6,12 +6,12 @@
 #ifndef DEFSECURITYTOOLSBUSLINEMGR_H
 #define DEFSECURITYTOOLSBUSLINEMGR_H
 
+#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerinterface.h"
+#include "../../deepin-pc-manager/src/window/modules/securitytools/defsecuritytoolinfo.h"
 #include "installer/defsecuritytoolsbaseinstaller.h"
-#include "defsecuritytoolinfo.h"
-#include "window/modules/common/invokers/invokerinterface.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 
 class DefToolAuthorityCheckObj : public QObject
 {
@@ -49,10 +49,12 @@ private:
     void writeTo(const DEFSECURITYTOOLINFOLIST &infolist, const QString &strFileName);
     DefSecurityToolsBaseInstaller *getInstaller(const QString strPackageKey) const;
     void loadAlltools();
-    //请注意，此函数必需在loadAlltools之前调用
+    // 请注意，此函数必需在loadAlltools之前调用
     void initLatestLocalPackages();
     // 隐藏工具 -- 例如：超级防护
-    bool isHideTools(const DEFSECURITYTOOLINFO &info, const QString &strAppName, const QString &strGsetting);
+    bool isHideTools(const DEFSECURITYTOOLINFO &info,
+                     const QString &strAppName,
+                     const QString &strGsetting);
     // 判断工具是否可用
     bool isExecPreventValid();
     bool isSuperiorProtectionValid();
@@ -60,11 +62,11 @@ private:
     bool isResourceManagerValid();
 
 Q_SIGNALS:
-    //所有的安全工具状态更新信号
+    // 所有的安全工具状态更新信号
     void notifyToolsInfoUpdate(const DEFSECURITYTOOLINFOLIST &infos);
-    //某一个安全工具的状态发生变化的信号
+    // 某一个安全工具的状态发生变化的信号
     void notifyAppStatusChanged(const QString &strPackageKey, DEFSECURITYTOOLSTATUS status);
-    //安全工具状态检测完成信号
+    // 安全工具状态检测完成信号
     void notifyStatusCheckFinished();
 
 private Q_SLOTS:

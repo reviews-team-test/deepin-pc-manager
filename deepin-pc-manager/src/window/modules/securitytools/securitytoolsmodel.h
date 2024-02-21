@@ -21,7 +21,7 @@ public:
 
     void updateToolsInfo();
 
-    //获取工具信息
+    // 获取工具信息
     QList<DEFSECURITYTOOLINFO> getToolsInfo(TOOLSSTATUS status);
     void openTool(const QString &strPackageKey, const QStringList &strParams = QStringList());
     void updateTool(const QString &strPackageKey);
@@ -48,7 +48,7 @@ Q_SIGNALS:
     void notityAppStatusChanged(const QString &strPackageKey, int status);
 
 private:
-    DBusInvokerInterface *m_pSecurityToolDBusInter; //安全工具
-    SettingsInvokerInterface *m_gsetting; // 安全中心gsetting配置
+    DBusInvokerInterface *m_pSecurityToolDBusInter; // 安全工具
+    SettingsInvokerInterface *m_gsetting;           // 安全中心gsetting配置
     QList<DEFSECURITYTOOLINFO> m_toolinfos;
 };

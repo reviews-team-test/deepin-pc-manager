@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "window/interface/moduleinterface.h"
 #include "window/interface/frameproxyinterface.h"
+#include "window/interface/moduleinterface.h"
 #include "window/modules/common/common.h"
 
 DEF_NAMESPACE_BEGIN
@@ -19,8 +19,7 @@ class CleanerDBusAdaptorImpl;
 class TrashCleanGreetingWidget;
 class TrashCleanResultWidget;
 
-class CleanerModule : public QObject
-    , public ModuleInterface
+class CleanerModule : public QObject, public ModuleInterface
 {
     Q_OBJECT
 public:
@@ -46,5 +45,6 @@ private:
     TrashCleanResultWidget *m_resutlWidget;
     FrameProxyInterface *m_framProxy;
 };
+
 DEF_ANTIVIRUS_NAMESPACE_END
 DEF_NAMESPACE_END

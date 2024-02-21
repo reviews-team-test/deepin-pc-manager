@@ -4,18 +4,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "defsecuritytoolsbuslinemgr.h"
-#include "window/modules/common/invokers/invokerfactory.h"
-#include "common/gsettingkey.h"
+
+#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
+#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerfactory.h"
 #include "window/modules/common/aes/aesencrpyobj.h"
 
-#include <QJsonObject>
+#include <QDebug>
+#include <QDir>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QJsonParseError>
-#include <QFile>
-#include <QDir>
 #include <QPair>
-#include <QDebug>
 
 #define DEFENDER_DATA_DIR_PATH "/usr/share/deepin-pc-manager/" // 数据库路径
 
@@ -24,9 +25,7 @@ DefToolAuthorityCheckObj::DefToolAuthorityCheckObj(QObject *pParent)
 {
 }
 
-DefToolAuthorityCheckObj::~DefToolAuthorityCheckObj()
-{
-}
+DefToolAuthorityCheckObj::~DefToolAuthorityCheckObj() { }
 
 DefSecurityToolsBusLineMgr::DefSecurityToolsBusLineMgr(QObject *pParent)
     : QObject(pParent)
@@ -37,11 +36,14 @@ DefSecurityToolsBusLineMgr::DefSecurityToolsBusLineMgr(QObject *pParent)
     , m_isSecEnhanceSrvValid(false)
     , m_isResourceManagerValid(false)
 {
-    m_pManagerInter = InvokerFactory::GetInstance().CreateInvoker("com.home.appstore.daemon",
-                                                                  "/appstore",
-                                                                  "com.home.appstore.daemon.interface",
-                                                                  ConnectType::SYSTEM, this);
-    m_gSettingsInvokerInter = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, "", this);
+    m_pManagerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.home.appstore.daemon",
+                                                    "/appstore",
+                                                    "com.home.appstore.daemon.interface",
+                                                    ConnectType::SYSTEM,
+                                                    this);
+    m_gSettingsInvokerInter =
+        InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, "", this);
 }
 
 DefSecurityToolsBusLineMgr::~DefSecurityToolsBusLineMgr()
@@ -80,7 +82,10 @@ void DefSecurityToolsBusLineMgr::installPackage(const QString &strPackageKey)
     DefSecurityToolsBaseInstaller *pInstaller = getInstaller(strPackageKey);
 
     if (pInstaller) {
-        QObject::connect(pInstaller, &DefSecurityToolsBaseInstaller::sAppStatusChanged, this, &DefSecurityToolsBusLineMgr::onAppStatusChanged);
+        QObject::connect(pInstaller,
+                         &DefSecurityToolsBaseInstaller::sAppStatusChanged,
+                         this,
+                         &DefSecurityToolsBusLineMgr::onAppStatusChanged);
         pInstaller->installPackage();
     } else {
         Q_EMIT notifyAppStatusChanged(strPackageKey, DEFSECURITYTOOLSTATUS::INSTALLFAILED);
@@ -110,7 +115,10 @@ void DefSecurityToolsBusLineMgr::unInstallPackage(const QString &strPackageKey)
     DefSecurityToolsBaseInstaller *pInstaller = getInstaller(strPackageKey);
 
     if (pInstaller) {
-        QObject::connect(pInstaller, &DefSecurityToolsBaseInstaller::sAppStatusChanged, this, &DefSecurityToolsBusLineMgr::onAppStatusChanged);
+        QObject::connect(pInstaller,
+                         &DefSecurityToolsBaseInstaller::sAppStatusChanged,
+                         this,
+                         &DefSecurityToolsBusLineMgr::onAppStatusChanged);
         pInstaller->unInstallPackage();
     } else {
         Q_EMIT notifyAppStatusChanged(strPackageKey, DEFSECURITYTOOLSTATUS::UNINSTALLFAILED);
@@ -140,14 +148,18 @@ void DefSecurityToolsBusLineMgr::updatePackage(const QString &strPackageKey)
     DefSecurityToolsBaseInstaller *pInstaller = getInstaller(strPackageKey);
 
     if (pInstaller) {
-        QObject::connect(pInstaller, &DefSecurityToolsBaseInstaller::sAppStatusChanged, this, &DefSecurityToolsBusLineMgr::onAppStatusChanged);
+        QObject::connect(pInstaller,
+                         &DefSecurityToolsBaseInstaller::sAppStatusChanged,
+                         this,
+                         &DefSecurityToolsBusLineMgr::onAppStatusChanged);
         pInstaller->updatePackage();
     } else {
         Q_EMIT notifyAppStatusChanged(strPackageKey, DEFSECURITYTOOLSTATUS::UPDATEFAIL);
     }
 }
 
-void DefSecurityToolsBusLineMgr::showTool(const QString &strPackageKey, const QStringList &strParams)
+void DefSecurityToolsBusLineMgr::showTool(const QString &strPackageKey,
+                                          const QStringList &strParams)
 {
     if (!hasAutority()) {
         return;
@@ -192,7 +204,7 @@ void DefSecurityToolsBusLineMgr::loadAlltools()
     QString strFileName = QString("%1toolinfo.json").arg(DEFENDER_DATA_DIR_PATH);
     infolist = readFrom(strFileName);
 
-    //不可以直接对其进行卸载,需要判断其信息是否存在。存在则更新信息，否则挂载一个安装器。
+    // 不可以直接对其进行卸载,需要判断其信息是否存在。存在则更新信息，否则挂载一个安装器。
     DEFSECURITYTOOLINFOLIST RTInfolist;
 
     foreach (DEFSECURITYTOOLINFO info, infolist) {
@@ -220,12 +232,12 @@ void DefSecurityToolsBusLineMgr::loadAlltools()
 
         Q_ASSERT(pInstaller != nullptr);
 
-        //设置本地最新包信息
+        // 设置本地最新包信息
         if (m_latestLocalPackages.contains(info.strPackageName)) {
             pInstaller->setLatestPackageInfo(m_latestLocalPackages.value(info.strPackageName));
         }
 
-        //系统工具默认总是安装，不用查。
+        // 系统工具默认总是安装，不用查。
         if (!info.bSystemTool) {
             info.bHasInstalled = pInstaller->isPackageExist();
         }
@@ -236,7 +248,7 @@ void DefSecurityToolsBusLineMgr::loadAlltools()
             info.bCanUpdate = false;
         }
 
-        //当包不可安装时不挂载
+        // 当包不可安装时不挂载
         if (!info.bSystemTool) {
             if (pInstaller->isPackageInstallable()) {
                 RTInfolist.push_back(info);
@@ -253,7 +265,8 @@ void DefSecurityToolsBusLineMgr::loadAlltools()
                 continue;
             }
 
-            if ("Block Removal of Kernel Modules" == info.strAppName && !isKernelModulesProtectionValid()) {
+            if ("Block Removal of Kernel Modules" == info.strAppName
+                && !isKernelModulesProtectionValid()) {
                 continue;
             }
 
@@ -285,7 +298,8 @@ bool DefSecurityToolsBusLineMgr::hasAutority()
     return true;
 }
 
-void DefSecurityToolsBusLineMgr::registerInstaller(const QString &strPackageKey, DefSecurityToolsBaseInstaller *pInstaller)
+void DefSecurityToolsBusLineMgr::registerInstaller(const QString &strPackageKey,
+                                                   DefSecurityToolsBaseInstaller *pInstaller)
 {
     Q_ASSERT(pInstaller != nullptr);
     QString strKey = strPackageKey.trimmed();
@@ -317,7 +331,7 @@ bool DefSecurityToolsBusLineMgr::hasInstaller(const QString &strPackageKey)
 
 DEFSECURITYTOOLINFOLIST DefSecurityToolsBusLineMgr::defaultSecurityInfos()
 {
-    //在此添加系统黙认工具信息
+    // 在此添加系统黙认工具信息
     DEFSECURITYTOOLINFOLIST infolist;
     return infolist;
 }
@@ -373,7 +387,8 @@ DEFSECURITYTOOLINFOLIST DefSecurityToolsBusLineMgr::readFrom(const QString &strF
     return infolist;
 }
 
-void DefSecurityToolsBusLineMgr::writeTo(const DEFSECURITYTOOLINFOLIST &infolist, const QString &strFileName)
+void DefSecurityToolsBusLineMgr::writeTo(const DEFSECURITYTOOLINFOLIST &infolist,
+                                         const QString &strFileName)
 {
     QJsonArray jsonClassifyTools;
 
@@ -413,7 +428,8 @@ void DefSecurityToolsBusLineMgr::writeTo(const DEFSECURITYTOOLINFOLIST &infolist
     }
 }
 
-DefSecurityToolsBaseInstaller *DefSecurityToolsBusLineMgr::getInstaller(const QString strPackageKey) const
+DefSecurityToolsBaseInstaller *
+DefSecurityToolsBusLineMgr::getInstaller(const QString strPackageKey) const
 {
     QString strKey = strPackageKey.trimmed();
     DefSecurityToolsBaseInstaller *pInstaller = nullptr;
@@ -456,7 +472,9 @@ void DefSecurityToolsBusLineMgr::initLatestLocalPackages()
     }
 }
 
-bool DefSecurityToolsBusLineMgr::isHideTools(const DEFSECURITYTOOLINFO &info, const QString &strAppName, const QString &strGsetting)
+bool DefSecurityToolsBusLineMgr::isHideTools(const DEFSECURITYTOOLINFO &info,
+                                             const QString &strAppName,
+                                             const QString &strGsetting)
 {
     bool m_isShow = true;
     if (strAppName == info.strAppName) {
@@ -488,11 +506,16 @@ bool DefSecurityToolsBusLineMgr::isResourceManagerValid()
     return m_isResourceManagerValid;
 }
 
-void DefSecurityToolsBusLineMgr::onAppStatusChanged(const QString &strPackageKey, DEFSECURITYTOOLSTATUS status)
+void DefSecurityToolsBusLineMgr::onAppStatusChanged(const QString &strPackageKey,
+                                                    DEFSECURITYTOOLSTATUS status)
 {
-    if (DEFSECURITYTOOLSTATUS::INSTALLING != status && DEFSECURITYTOOLSTATUS::UNINSTALLING != status && DEFSECURITYTOOLSTATUS::UPDATING != status) {
+    if (DEFSECURITYTOOLSTATUS::INSTALLING != status && DEFSECURITYTOOLSTATUS::UNINSTALLING != status
+        && DEFSECURITYTOOLSTATUS::UPDATING != status) {
         DefSecurityToolsBaseInstaller *pInstaller = getInstaller(strPackageKey);
-        QObject::disconnect(pInstaller, &DefSecurityToolsBaseInstaller::sAppStatusChanged, this, &DefSecurityToolsBusLineMgr::onAppStatusChanged);
+        QObject::disconnect(pInstaller,
+                            &DefSecurityToolsBaseInstaller::sAppStatusChanged,
+                            this,
+                            &DefSecurityToolsBusLineMgr::onAppStatusChanged);
     }
 
     Q_EMIT notifyAppStatusChanged(strPackageKey, status);

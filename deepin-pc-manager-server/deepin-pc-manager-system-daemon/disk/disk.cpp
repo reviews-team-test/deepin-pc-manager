@@ -5,8 +5,10 @@
 
 #include "disk.h"
 
-#include <QList>
+#include "parted/parted.h"
+
 #include <QDebug>
+#include <QList>
 
 // 检查是否为可用设备
 bool useableDevice(const PedDevice *lpDevice)

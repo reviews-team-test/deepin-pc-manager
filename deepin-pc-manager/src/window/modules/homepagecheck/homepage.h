@@ -5,19 +5,16 @@
 
 #pragma once
 
-#include "window/namespace.h"
 #include "dtkwidget_global.h"
-#include "window/interface/frameproxyinterface.h"
-#include "src/window/modules/common/common.h"
-#include "src/window/modules/common/compixmap.h"
 #include "homepagemodel.h"
+#include "window/namespace.h"
 
+#include <DGuiApplicationHelper>
 #include <DSuggestButton>
 #include <DTipLabel>
 
-#include <QWidget>
 #include <QPushButton>
-#include <DGuiApplicationHelper>
+#include <QWidget>
 
 DWIDGET_BEGIN_NAMESPACE
 class DSuggestButton;

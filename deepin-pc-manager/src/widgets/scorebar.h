@@ -7,7 +7,6 @@
 #define SCOREBAR_H
 
 #include "window/namespace.h"
-#include "dtkwidget_global.h"
 
 #include <QWidget>
 
@@ -28,36 +27,37 @@ protected:
     void drawPolo(QPainter *painter, int radius);
 
 private:
-    int m_maxValue; //最大值
-    int m_minValue; //最小值
+    int m_maxValue; // 最大值
+    int m_minValue; // 最小值
     int m_value;
 
-    int m_nullPosition; //起始角度
-    int m_lineWidth; //线条宽度
+    int m_nullPosition; // 起始角度
+    int m_lineWidth;    // 线条宽度
 
-    bool m_showFree; //是否显示未使用进度
-    bool m_showSmallCircle; //是否显示小圆
-    bool m_clockWise; //顺时针
+    bool m_showFree;        // 是否显示未使用进度
+    bool m_showSmallCircle; // 是否显示小圆
+    bool m_clockWise;       // 顺时针
 
-    QColor m_usedColor; //已使用百分比颜色
-    QColor m_freeColor; //未使用百分比颜色
-    QColor m_circleColor; //圆颜色
+    QColor m_usedColor;   // 已使用百分比颜色
+    QColor m_freeColor;   // 未使用百分比颜色
+    QColor m_circleColor; // 圆颜色
 
 public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
 public Q_SLOTS:
-    //设置目标值
+    // 设置目标值
     void setValue(int value);
 
-    //设置已使用百分比颜色
+    // 设置已使用百分比颜色
     void setUsedColor(const QColor &usedColor);
-    //设置未使用百分比颜色
+    // 设置未使用百分比颜色
     void setFreeColor(const QColor &freeColor);
-    //设置圆颜色
+    // 设置圆颜色
     void setCircleColor(const QColor &circleColor);
 };
+
 DEF_ANTIVIRUS_NAMESPACE_END
 DEF_NAMESPACE_END
 

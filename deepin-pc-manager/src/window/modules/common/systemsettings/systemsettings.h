@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <QObject>
 #include <QDBusVariant>
+#include <QObject>
 
 class DBusInvokerInterface;
 

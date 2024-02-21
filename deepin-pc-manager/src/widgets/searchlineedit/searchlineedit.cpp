@@ -4,21 +4,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "searchlineedit.h"
+
 #include "animatedlineedit.h"
-#include "window/modules/common/compixmap.h"
 #include "window/modules/common/common.h"
+#include "window/modules/common/compixmap.h"
 
 #include <DGuiApplicationHelper>
 
+#include <QAction>
+#include <QDebug>
 #include <QIcon>
+#include <QLabel>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QTimer>
-#include <QVariantAnimation>
-#include <QDebug>
-#include <QLabel>
 #include <QVBoxLayout>
-#include <QAction>
+#include <QVariantAnimation>
 
 DGUI_USE_NAMESPACE
 
@@ -35,9 +36,7 @@ SearchLineEdit::SearchLineEdit(QWidget *parent)
     initConnection();
 }
 
-SearchLineEdit::~SearchLineEdit()
-{
-}
+SearchLineEdit::~SearchLineEdit() { }
 
 void SearchLineEdit::resizeEvent(QResizeEvent *event)
 {
@@ -52,7 +51,8 @@ bool SearchLineEdit::eventFilter(QObject *obj, QEvent *event)
         // 当点击顶层控件后，隐藏顶层，显示编辑框
         m_topWidget->hide();
         m_lineEdit->setFocus(Qt::FocusReason::MouseFocusReason);
-        m_lineEdit->addAction(m_searchIconAction, AnimatedLineEdit::ActionPosition::LeadingPosition);
+        m_lineEdit->addAction(m_searchIconAction,
+                              AnimatedLineEdit::ActionPosition::LeadingPosition);
         m_lineEdit->startAnimation();
     } else if (m_lineEdit == obj && QEvent::Type::FocusOut == event->type()) {
         if (m_lineEdit->text().isEmpty()) {
@@ -118,9 +118,12 @@ void SearchLineEdit::initUi()
 
 void SearchLineEdit::initConnection()
 {
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [this](DGuiApplicationHelper::ColorType themeType) {
-        Q_UNUSED(themeType);
-        this->updateIcon();
-    });
+    connect(DGuiApplicationHelper::instance(),
+            &DGuiApplicationHelper::themeTypeChanged,
+            this,
+            [this](DGuiApplicationHelper::ColorType themeType) {
+                Q_UNUSED(themeType);
+                this->updateIcon();
+            });
     connect(m_lineEdit, &AnimatedLineEdit::textChanged, this, &SearchLineEdit::textChanged);
 }

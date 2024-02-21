@@ -4,16 +4,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "animatedlineedit.h"
+
 #include "window/modules/common/compixmap.h"
 
 #include <DGuiApplicationHelper>
 
+#include <QDebug>
 #include <QIcon>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QTimer>
 #include <QVariantAnimation>
-#include <QDebug>
 
 DGUI_USE_NAMESPACE
 
@@ -27,9 +28,7 @@ AnimatedLineEdit::AnimatedLineEdit(QWidget *parent)
     initConnection();
 }
 
-AnimatedLineEdit::~AnimatedLineEdit()
-{
-}
+AnimatedLineEdit::~AnimatedLineEdit() { }
 
 void AnimatedLineEdit::startAnimation()
 {
@@ -94,10 +93,13 @@ void AnimatedLineEdit::initUi()
 void AnimatedLineEdit::initConnection()
 {
     // 主题切换时
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [this](DGuiApplicationHelper::ColorType type) {
-        Q_UNUSED(type);
-        this->updateIcon();
-    });
+    connect(DGuiApplicationHelper::instance(),
+            &DGuiApplicationHelper::themeTypeChanged,
+            this,
+            [this](DGuiApplicationHelper::ColorType type) {
+                Q_UNUSED(type);
+                this->updateIcon();
+            });
     connect(m_animation, &QVariantAnimation::valueChanged, this, [this] {
         this->update();
     });

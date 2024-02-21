@@ -11,7 +11,7 @@
 
 DWIDGET_USE_NAMESPACE
 
-//class DFrame;
+// class DFrame;
 class QHeaderView;
 
 class DListViewMultiCol : public DListView

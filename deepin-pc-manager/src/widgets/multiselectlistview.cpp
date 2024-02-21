@@ -5,9 +5,9 @@
 
 #include "multiselectlistview.h"
 
+#include <QDebug>
 #include <QKeyEvent>
 #include <QMouseEvent>
-#include <QDebug>
 
 MultiSelectListView::MultiSelectListView(QWidget *parent)
     : DListView(parent)
@@ -32,7 +32,8 @@ void MultiSelectListView::currentChanged(const QModelIndex &current, const QMode
 }
 
 // 光标移动
-QModelIndex MultiSelectListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+QModelIndex MultiSelectListView::moveCursor(CursorAction cursorAction,
+                                            Qt::KeyboardModifiers modifiers)
 {
     DListView::setSelectionMode(DListView::MultiSelection);
     return DListView::moveCursor(cursorAction, modifiers);

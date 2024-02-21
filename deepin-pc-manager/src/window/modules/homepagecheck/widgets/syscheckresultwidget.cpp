@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "syscheckresultwidget.h"
+
 #include "systemcheckdefinition.h"
 
 #include <QGridLayout>
@@ -163,8 +164,12 @@ void SysCheckResultWidget::initUI()
 
     // 调整检查项的显示顺序
     boxLayout->addWidget(m_itemWidgets[SysCheckItemID::SSH], 0, Qt::AlignTop | Qt::AlignLeft);
-    boxLayout->addWidget(m_itemWidgets[SysCheckItemID::AutoStartApp], 0, Qt::AlignTop | Qt::AlignLeft);
-    boxLayout->addWidget(m_itemWidgets[SysCheckItemID::SystemUpdate], 0, Qt::AlignTop | Qt::AlignLeft);
+    boxLayout->addWidget(m_itemWidgets[SysCheckItemID::AutoStartApp],
+                         0,
+                         Qt::AlignTop | Qt::AlignLeft);
+    boxLayout->addWidget(m_itemWidgets[SysCheckItemID::SystemUpdate],
+                         0,
+                         Qt::AlignTop | Qt::AlignLeft);
     boxLayout->addWidget(m_itemWidgets[SysCheckItemID::Trash], 0, Qt::AlignTop | Qt::AlignLeft);
     boxLayout->addWidget(m_itemWidgets[SysCheckItemID::Disk], 0, Qt::AlignTop | Qt::AlignLeft);
     boxLayout->addWidget(m_itemWidgets[SysCheckItemID::DevMode], 0, Qt::AlignTop | Qt::AlignLeft);
@@ -196,21 +201,39 @@ void SysCheckResultWidget::initConnection()
 
 void SysCheckResultWidget::createItemWidgets()
 {
-    QStringList accNames = {"sshCheckItem", "diskCheckItem",
-                            "trashCheckItem", "sysUpdateCheckItem", "devModeCheckItem", "autoStartCheckItem"};
+    QStringList accNames = { "sshCheckItem",       "diskCheckItem",    "trashCheckItem",
+                             "sysUpdateCheckItem", "devModeCheckItem", "autoStartCheckItem" };
     m_itemWidgets.clear();
     for (int id = SysCheckItemID::SSH; id <= SysCheckItemID::AutoStartApp; id++) {
         SysCheckResultItemWidget *item = new SysCheckResultItemWidget(SysCheckItemID(id), this);
 
         item->setAccessibleName(accNames[id]);
 
-        connect(item, &SysCheckResultItemWidget::requestFixItem, this, &SysCheckResultWidget::requestFixItem);
-        connect(item, &SysCheckResultItemWidget::requestSetIgnore, this, &SysCheckResultWidget::requestSetIgnore);
-        connect(item, &SysCheckResultItemWidget::widgetHidden, this, &SysCheckResultWidget::resetItemsBackGround);
+        connect(item,
+                &SysCheckResultItemWidget::requestFixItem,
+                this,
+                &SysCheckResultWidget::requestFixItem);
+        connect(item,
+                &SysCheckResultItemWidget::requestSetIgnore,
+                this,
+                &SysCheckResultWidget::requestSetIgnore);
+        connect(item,
+                &SysCheckResultItemWidget::widgetHidden,
+                this,
+                &SysCheckResultWidget::resetItemsBackGround);
 
-        connect(this, &SysCheckResultWidget::onFixItemStarted, item, &SysCheckResultItemWidget::onNotifyFixStarted);
-        connect(this, &SysCheckResultWidget::onFixItemFinished, item, &SysCheckResultItemWidget::onNotifyFixFinished);
-        connect(this, &SysCheckResultWidget::autoStartAppCountChanged, item, &SysCheckResultItemWidget::onAutoStartAppCountChanged);
+        connect(this,
+                &SysCheckResultWidget::onFixItemStarted,
+                item,
+                &SysCheckResultItemWidget::onNotifyFixStarted);
+        connect(this,
+                &SysCheckResultWidget::onFixItemFinished,
+                item,
+                &SysCheckResultItemWidget::onNotifyFixFinished);
+        connect(this,
+                &SysCheckResultWidget::autoStartAppCountChanged,
+                item,
+                &SysCheckResultItemWidget::onAutoStartAppCountChanged);
 
         m_itemWidgets.push_back(item);
     }

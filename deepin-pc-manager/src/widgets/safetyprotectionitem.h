@@ -5,20 +5,21 @@
 
 #pragma once
 
-#include "window/namespace.h"
 #include "dtkwidget_global.h"
-#include "widgets/switchwidget.h"
+#include "window/namespace.h"
 
-#include <DFrame>
 #include <DCheckBox>
+#include <DFrame>
+#include <DSwitchButton>
 #include <DTipLabel>
 
-#include <QWidget>
 #include <QLabel>
-#include <QTimer>
 #include <QMouseEvent>
+#include <QTimer>
+#include <QWidget>
 
 DWIDGET_USE_NAMESPACE
+
 class SafetyProtectionItem : public DFrame
 {
     Q_OBJECT

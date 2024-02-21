@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "cleanermodule.h"
-#include "trashcleanwidget.h"
-#include "cleaner/widgets/trashcleangreetingwidget.h"
-#include "cleaner/widgets/trashcleanresultwidget.h"
+
 #include "cleanerdbusadaptorimpl.h"
+#include "widgets/trashcleangreetingwidget.h"
+#include "widgets/trashcleanresultwidget.h"
 #include "window/modules/common/gsettingkey.h"
 
 #include <QModelIndex>
@@ -40,13 +40,9 @@ CleanerModule::~CleanerModule()
     //    }
 }
 
-void CleanerModule::initialize()
-{
-}
+void CleanerModule::initialize() { }
 
-void CleanerModule::preInitialize()
-{
-}
+void CleanerModule::preInitialize() { }
 
 const QString CleanerModule::name() const
 {
@@ -64,7 +60,10 @@ void CleanerModule::active(int index)
 
     if (!m_greetingWidget) {
         m_greetingWidget = new TrashCleanGreetingWidget(nullptr);
-        connect(m_greetingWidget, &TrashCleanGreetingWidget::notifyStartScan, this, &CleanerModule::showResultWidget);
+        connect(m_greetingWidget,
+                &TrashCleanGreetingWidget::notifyStartScan,
+                this,
+                &CleanerModule::showResultWidget);
         connect(m_greetingWidget, &QWidget::destroyed, this, [&] {
             m_greetingWidget = nullptr;
         });
@@ -86,9 +85,7 @@ void CleanerModule::active(int index)
     }
 }
 
-void CleanerModule::deactive()
-{
-}
+void CleanerModule::deactive() { }
 
 void CleanerModule::showResultWidget()
 {
@@ -106,15 +103,21 @@ void CleanerModule::showResultWidget()
             m_greetingWidget->show();
         });
 
-        connect(m_resutlWidget, &TrashCleanResultWidget::notifyUpdateLastCleaned, this, [this](const QString &lastScanSize) {
-            if (m_greetingWidget) {
-                m_greetingWidget->setGreeing(lastScanSize);
-            }
-        });
+        connect(m_resutlWidget,
+                &TrashCleanResultWidget::notifyUpdateLastCleaned,
+                this,
+                [this](const QString &lastScanSize) {
+                    if (m_greetingWidget) {
+                        m_greetingWidget->setGreeing(lastScanSize);
+                    }
+                });
 
-        connect(m_resutlWidget, &TrashCleanResultWidget::notifySetBackForwardBtnStatus, this, [this](bool status) {
-            m_framProxy->setBackForwardButtonStatus(status);
-        });
+        connect(m_resutlWidget,
+                &TrashCleanResultWidget::notifySetBackForwardBtnStatus,
+                this,
+                [this](bool status) {
+                    m_framProxy->setBackForwardButtonStatus(status);
+                });
     }
 
     m_greetingWidget->hide();

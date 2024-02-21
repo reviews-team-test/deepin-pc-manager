@@ -7,9 +7,9 @@
 
 #include <DFontSizeManager>
 
-#include <QPainter>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPainter>
 #include <QPainterPath>
 
 DWIDGET_USE_NAMESPACE
@@ -37,11 +37,7 @@ ScoreBar::ScoreBar(QWidget *parent)
     setLayout(centralLayout);
 }
 
-
-ScoreBar::~ScoreBar()
-{
-
-}
+ScoreBar::~ScoreBar() { }
 
 void ScoreBar::paintEvent(QPaintEvent *)
 {
@@ -50,22 +46,21 @@ void ScoreBar::paintEvent(QPaintEvent *)
     int side = qMin(width, height);
     int radius = 99;
 
-    //绘制准备
+    // 绘制准备
     QPainter painter(this);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing); //设置渲染特性：反锯齿
-    painter.translate(width / 2, height / 2);
+    painter.setRenderHints(QPainter::Antialiasing
+                           | QPainter::TextAntialiasing); // 设置渲染特性：反锯齿
+    painter.translate(width / 2.0, height / 2.0);
     painter.scale(side / 200.0, side / 200.0);
 
-    //绘制中心圆
+    // 绘制中心圆
     drawCircle(&painter, radius);
 
-    //绘制圆弧边框
+    // 绘制圆弧边框
     drawArc(&painter, radius);
 
-    //绘制水池进度
+    // 绘制水池进度
     drawPolo(&painter, radius);
-
-
 }
 
 void ScoreBar::drawCircle(QPainter *painter, int radius)
@@ -75,7 +70,7 @@ void ScoreBar::drawCircle(QPainter *painter, int radius)
     painter->save();
     painter->setPen(Qt::NoPen);
     painter->setBrush(m_circleColor);
-    painter->drawEllipse(-radius, -radius, radius * 2, radius * 2); //原点为左上角
+    painter->drawEllipse(-radius, -radius, radius * 2, radius * 2); // 原点为左上角
     painter->restore();
 }
 
@@ -88,28 +83,29 @@ void ScoreBar::drawArc(QPainter *painter, int radius)
     QPen pen = painter->pen();
     pen.setWidthF(m_lineWidth);
 
-    //设置线条风格
+    // 设置线条风格
     pen.setCapStyle(Qt::RoundCap);
 
-    double arcLength = 360.0 / (m_maxValue - m_minValue) * m_value; //°
+    double arcLength = 360.0 / (m_maxValue - m_minValue) * m_value; // °
     QRect rect(-radius, -radius, radius * 2, radius * 2);
 
-    //圆弧进度框增长方向（顺时针或逆时针）
-    if (!m_clockWise) arcLength = - arcLength;
+    // 圆弧进度框增长方向（顺时针或逆时针）
+    if (!m_clockWise)
+        arcLength = -arcLength;
 
-    //绘制剩余圆弧进度
+    // 绘制剩余圆弧进度
     if (m_showFree) {
         pen.setColor(m_freeColor);
         painter->setPen(pen);
         painter->drawArc(rect, (m_nullPosition - arcLength) * 16, -(360 - arcLength) * 16);
     }
 
-    //绘制当前进度
+    // 绘制当前进度
     pen.setColor(m_usedColor);
     painter->setPen(pen);
     painter->drawArc(rect, m_nullPosition * 16, -arcLength * 16);
 
-    //绘制当前进度圆弧两端小圆
+    // 绘制当前进度圆弧两端小圆
     if (m_showSmallCircle) {
         int offset = radius - m_lineWidth + 1;
         radius = m_lineWidth / 2 - 1;
@@ -128,18 +124,18 @@ void ScoreBar::drawPolo(QPainter *painter, int radius)
     radius = radius - m_lineWidth * 5 / 2;
     painter->save();
 
-    //计算当前值所占百分比对应高度
+    // 计算当前值所占百分比对应高度
     double poloHeight = (double)radius / (m_maxValue - m_minValue) * m_value;
 
-    //大圆路径
+    // 大圆路径
     QPainterPath bigPath;
     bigPath.addEllipse(-radius, -radius, radius * 2, radius * 2);
 
-    //底部水池所占矩形区域
+    // 底部水池所占矩形区域
     QPainterPath smallPath;
-    smallPath.addRect(-radius, radius - poloHeight * 2, radius * 2 , poloHeight * 2);
+    smallPath.addRect(-radius, radius - poloHeight * 2, radius * 2, poloHeight * 2);
 
-    //提取两个路径重合部分
+    // 提取两个路径重合部分
     QPainterPath path;
     path = bigPath.intersected(smallPath);
 
@@ -162,7 +158,7 @@ QSize ScoreBar::minimumSizeHint() const
 
 void ScoreBar::setValue(int value)
 {
-    //值小于最小值或者值大于最大值或者值和当前值一致则无需处理
+    // 值小于最小值或者值大于最大值或者值和当前值一致则无需处理
     if (value < m_minValue || value > m_maxValue || value == m_value) {
         return;
     }

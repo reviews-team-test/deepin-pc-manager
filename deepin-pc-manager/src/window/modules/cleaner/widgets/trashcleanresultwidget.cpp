@@ -4,44 +4,38 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "trashcleanresultwidget.h"
-#include "dtkwidget_global.h"
-#include "window/modules/common/common.h"
-#include "window/modules/common/compixmap.h"
-#include "window/modules/common/gsettingkey.h"
-#include "../trashcleanitem.h"
-#include "../cleanerdbusadaptorimpl.h"
-#include "cleanerresultitemwidget.h"
-#include "trashcleanresultheaderitem.h"
-#include "widgets/scoreprogressbar.h"
-#include "widgets/cleaneritem.h"
-#include "widgets/titlelabel.h"
-#include "widgets/titlebuttonitem.h"
-#include "widgets/labels/tipslabel.h"
-#include "widgets/labels/smalllabel.h"
-#include "../trashcleandefinition.h"
 
+#include "../trashcleandefinition.h"
+#include "../trashcleanitem.h"
+#include "cleanerresultitemwidget.h"
+#include "dtkwidget_global.h"
+#include "trashcleanresultheaderitem.h"
+#include "window/modules/cleaner/cleanerdbusadaptorinterface.h"
+#include "window/modules/common/common.h"
+#include "window/modules/common/gsettingkey.h"
+
+#include <DFontSizeManager>
 #include <DFrame>
 #include <DLabel>
+#include <DProgressBar>
 #include <DPushButton>
 #include <DSpinner>
-#include <DProgressBar>
 #include <DSuggestButton>
-#include <DTreeWidget>
-#include <DFontSizeManager>
 #include <DTrashManager>
-#include <QGridLayout>
+#include <DTreeWidget>
 
-#include <QDebug>
-#include <QVBoxLayout>
-#include <QJsonDocument>
-#include <QJsonParseError>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QTimer>
-#include <QDateTime>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
 #include <QApplication>
+#include <QDateTime>
+#include <QDebug>
+#include <QFuture>
+#include <QGridLayout>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QtConcurrent/QtConcurrent>
 
 #define SYS_CHECK_INDEX 0
 #define APP_CHECK_INDEX 1
@@ -58,7 +52,8 @@
 
 DWIDGET_USE_NAMESPACE
 
-TrashCleanResultWidget::TrashCleanResultWidget(CleanerDBusAdaptorInterface *interface, QWidget *parent)
+TrashCleanResultWidget::TrashCleanResultWidget(CleanerDBusAdaptorInterface *interface,
+                                               QWidget *parent)
     : QWidget(parent)
     , m_leftButton(nullptr)
     , m_rightButton(nullptr)
@@ -105,25 +100,61 @@ TrashCleanResultWidget::TrashCleanResultWidget(CleanerDBusAdaptorInterface *inte
     setLayout(mainLayout);
 
     // 由onStageChanged统一处理窗口状态变化
-    connect(this, &TrashCleanResultWidget::stageChanged, this, &TrashCleanResultWidget::onStageChanged);
+    connect(this,
+            &TrashCleanResultWidget::stageChanged,
+            this,
+            &TrashCleanResultWidget::onStageChanged);
 
     foreach (auto item, m_rootItems) {
-        connect(this, &TrashCleanResultWidget::prepare, item, &TrashCleanItem::prepare); // 移除上一次扫描数据
-        connect(this, &TrashCleanResultWidget::startWork, item, &TrashCleanItem::startScan); // 开始扫描
-        connect(this, &TrashCleanResultWidget::showScanResult, item, &TrashCleanItem::showScanResult); //  扫描完成后展示结果
-        connect(this, &TrashCleanResultWidget::stopShowResult, item, &TrashCleanItem::stopShowResult); // 停止展示，响应“中止扫描”
-        connect(this, &TrashCleanResultWidget::startClean, item, &TrashCleanItem::clean); // 开始清理
+        connect(this,
+                &TrashCleanResultWidget::prepare,
+                item,
+                &TrashCleanItem::prepare); // 移除上一次扫描数据
+        connect(this,
+                &TrashCleanResultWidget::startWork,
+                item,
+                &TrashCleanItem::startScan); // 开始扫描
+        connect(this,
+                &TrashCleanResultWidget::showScanResult,
+                item,
+                &TrashCleanItem::showScanResult); //  扫描完成后展示结果
+        connect(this,
+                &TrashCleanResultWidget::stopShowResult,
+                item,
+                &TrashCleanItem::stopShowResult); // 停止展示，响应“中止扫描”
+        connect(this,
+                &TrashCleanResultWidget::startClean,
+                item,
+                &TrashCleanItem::clean); // 开始清理
 
-        connect(item, &TrashCleanItem::showScanResultFinished, this, &TrashCleanResultWidget::showScanResultFinished); // 开始展示扫描结果
-        connect(item, &TrashCleanItem::scanFinished, this, &TrashCleanResultWidget::scanDone); // 根项扫描结束
-        connect(item, &TrashCleanItem::noticeFileName, this, &TrashCleanResultWidget::setScanTitleName); // 根项通知主界面当前展示的文件名称
+        connect(item,
+                &TrashCleanItem::showScanResultFinished,
+                this,
+                &TrashCleanResultWidget::showScanResultFinished); // 开始展示扫描结果
+        connect(item,
+                &TrashCleanItem::scanFinished,
+                this,
+                &TrashCleanResultWidget::scanDone); // 根项扫描结束
+        connect(item,
+                &TrashCleanItem::noticeFileName,
+                this,
+                &TrashCleanResultWidget::setScanTitleName); // 根项通知主界面当前展示的文件名称
         connect(item, &TrashCleanItem::recounted, this, &TrashCleanResultWidget::recount);
-        connect(item, &TrashCleanItem::cleanFinished, this, &TrashCleanResultWidget::onCleanFinished);
+        connect(item,
+                &TrashCleanItem::cleanFinished,
+                this,
+                &TrashCleanResultWidget::onCleanFinished);
 
         // 后台服务文件删除功能
-        connect(item, &TrashCleanItem::deleteUserFiles, this, &TrashCleanResultWidget::DeleteSpecifiedFiles);
+        connect(item,
+                &TrashCleanItem::deleteUserFiles,
+                this,
+                &TrashCleanResultWidget::DeleteSpecifiedFiles);
         // 后台卸载应用数据库删除
-        connect(item, &TrashCleanItem::noticeAppName, this, &TrashCleanResultWidget::DeleteSpecifiedAppRecord);
+        connect(item,
+                &TrashCleanItem::noticeAppName,
+                this,
+                &TrashCleanResultWidget::DeleteSpecifiedAppRecord);
     }
 
     // 由于提供了公有查询方法，变量应当初始化
@@ -181,7 +212,7 @@ void TrashCleanResultWidget::initTable()
     m_treeWidget->setFrameShape(QFrame::NoFrame);
     m_treeWidget->setIndentation(16);
     m_treeWidget->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
-    m_treeWidget->setBackgroundRole(QPalette::Background);
+    m_treeWidget->setBackgroundRole(QPalette::Window);
     m_treeWidget->setHeaderHidden(true);
     m_treeWidget->setColumnCount(1);
     m_treeWidget->setFocusPolicy(Qt::NoFocus);
@@ -226,8 +257,14 @@ void TrashCleanResultWidget::initButtons()
         Q_EMIT stopShowResult();
         Q_EMIT stageChanged(SCAN_FINISHED);
     });
-    connect(m_leftButton, &QPushButton::clicked, this, &TrashCleanResultWidget::changeStageByLeftButton);
-    connect(m_rightButton, &QPushButton::clicked, this, &TrashCleanResultWidget::changeStageByRightButton);
+    connect(m_leftButton,
+            &QPushButton::clicked,
+            this,
+            &TrashCleanResultWidget::changeStageByLeftButton);
+    connect(m_rightButton,
+            &QPushButton::clicked,
+            this,
+            &TrashCleanResultWidget::changeStageByRightButton);
 }
 
 // 在界面上添加固定的根检查项
@@ -235,8 +272,10 @@ void TrashCleanResultWidget::addRootCheckItems()
 {
     // 添加根项检查点
     // 根项只有标题，没有说明
-    QStringList itemlist = {tr("System junk"), tr("Application junk"), tr("Traces"), tr("Cookies")};
-    int i = 0;
+    QStringList itemlist = { tr("System junk"),
+                             tr("Application junk"),
+                             tr("Traces"),
+                             tr("Cookies") };
     foreach (auto item, itemlist) {
         TrashCleanItem *trash = new TrashCleanItem(nullptr);
         trash->setTitle(item);
@@ -245,7 +284,6 @@ void TrashCleanResultWidget::addRootCheckItems()
         treeItem->setData(0, Qt::DisplayRole, "treeWidget_rootItem");
         treeItem->setHidden(true);
         m_treeWidget->setItemWidget(treeItem, 0, trash->itemWidget());
-        i++;
     }
 }
 
@@ -259,14 +297,26 @@ void TrashCleanResultWidget::addChildrenCheckItems()
 
     // 系统扫描项为固定目录
     // 垃圾箱
-    addChildItem(SYS_CHECK_INDEX, tr("Trash"), tr("Make sure all files in the trash can be deleted"), m_trashInfoList);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("Trash"),
+                 tr("Make sure all files in the trash can be deleted"),
+                 m_trashInfoList);
     // 系统缓存
-    addChildItem(SYS_CHECK_INDEX, tr("System caches"), tr("Caches created by the system"), m_cacheInfoLIst);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("System caches"),
+                 tr("Caches created by the system"),
+                 m_cacheInfoLIst);
     // 系统日志
-    addChildItem(SYS_CHECK_INDEX, tr("System logs"), tr("Log files created by the system"), m_logInfoList);
+    addChildItem(SYS_CHECK_INDEX,
+                 tr("System logs"),
+                 tr("Log files created by the system"),
+                 m_logInfoList);
 
     // 痕迹扫描项为固定目录
-    addChildItem(HISTORY_CHECK_INDEX, tr("System and Application traces"), tr(""), m_historyInfoList);
+    addChildItem(HISTORY_CHECK_INDEX,
+                 tr("System and Application traces"),
+                 tr(""),
+                 m_historyInfoList);
 
     // 根据服务返回清单，建立应用扫描项
     addAppCheckItems();
@@ -311,7 +361,12 @@ void TrashCleanResultWidget::addAppCheckItems()
         // 应用的缷载标志
         bool isInstalled = app[CLEANER_APP_INSTALL_FLAG].toBool();
         QString pkgName = app[CLEANER_APP_COM_NAME].toString();
-        addChildItem(APP_CHECK_INDEX, app[CLEANER_APP_NAME].toString(), pkgName, QString(""), paths, isInstalled);
+        addChildItem(APP_CHECK_INDEX,
+                     app[CLEANER_APP_NAME].toString(),
+                     pkgName,
+                     QString(""),
+                     paths,
+                     isInstalled);
     }
 }
 
@@ -343,7 +398,12 @@ void TrashCleanResultWidget::addBrowserCookies()
 // 将子项检查内容添加到根项
 // 根据需求如果子项大小为0则不显示子项
 // 这里根据文件数实现，如果文件数为0,即大小为0
-void TrashCleanResultWidget::addChildItem(int rootIndex, const QString &title, const QString &pkgName, const QString &tip, const QList<QStringList> &paths, bool isInstalled)
+void TrashCleanResultWidget::addChildItem(int rootIndex,
+                                          const QString &title,
+                                          const QString &pkgName,
+                                          const QString &tip,
+                                          const QList<QStringList> &paths,
+                                          bool isInstalled)
 {
     if (rootIndex >= m_rootItems.size() || rootIndex < 0)
         return;
@@ -407,7 +467,10 @@ void TrashCleanResultWidget::addChildItem(int rootIndex, const QString &title, c
     }
 }
 
-void TrashCleanResultWidget::addChildItem(int rootIndex, const QString &title, const QString &tip, const QStringList &paths)
+void TrashCleanResultWidget::addChildItem(int rootIndex,
+                                          const QString &title,
+                                          const QString &tip,
+                                          const QStringList &paths)
 {
     if (rootIndex >= m_rootItems.size() || rootIndex < 0)
         return;
@@ -487,10 +550,8 @@ void TrashCleanResultWidget::changeStageByRightButton()
     switch (m_stage) {
     // 扫描结束时，按下开始进行清理
     case SCAN_FINISHED:
-        if (m_rootItems[0]->isSelected()
-            || m_rootItems[1]->isSelected()
-            || m_rootItems[2]->isSelected()
-            || m_rootItems[3]->isSelected()) {
+        if (m_rootItems[0]->isSelected() || m_rootItems[1]->isSelected()
+            || m_rootItems[2]->isSelected() || m_rootItems[3]->isSelected()) {
             Q_EMIT stageChanged(CLEAN_STARTED);
         }
         break;
@@ -578,7 +639,9 @@ void TrashCleanResultWidget::recount()
     m_lastScannedSize = TrashCleanItem::fileSizeToString(m_totalSize);
 
     if (SCAN_FINISHED == m_stage || SCAN_STARTED == m_stage) {
-        m_scanResultStr = tr("%1 junk files, %2 selected").arg(m_lastScannedSize).arg(TrashCleanItem::fileSizeToString(fileSize));
+        m_scanResultStr = tr("%1 junk files, %2 selected")
+                              .arg(m_lastScannedSize)
+                              .arg(TrashCleanItem::fileSizeToString(fileSize));
         QString tipInfo = tr("Scanned: %1 files").arg(m_totalScannedFiles);
         m_headerItem->setTitle(m_scanResultStr);
         m_headerItem->setTip(tipInfo);
@@ -669,9 +732,15 @@ void TrashCleanResultWidget::setWidgetScanStart()
         QTimer scanTimer;
         QDateTime currentTime = QDateTime::currentDateTime();
         connect(&scanTimer, &QTimer::timeout, this, [=] {
-            QDateTime duration = QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch() - currentTime.toSecsSinceEpoch()).toUTC();
+            QDateTime duration =
+                QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch()
+                                              - currentTime.toSecsSinceEpoch())
+                    .toUTC();
             // 格式来自于需求，可能是翻译要求
-            m_headerItem->setTimeInfo(tr("Time elapsed %1:%2:%3").arg(duration.toString("hh")).arg(duration.toString("mm")).arg(duration.toString("ss")));
+            m_headerItem->setTimeInfo(tr("Time elapsed %1:%2:%3")
+                                          .arg(duration.toString("hh"))
+                                          .arg(duration.toString("mm"))
+                                          .arg(duration.toString("ss")));
         });
         scanTimer.start(1000);
 
@@ -683,7 +752,8 @@ void TrashCleanResultWidget::setWidgetScanStart()
         }
 
         // 从树上移除所有子项目,等待重新插入
-        QList<QTreeWidgetItem *> childrenItem = m_treeWidget->topLevelItem(SYS_CHECK_INDEX)->takeChildren();
+        QList<QTreeWidgetItem *> childrenItem =
+            m_treeWidget->topLevelItem(SYS_CHECK_INDEX)->takeChildren();
         childrenItem.append(m_treeWidget->topLevelItem(APP_CHECK_INDEX)->takeChildren());
         childrenItem.append(m_treeWidget->topLevelItem(HISTORY_CHECK_INDEX)->takeChildren());
         childrenItem.append(m_treeWidget->topLevelItem(BROWSER_CACHE_CHECK_INDEX)->takeChildren());
@@ -749,7 +819,10 @@ void TrashCleanResultWidget::setWidgetScanFinish()
         m_isbScan = false;
         // 添加安全日志
         if (m_dataInterface) {
-            m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER, tr("Scanned: %1 files, junk files: %2").arg(m_totalScannedFiles).arg(m_lastScannedSize));
+            m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER,
+                                            tr("Scanned: %1 files, junk files: %2")
+                                                .arg(m_totalScannedFiles)
+                                                .arg(m_lastScannedSize));
         }
     }
     Q_EMIT notifySetBackForwardBtnStatus(true);
@@ -781,7 +854,8 @@ void TrashCleanResultWidget::setWidgetCleanStart()
 
     // 添加安全日志
     if (m_dataInterface) {
-        m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER, tr("Removed: %1 junk files").arg(m_lastCleanedSize));
+        m_dataInterface->AddSecurityLog(SECURITY_LOG_TYPE_CLEANER,
+                                        tr("Removed: %1 junk files").arg(m_lastCleanedSize));
     }
 }
 
@@ -894,7 +968,9 @@ TCTableDelegateTree::TCTableDelegateTree(QObject *parent)
 }
 
 // 重绘操作
-void TCTableDelegateTree::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void TCTableDelegateTree::paint(QPainter *painter,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index) const
 {
     Q_UNUSED(painter);
     Q_UNUSED(option);

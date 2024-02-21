@@ -8,8 +8,8 @@
 #include <DFontSizeManager>
 #include <DPaletteHelper>
 
-#include <QGridLayout>
 #include <QFont>
+#include <QGridLayout>
 
 #define PROGRESS_MAX 100
 #define PROGRESS_MIN 0
@@ -17,15 +17,15 @@
 
 DWIDGET_USE_NAMESPACE;
 
-#define FIXED_ROW(row, height) \
-    { \
-        mainLayout->setRowStretch(row, height); \
+#define FIXED_ROW(row, height)                        \
+    {                                                 \
+        mainLayout->setRowStretch(row, height);       \
         mainLayout->setRowMinimumHeight(row, height); \
     }
 
-#define FIXED_COL(column, weight) \
-    { \
-        mainLayout->setColumnStretch(column, weight); \
+#define FIXED_COL(column, weight)                          \
+    {                                                      \
+        mainLayout->setColumnStretch(column, weight);      \
         mainLayout->setColumnMinimumWidth(column, weight); \
     }
 

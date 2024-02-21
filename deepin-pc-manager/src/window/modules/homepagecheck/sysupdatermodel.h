@@ -5,11 +5,8 @@
 
 #pragma once
 
+#include "src/window/modules/common/common.h"
 #include "window/namespace.h"
-#include "../src/window/modules/common/common.h"
-#include "com_deepin_lastore_jobmanager.h"
-#include "com_deepin_lastore_updater.h"
-#include "com_deepin_lastore_job.h"
 
 #include <QDBusInterface>
 

@@ -37,7 +37,8 @@ public:
     void focusChanged(bool change);
 
     // 获得地址
-    inline QString getAddress() const {return m_address->text();}
+    inline QString getAddress() const { return m_address->text(); }
+
     bool getCheckBoxStatus() const;
 
 signals:
@@ -47,9 +48,9 @@ signals:
     void sendCheckBoxChange(int status);
 
 private:
-    QLabel      *m_context;             // 内容
-    DLineEdit   *m_address;             // 地址输入框
-    QCheckBox   *m_checkbox;            // 选择框
+    QLabel *m_context;     // 内容
+    DLineEdit *m_address;  // 地址输入框
+    QCheckBox *m_checkbox; // 选择框
 };
 
 #endif // UPDATEADDRESSITEM_H

@@ -5,16 +5,16 @@
 
 #include "trashcleanconfigitem.h"
 
+#include <DBackgroundGroup>
+#include <DFontSizeManager>
+#include <DFrame>
 #include <DLabel>
 #include <DTipLabel>
-#include <DBackgroundGroup>
-#include <DFrame>
-#include <QIcon>
-#include <DFontSizeManager>
 
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include <QCheckBox>
+#include <QIcon>
 
 DWIDGET_USE_NAMESPACE
 

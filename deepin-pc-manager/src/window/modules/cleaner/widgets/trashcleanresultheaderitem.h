@@ -6,9 +6,9 @@
 #ifndef TRASHCLEANRESULTHEADERITEM_H
 #define TRASHCLEANRESULTHEADERITEM_H
 
+#include <DFrame>
 #include <DLabel>
 #include <DTipLabel>
-#include <DFrame>
 
 #include <QWidget>
 
@@ -17,7 +17,8 @@ class TrashCleanResultHeaderItem : public Dtk::Widget::DFrame
     Q_OBJECT
 public:
     explicit TrashCleanResultHeaderItem(QWidget *parent = nullptr);
-    ~TrashCleanResultHeaderItem() {}
+
+    ~TrashCleanResultHeaderItem() { }
 
 public Q_SLOTS:
     void setScanStarted();

@@ -6,7 +6,6 @@
 #pragma once
 
 #include "window/interface/moduleinterface.h"
-#include "window/modules/common/common.h"
 
 class SecurityToolsWidget;
 class SecurityToolsModel;
@@ -14,8 +13,7 @@ class SecurityToolsModel;
 // 可信保护模块
 class TrustedProtectionWidget;
 
-class SecurityToolsModule : public QObject
-    , public ModuleInterface
+class SecurityToolsModule : public QObject, public ModuleInterface
 {
     Q_OBJECT
 public:

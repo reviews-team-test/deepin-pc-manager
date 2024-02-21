@@ -26,9 +26,7 @@ MenuItem::MenuItem(const MenuItem &menuItem)
     m_bIsChecked = menuItem.GetIsChecked();
 }
 
-MenuItem::~MenuItem()
-{
-}
+MenuItem::~MenuItem() { }
 
 int MenuItem::GetMenuId() const
 {
@@ -49,6 +47,7 @@ void MenuItem::SetMenuName(const QString &strValue)
 {
     m_strMenuName = strValue;
 }
+
 // 返回当前控件是否被选中
 bool MenuItem::GetIsChecked() const
 {

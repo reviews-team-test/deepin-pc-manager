@@ -6,8 +6,8 @@
 #ifndef SETTINGSITEM_H
 #define SETTINGSITEM_H
 
-#include <DFrame>
 #include <DBackgroundGroup>
+#include <DFrame>
 
 #include <QFrame>
 
@@ -35,10 +35,10 @@ protected:
 private:
     bool m_isErr;
 
-    DTK_WIDGET_NAMESPACE::DFrame *m_bgGroup{nullptr};
+    DTK_WIDGET_NAMESPACE::DFrame *m_bgGroup{ nullptr };
 };
 
-}
-}
+} // namespace widgets
+} // namespace def
 
 #endif // SETTINGSITEM_H

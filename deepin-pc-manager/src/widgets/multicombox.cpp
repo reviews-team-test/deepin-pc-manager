@@ -4,13 +4,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "multicombox.h"
+
 #include "menuitem.h"
-#include <QLineEdit>
-#include <QListView>
-#include <QStandardItemModel>
-#include <QMouseEvent>
 
 #include <QDebug>
+#include <QLineEdit>
+#include <QListView>
+#include <QMouseEvent>
+#include <QStandardItemModel>
 
 MultiComBox::MultiComBox(QWidget *parent)
     : QComboBox(parent)
@@ -18,12 +19,12 @@ MultiComBox::MultiComBox(QWidget *parent)
     this->setStyleSheet("QComboBox {combobox-popup: 0;}");
     this->view()->setMaximumHeight(200);
 
-    //为 ComBox 设置编辑框
+    // 为 ComBox 设置编辑框
     m_pLineEdit = new QLineEdit(this);
     m_pLineEdit->setReadOnly(true);
     this->setLineEdit(m_pLineEdit);
 
-    //设置 ComBox 下拉界面
+    // 设置 ComBox 下拉界面
     m_pListView = new QListView(this);
     QFont f = m_pListView->font();
     f.setPixelSize(14);
@@ -31,22 +32,20 @@ MultiComBox::MultiComBox(QWidget *parent)
     m_pListView->installEventFilter(this);
     this->setView(m_pListView);
 
-    //设置 ComBox 数据模型
+    // 设置 ComBox 数据模型
     m_pItemModel = new QStandardItemModel(this);
     this->setModel(m_pItemModel);
 
     connect(m_pListView, &QListView::pressed, this, &MultiComBox::sltActivated);
 }
 
-MultiComBox::~MultiComBox()
-{
-}
+MultiComBox::~MultiComBox() { }
 
 //*************************************************
-//Function:        AddItems
-//Description:     添加下拉菜单内容
-//Input:           menus：菜单内容列表
-//Return:          若中途执行失败，则返回false，中断操作；否则，返回真，继续后续操作
+// Function:        AddItems
+// Description:     添加下拉菜单内容
+// Input:           menus：菜单内容列表
+// Return:          若中途执行失败，则返回false，中断操作；否则，返回真，继续后续操作
 //*************************************************
 void MultiComBox::addItems(QList<MenuItem *> menus)
 {
@@ -92,8 +91,8 @@ QList<int> MultiComBox::getItemsId()
 }
 
 //*************************************************
-//Function:        hidePopup
-//Description:     根据鼠标相应位置，判断是否隐藏下拉菜单
+// Function:        hidePopup
+// Description:     根据鼠标相应位置，判断是否隐藏下拉菜单
 //*************************************************
 void MultiComBox::hidePopup()
 {
@@ -120,8 +119,8 @@ void MultiComBox::hidePopup()
 }
 
 //*************************************************
-//Function:        UpdateText
-//Description:     更新lineedit文本
+// Function:        UpdateText
+// Description:     更新lineedit文本
 //*************************************************
 void MultiComBox::updateText()
 {

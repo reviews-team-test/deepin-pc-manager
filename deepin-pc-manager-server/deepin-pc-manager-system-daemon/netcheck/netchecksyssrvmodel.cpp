@@ -1,9 +1,11 @@
+// Copyright (C) 2019 ~ 2023 Deepin Technology Co., Ltd.
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "netchecksyssrvmodel.h"
-#include "invokers/invokerfactory.h"
-#include "common.h"
+#include "window/modules/common/invokers/invokerfactory.h"
+#include "window/modules/common/common.h"
 
 #include <QDebug>
 #include <QProcess>

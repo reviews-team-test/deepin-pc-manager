@@ -4,19 +4,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dialogmanage.h"
-#include "../window/modules/common/common.h"
-#include "../window/modules/common/compixmap.h"
+
+#include "modules/common/common.h"
+#include "modules/common/compixmap.h"
 
 #include <DDialog>
 #include <DSuggestButton>
 
-#include <QLabel>
-#include <QGSettings>
-#include <QStorageInfo>
-#include <QDebug>
 #include <QApplication>
 #include <QBoxLayout>
+#include <QDebug>
+#include <QLabel>
 #include <QScrollArea>
+#include <QStorageInfo>
 
 DWIDGET_USE_NAMESPACE
 
@@ -66,7 +66,7 @@ void DialogManage::showNormalTipDialog(TipIcon icontype, TipTextInfo textInfo)
     dialog->setFixedSize(QSize(TIP_DIALOG_WIDTH, TIP_DIALOG_HEIGHT));
     // 根据图标类型设置左上角图标
     if (IconNormal == icontype) {
-        dialog->setIcon(QIcon::fromTheme(DIALOG_DEFENDER));
+        dialog->setIcon(QIcon::fromTheme(DIALOG_PC_MANAGER));
     } else if (IconTip == icontype) {
         dialog->setIcon(QIcon::fromTheme(DIALOG_TIP_YELLOW));
     } else {
@@ -186,7 +186,8 @@ DDialog *DialogManage::creatChangeAddressTipDialog()
 
     QLabel *txtLabel = new QLabel(mainScrollArea);
     txtLabel->setFont(Utils::getFixFontSize(14));
-    txtLabel->setText(tr("Trying to update the virus database, please make sure its server address is correct"));
+    txtLabel->setText(
+        tr("Trying to update the virus database, please make sure its server address is correct"));
     txtLabel->setWordWrap(true);
     txtLabel->setAlignment(Qt::AlignCenter);
 

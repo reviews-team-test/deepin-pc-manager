@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "../../deepin-pc-manager/src/window/namespace.h"
-#include "dtkwidget_global.h"
+#include "src/window/namespace.h"
 
 #include <QList>
+#include <QObject>
 
 // 控制向主界面通知文件扫描的间隔，同步主界面上的进度条与文件名
 // 每50个文件同步一次
@@ -135,26 +135,26 @@ private:
     void increaseCleanedItemInfo(quint64, int);
 
 private:
-    QString m_title; // 显示在树上的检查标题
-    QString m_tip; // 显示在树上的提示信息
-    QString m_pkgName; // 应用包名，清理卸载时删除数据库记录
-    bool m_isToStop; // 停止检查信号
-    bool m_isShown; // 该项已经在界面上显示
-    quint64 m_totalSize; // 本项检查记录的总文件大小
-    uint m_totalAmount; // 本项检查记录的总数，包括子项检查
-    quint64 m_itemsize; // 本项检查记录的单项文件大小
-    uint m_itemAmount; // 不包括子项检查的文件数
-    quint64 m_cleanedSize; // 已清理文件的大小
-    int m_cleanedAmount; // 已清理的文件数理
-    QString m_itemName; // 本项检查的名称
-    QStringList m_scanPaths; // 依照类型分类检查，不需要记录具体文件
-    TrashCleanItem *m_parent; // 父检查项，没有设为nullPtr
-    QList<TrashCleanItem *> m_childItems; // 下一级检查项
+    QString m_title;                       // 显示在树上的检查标题
+    QString m_tip;                         // 显示在树上的提示信息
+    QString m_pkgName;                     // 应用包名，清理卸载时删除数据库记录
+    bool m_isToStop;                       // 停止检查信号
+    bool m_isShown;                        // 该项已经在界面上显示
+    quint64 m_totalSize;                   // 本项检查记录的总文件大小
+    uint m_totalAmount;                    // 本项检查记录的总数，包括子项检查
+    quint64 m_itemsize;                    // 本项检查记录的单项文件大小
+    uint m_itemAmount;                     // 不包括子项检查的文件数
+    quint64 m_cleanedSize;                 // 已清理文件的大小
+    int m_cleanedAmount;                   // 已清理的文件数理
+    QString m_itemName;                    // 本项检查的名称
+    QStringList m_scanPaths;               // 依照类型分类检查，不需要记录具体文件
+    TrashCleanItem *m_parent;              // 父检查项，没有设为nullPtr
+    QList<TrashCleanItem *> m_childItems;  // 下一级检查项
     CleanerResultItemWidget *m_itemWidget; // 对应的UI
-    QStringList m_fileList; // 记录扫描过的文件名
-    QStringList m_deletePaths; // 记录待删除和文件名
-    TrashCleanItem *m_root; // 根结点位置
-    bool m_isChecked; // 本项是否被选中
-    bool m_isAnyChildSelected; // 检查根项下，是否某个子项被选中
+    QStringList m_fileList;                // 记录扫描过的文件名
+    QStringList m_deletePaths;             // 记录待删除和文件名
+    TrashCleanItem *m_root;                // 根结点位置
+    bool m_isChecked;                      // 本项是否被选中
+    bool m_isAnyChildSelected;             // 检查根项下，是否某个子项被选中
     bool m_unCheckable; // 某些项因为大小为0或已被清理,不再响应选中
 };

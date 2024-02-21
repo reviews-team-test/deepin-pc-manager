@@ -127,6 +127,11 @@
         <translation>自启动应用</translation>
     </message>
     <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="356"/>
+        <source>Network Detection</source>
+        <translation>网络检测</translation>
+    </message>
+    <message>
         <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="380"/>
         <source>USB Connection</source>
         <translation>USB安全管理</translation>
@@ -175,6 +180,11 @@
         <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="391"/>
         <source>Manage auto-startup programs</source>
         <translation>管理应用自启动权限</translation>
+    </message>
+    <message>
+        <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="360"/>
+        <source>One-click detection, comprehensive network troubleshooting</source>
+        <translation>快速检测网络异常原因</translation>
     </message>
     <message>
         <location filename="src/window/modules/securitytools/defsecuritytoolsfrontunit.cpp" line="392"/>

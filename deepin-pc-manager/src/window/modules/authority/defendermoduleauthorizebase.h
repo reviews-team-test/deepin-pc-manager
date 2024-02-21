@@ -6,7 +6,7 @@
 #ifndef DEFENDERMODULEAUTHORIZEBASE_H
 #define DEFENDERMODULEAUTHORIZEBASE_H
 
-#include "common/invokers/invokerfactory.h"
+#include "../common/invokers/invokerfactory.h"
 
 #include <QObject>
 

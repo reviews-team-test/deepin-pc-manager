@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <schemalist>
         <schema path="/com/deepin/dde/deepin-pc-manager/" id="com.deepin.dde.deepin-pc-manager">
                 <key name="auto-scan-usb" type="i">

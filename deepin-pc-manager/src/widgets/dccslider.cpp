@@ -5,8 +5,8 @@
 
 #include "dccslider.h"
 
-#include <QWheelEvent>
 #include <QDebug>
+#include <QWheelEvent>
 
 namespace def {
 namespace widgets {
@@ -27,9 +27,15 @@ DCCSlider::DCCSlider(Qt::Orientation orientation, QWidget *parent)
 void DCCSlider::setType(DCCSlider::SliderType type)
 {
     switch (type) {
-    case Vernier: setProperty("handleType", "Vernier"); break;
-    case Progress: setProperty("handleType", "None"); break;
-    default: setProperty("handleType", "Normal"); break;
+    case Vernier:
+        setProperty("handleType", "Vernier");
+        break;
+    case Progress:
+        setProperty("handleType", "None");
+        break;
+    default:
+        setProperty("handleType", "Normal");
+        break;
     }
 }
 
@@ -78,11 +84,10 @@ void DCCSlider::setOrientation(Qt::Orientation orientation)
     Q_UNUSED(orientation)
 }
 
-
 void DCCSlider::wheelEvent(QWheelEvent *e)
 {
     e->ignore();
 }
 
-}
-}
+} // namespace widgets
+} // namespace def

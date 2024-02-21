@@ -23,7 +23,8 @@ class SliderAnnotation : public QWidget
     Q_OBJECT
 public:
     explicit SliderAnnotation(QWidget *parent = nullptr);
-    virtual ~SliderAnnotation() override {}
+
+    virtual ~SliderAnnotation() override { }
 
     void setContents(const QStringList &contents);
 
@@ -36,7 +37,8 @@ class DCCSliderAnnotated : public QFrame
     Q_OBJECT
 public:
     explicit DCCSliderAnnotated(QWidget *parent = nullptr);
-    virtual ~DCCSliderAnnotated() override {}
+
+    virtual ~DCCSliderAnnotated() override { }
 
     void setAnnotations(const QStringList &annotations);
 
@@ -55,13 +57,13 @@ public:
     void setRightIcon(const QString &rightIcon);
     void setRightIcon(const QIcon &leftIcon, const QSize &iconSize);
 
-
 Q_SIGNALS:
     void leftIconChanged();
     void rightIconChanged();
 
 protected:
     bool event(QEvent *evnet) override;
+
 private:
     DCCSlider *m_slider;
     SliderAnnotation *m_annotation;

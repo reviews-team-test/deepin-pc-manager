@@ -5,11 +5,10 @@
 
 #pragma once
 
-#include "parted/parted.h"
+#include <QObject>
+
 #include <fcntl.h>
 #include <unistd.h>
-
-#include <QObject>
 
 // 获取磁盘设备路径列表
 QList<QString> getDiskDevicePathList();

@@ -4,9 +4,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "sysupdatermodel.h"
-#include "../src/window/modules/common/invokers/invokerfactory.h"
+
+#include "src/window/modules/common/invokers/invokerfactory.h"
 
 #include <QDebug>
+#include <QTimer>
 
 SysUpdaterModel::SysUpdaterModel(QObject *parent)
     : QObject(parent)
@@ -16,15 +18,19 @@ SysUpdaterModel::SysUpdaterModel(QObject *parent)
     , m_checkUpdateJobTimer(nullptr)
 {
     // 系统更新管理器dbus服务
-    m_managerInvokerInter = InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
-                                                                        "/org/deepin/lastore1",
-                                                                        "org.deepin.lastore1.Manager",
-                                                                        ConnectType::SYSTEM, this);
+    m_managerInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
+                                                    "/org/deepin/lastore1",
+                                                    "org.deepin.lastore1.Manager",
+                                                    ConnectType::SYSTEM,
+                                                    this);
     // 系统更新dbus服务
-    m_updaterInvokerInter = InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
-                                                                        "/org/deepin/lastore1",
-                                                                        "org.deepin.lastore1.Updater",
-                                                                        ConnectType::SYSTEM, this);
+    m_updaterInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
+                                                    "/org/deepin/lastore1",
+                                                    "org.deepin.lastore1.Updater",
+                                                    ConnectType::SYSTEM,
+                                                    this);
 
     m_checkUpdateJobTimer = new QTimer(this);
     m_checkUpdateJobTimer->setInterval(500);
@@ -34,10 +40,12 @@ SysUpdaterModel::SysUpdaterModel(QObject *parent)
         }
 
         QString status;
-        QDBusMessage msg = DBUS_BLOCK_INVOKE(m_checkUpdateJobInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "Status");
+        QDBusMessage msg =
+            DBUS_BLOCK_INVOKE(m_checkUpdateJobInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "Status");
         if (QDBusMessage::MessageType::ErrorMessage == msg.type()) {
             // 存在系统更新检测进程完成后,已经被删除的可能
-            qWarning() << "[SysUpdaterModel] [m_checkUpdateJobInvokerInter] update checking job error";
+            qWarning()
+                << "[SysUpdaterModel] [m_checkUpdateJobInvokerInter] update checking job error";
         } else {
             QVariant ret = msg.arguments().first();
             // 将QDbusVariant转成QVariant
@@ -49,9 +57,7 @@ SysUpdaterModel::SysUpdaterModel(QObject *parent)
     });
 }
 
-SysUpdaterModel::~SysUpdaterModel()
-{
-}
+SysUpdaterModel::~SysUpdaterModel() { }
 
 // 检查是否有更新
 void SysUpdaterModel::CheckForUpdates()
@@ -68,7 +74,8 @@ void SysUpdaterModel::CheckForUpdates()
         // 发送没有系统更新信号
         Q_EMIT this->SendHaveUpdates(false);
         stopCheckingSysVer();
-        qCritical() << "[SysUpdaterModel] [CheckForUpdates] UpdateSource error " << msg.errorMessage();
+        qCritical() << "[SysUpdaterModel] [CheckForUpdates] UpdateSource error "
+                    << msg.errorMessage();
         return;
     }
 
@@ -82,10 +89,12 @@ void SysUpdaterModel::CheckForUpdates()
 // 设置检查系统更新任务
 void SysUpdaterModel::SetCheckUpdatesJob(const QString &jobPath)
 {
-    m_checkUpdateJobInvokerInter = InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
-                                                                               jobPath,
-                                                                               "org.deepin.lastore1.Job",
-                                                                               ConnectType::SYSTEM, this);
+    m_checkUpdateJobInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
+                                                    jobPath,
+                                                    "org.deepin.lastore1.Job",
+                                                    ConnectType::SYSTEM,
+                                                    this);
     m_checkUpdateJobTimer->start();
 }
 
@@ -95,9 +104,10 @@ void SysUpdaterModel::stopCheckingSysVer()
     if (m_checkUpdateJobInvokerInter) {
         // 先将QDbusVariant转成QVariant
 
-        QVariant retArg = Utils::checkAndTransQDbusVarIntoQVar(DBUS_BLOCK_INVOKE(m_checkUpdateJobInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "Id")
-                                                                   .arguments()
-                                                                   .first());
+        QVariant retArg = Utils::checkAndTransQDbusVarIntoQVar(
+            DBUS_BLOCK_INVOKE(m_checkUpdateJobInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "Id")
+                .arguments()
+                .first());
         QString jobId = retArg.toString();
         DBUS_BLOCK_INVOKE(m_managerInvokerInter, "CleanJob", jobId);
         delete m_checkUpdateJobInvokerInter;
@@ -115,12 +125,13 @@ void SysUpdaterModel::onCheckJobStatusChanged(const QString &status)
     } else if (status == "end" || status.isEmpty()) {
         stopCheckingSysVer();
 
-        //apt update之后可以查看最新更新信息
+        // apt update之后可以查看最新更新信息
         bool getFailed = false;
         int updatableAppsCount = 0;
         int updatablePackagesCount = 0;
 
-        QDBusMessage msg = DBUS_BLOCK_INVOKE(m_updaterInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "UpdatableApps");
+        QDBusMessage msg =
+            DBUS_BLOCK_INVOKE(m_updaterInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "UpdatableApps");
         if (QDBusMessage::MessageType::ErrorMessage == msg.type()) {
             getFailed = true;
         }
@@ -129,7 +140,9 @@ void SysUpdaterModel::onCheckJobStatusChanged(const QString &status)
             // 先将QDbusVariant转成QVariant
             QVariant retArg = Utils::checkAndTransQDbusVarIntoQVar(msg.arguments().first());
             updatableAppsCount = retArg.toStringList().count();
-            msg = DBUS_BLOCK_INVOKE(m_updaterInvokerInter, DBUS_PROPERTY_INVOKER_NAME, "UpdatablePackages");
+            msg = DBUS_BLOCK_INVOKE(m_updaterInvokerInter,
+                                    DBUS_PROPERTY_INVOKER_NAME,
+                                    "UpdatablePackages");
             if (QDBusMessage::MessageType::ErrorMessage == msg.type()) {
                 getFailed = true;
             }
@@ -143,7 +156,9 @@ void SysUpdaterModel::onCheckJobStatusChanged(const QString &status)
             // 获取失败
             // 发送没有系统更新信号
             Q_EMIT this->SendHaveUpdates(false);
-            qCritical() << "[MainWindow] [onCheckJobStatusChanged] UpdateFailed, check for updates error: = " << msg;
+            qCritical() << "[MainWindow] [onCheckJobStatusChanged] UpdateFailed, check for updates "
+                           "error: = "
+                        << msg;
             return;
         }
 

@@ -7,8 +7,8 @@
 
 #include "dtkwidget_global.h"
 
-#include <DFrame>
 #include <DCheckBox>
+#include <DFrame>
 
 DWIDGET_BEGIN_NAMESPACE
 class DLabel;
@@ -72,14 +72,14 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    bool m_isRootItem; // 作为根结点展示
-    DCheckBox *m_checkBox; // 作为子项是否选中
-    DLabel *m_iconLable; // 扫描结束使用小图标
-    DLabel *m_headLabel; // 扫描项目名称
+    bool m_isRootItem;         // 作为根结点展示
+    DCheckBox *m_checkBox;     // 作为子项是否选中
+    DLabel *m_iconLable;       // 扫描结束使用小图标
+    DLabel *m_headLabel;       // 扫描项目名称
     DTipLabel *m_headTipLabel; // 项目说明
-    DTipLabel *m_tailLabel; // 状态标签
-    DLabel *m_usageLabel; // 大小标签
-    DSpinner *m_spinner; // 树首结点spinner
+    DTipLabel *m_tailLabel;    // 状态标签
+    DLabel *m_usageLabel;      // 大小标签
+    DSpinner *m_spinner;       // 树首结点spinner
     DFrame *m_contentFrame;
     CleanerResultItemWidget *m_root; // 根检查项的页面
     bool m_isWorking;

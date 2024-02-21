@@ -5,18 +5,21 @@
 
 #include "settingssql.h"
 
+#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
+
 #include <QDebug>
-#include <QFile>
-#include <QXmlStreamReader>
-#include <QXmlStreamAttribute>
-#include <QJsonObject>
-#include <QJsonDocument>
 #include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QXmlStreamAttribute>
+#include <QXmlStreamReader>
 
 #define DEFENDER_DATA_DIR_PATH "/usr/share/deepin-pc-manager/" // 数据库路径
-#define LOCAL_CACHE_DB_NAME "localcache.db" // 数据库路径
+#define LOCAL_CACHE_DB_NAME "localcache.db"                    // 数据库路径
 #define TABLE_NAME_SETTINGS "Settings"
-#define GSETTING_SCHEMA_XML_PATH "/usr/share/glib-2.0/schemas/com.deepin.dde.deepin-pc-manager.gschema.xml"
+#define GSETTING_SCHEMA_XML_PATH \
+    "/usr/share/glib-2.0/schemas/com.deepin.dde.deepin-pc-manager.gschema.xml"
 
 SettingsSql::SettingsSql(const QString &connName, QObject *parent)
     : QObject(parent)
@@ -28,9 +31,7 @@ SettingsSql::SettingsSql(const QString &connName, QObject *parent)
     setDefaultKeyValues();
 }
 
-SettingsSql::~SettingsSql()
-{
-}
+SettingsSql::~SettingsSql() { }
 
 bool SettingsSql::setValue(const QString &key, const QVariant &value, const bool isDefault)
 {
@@ -80,9 +81,7 @@ QVariant SettingsSql::getValue(const QString &key)
 {
     QVariant retValue;
 
-    QString cmd = QString("SELECT * FROM %1 WHERE key='%2';")
-                      .arg(TABLE_NAME_SETTINGS)
-                      .arg(key);
+    QString cmd = QString("SELECT * FROM %1 WHERE key='%2';").arg(TABLE_NAME_SETTINGS).arg(key);
     if (!m_sqlQuery.exec(cmd)) {
         qDebug() << Q_FUNC_INFO << m_sqlQuery.lastError();
         return false;
@@ -115,8 +114,8 @@ QVariant SettingsSql::getValue(const QString &key)
 
 void SettingsSql::initDb()
 {
-    //初始化数据库
-    // 必须先判断待创建数据库所处目录是否存在，否则如果不存在，会导致数据库打开失败
+    // 初始化数据库
+    //  必须先判断待创建数据库所处目录是否存在，否则如果不存在，会导致数据库打开失败
     QDir defenderDataDir;
     if (!defenderDataDir.exists(DEFENDER_DATA_DIR_PATH)) {
         defenderDataDir.mkdir(DEFENDER_DATA_DIR_PATH);
@@ -135,8 +134,10 @@ void SettingsSql::initDb()
     m_sqlQuery = QSqlQuery(m_db);
     if (!tableStrList.contains(TABLE_NAME_SETTINGS)) {
         // 服务第一次启动启动时，创建包名解析表 flowDetail
-        QString cmd = QString("CREATE TABLE %1 (id Long primary key, key text, value text, defaultValue text);")
-                          .arg(TABLE_NAME_SETTINGS);
+        QString cmd =
+            QString(
+                "CREATE TABLE %1 (id Long primary key, key text, value text, defaultValue text);")
+                .arg(TABLE_NAME_SETTINGS);
         bool bRet = m_sqlQuery.exec(cmd);
         if (!bRet) {
             qDebug() << Q_FUNC_INFO << m_sqlQuery.lastError();
@@ -201,7 +202,9 @@ void SettingsSql::setDefaultKeyValues()
 }
 
 // 从xml中读取默认值，并向数据库中写入
-void SettingsSql::readAndSetKeyDefaultValueFromXml(QXmlStreamReader *xmlReader, QString &keyName, QString &keyType)
+void SettingsSql::readAndSetKeyDefaultValueFromXml(QXmlStreamReader *xmlReader,
+                                                   QString &keyName,
+                                                   QString &keyType)
 {
     if (xmlReader->isStartElement() && "key" == xmlReader->name()) {
         QXmlStreamAttributes attrs = xmlReader->attributes();
@@ -221,7 +224,9 @@ void SettingsSql::readAndSetKeyDefaultValueFromXml(QXmlStreamReader *xmlReader, 
         } else if ("i" == keyType) {
             setValue(keyName, xmlReader->readElementText().remove("\'").remove("\"").toInt(), true);
         } else if ("d" == keyType) {
-            setValue(keyName, xmlReader->readElementText().remove("\'").remove("\"").toDouble(), true);
+            setValue(keyName,
+                     xmlReader->readElementText().remove("\'").remove("\"").toDouble(),
+                     true);
         } else if ("s" == keyType) {
             setValue(keyName, xmlReader->readElementText().remove("\'").remove("\""), true);
         } else {

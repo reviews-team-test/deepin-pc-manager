@@ -4,38 +4,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "operatedbusdata.h"
-#include "common.h"
-#include "dpinyin.h"
-#include "common/common.h"
-#include "common/invokers/invokerfactory.h"
-#include "common/systemsettings/systemsettings.h"
 
+#include "../../deepin-pc-manager/src/window/modules/common/common.h"
 #include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
 #include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerfactory.h"
+#include "../../deepin-pc-manager/src/window/modules/common/systemsettings/systemsettings.h"
+#include "common.h"
+#include "dpinyin.h"
 
 // 垃圾清理应用过滤类
 #include "window/modules/trashclean/trashcleanappinfofilter.h"
 #include "window/modules/trashclean/trashcleanbrowserinfofilter.h"
 
-// 垃圾清理数据库
-#include "../../deepin-pc-manager/src/window/modules/common/database/trashcleanuninstallappsql.h"
-
 // 授权
 #include "window/modules/authority/defenderauthoritywrapper.h"
-
-// 病毒过期系统提示
-#include "window/modules/common/systemmessagehelper.h"
 
 #include <DPinyin>
 #include <DSysInfo>
 #include <DTrashManager>
 
-#include <QSysInfo>
-#include <QDebug>
-#include <QGSettings>
-#include <QtConcurrent>
-#include <QEventLoop>
 #include <QDBusContext>
+#include <QDebug>
+#include <QEventLoop>
+#include <QGSettings>
+#include <QSysInfo>
+#include <QtConcurrent>
 
 #define Action_Flag_Disable 0 // 状态标志 - 不允许
 #define Action_Flag_Enable 1 // 状态标志 - 允许
@@ -64,52 +57,66 @@ bool isFileinRegexpList(QString file, QStringList filter)
 }
 
 // 合法调用进程路径列表
-const QStringList ValidInvokerExePathList =
-    {"/usr/bin/deepin-pc-manager",
-     "/usr/bin/deepin-pc-manager-session-daemon",
-     "/usr/bin/deepin-pc-manager-system-daemon"};
+const QStringList ValidInvokerExePathList = {"/usr/bin/deepin-pc-manager",
+                                             "/usr/bin/deepin-pc-manager-session-daemon",
+                                             "/usr/bin/deepin-pc-manager-system-daemon"};
 
 OperateDBusData::OperateDBusData(QObject *parent)
     : QObject(parent)
-    , QDBusContext()
+    , m_daemonAdaptor(nullptr)
     , m_gsetting(new QGSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, QByteArray(), this))
     , m_sysSettings(new SystemSettings(this))
-    , m_adaptpr(nullptr)
     , m_launcherInter(nullptr)
     , m_startManagerInterface(nullptr)
     , m_managerInter(nullptr)
     , m_authWrapper(nullptr)
 {
-    m_adaptpr = new DaemonAdaptor(this);
-    if (!QDBusConnection::sessionBus().registerService(service) || !QDBusConnection::sessionBus().registerObject(path, this)) {
+    m_daemonAdaptor = new DaemonAdaptor(this);
+    if (!QDBusConnection::sessionBus().registerService(service)
+        || !QDBusConnection::sessionBus().registerObject(path, this)) {
         exit(0);
     }
 
     registerLauncherItemInfoMetaType();
 
     m_authWrapper = new DefenderAuthorityWrapper(this);
-    connect(m_authWrapper, &DefenderAuthorityWrapper::notifyAuthStarted, this, &OperateDBusData::NotifyAuthStarted);
-    connect(m_authWrapper, &DefenderAuthorityWrapper::notifyAuthFinished, this, &OperateDBusData::NotifyAuthFinished);
-    connect(m_authWrapper, &DefenderAuthorityWrapper::notifyAuthResult, this, &OperateDBusData::NotifyAuthResult);
+    connect(m_authWrapper,
+            &DefenderAuthorityWrapper::notifyAuthStarted,
+            this,
+            &OperateDBusData::NotifyAuthStarted);
+    connect(m_authWrapper,
+            &DefenderAuthorityWrapper::notifyAuthFinished,
+            this,
+            &OperateDBusData::NotifyAuthFinished);
+    connect(m_authWrapper,
+            &DefenderAuthorityWrapper::notifyAuthResult,
+            this,
+            &OperateDBusData::NotifyAuthResult);
 
     // 取应用数据接口
     m_launcherInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.dde.daemon.Launcher",
                                                                   "/com/deepin/dde/daemon/Launcher",
                                                                   "com.deepin.dde.daemon.Launcher",
-                                                                  ConnectType::SESSION, this);
+                                                                  ConnectType::SESSION,
+                                                                  this);
 
-    m_rootMonitorDBusInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.system.daemon",
-                                                                         "/com/deepin/pc/manager/sysem/daemon",
-                                                                         "com.deepin.pc.manager.system.daemon",
-                                                                         ConnectType::SYSTEM, this);
+    m_rootMonitorDBusInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.system.daemon",
+                                                    "/com/deepin/pc/manager/sysem/daemon",
+                                                    "com.deepin.pc.manager.system.daemon",
+                                                    ConnectType::SYSTEM,
+                                                    this);
     m_managerInter = InvokerFactory::GetInstance().CreateInvoker("org.deepin.lastore1",
                                                                  "/org/deepin/lastore1",
                                                                  "org.deepin.lastore1.Manager",
-                                                                 ConnectType::SYSTEM, this);
-    m_startManagerInterface = InvokerFactory::GetInstance().CreateInvoker("com.deepin.SessionManager",
-                                                                          "/com/deepin/StartManager",
-                                                                          "com.deepin.StartManager",
-                                                                          ConnectType::SESSION, this);
+                                                                 ConnectType::SYSTEM,
+                                                                 this);
+    m_startManagerInterface =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.SessionManager",
+                                                    "/com/deepin/StartManager",
+                                                    "com.deepin.StartManager",
+                                                    ConnectType::SESSION,
+                                                    this);
 
     // 初始化联网管控
     initialize();
@@ -160,10 +167,7 @@ bool OperateDBusData::startLauncherManage()
     m_mapEnable.clear();
     m_mapDisable.clear();
     for (const auto &it : datas) {
-        QString sInfo = it.Path
-                        + "," + it.Icon
-                        + "," + it.ID
-                        + "," + it.Name;
+        QString sInfo = it.Path + "," + it.Icon + "," + it.ID + "," + it.Name;
 
         // 判断该应用状态（是否是自启动）
         bool bStatus = isAutostart(it.Path);
@@ -174,7 +178,8 @@ bool OperateDBusData::startLauncherManage()
                 sName = sName + "_deepin";
         }
 
-        for (auto iterDisable = m_mapDisable.begin(); iterDisable != m_mapDisable.end(); ++iterDisable) {
+        for (auto iterDisable = m_mapDisable.begin(); iterDisable != m_mapDisable.end();
+             ++iterDisable) {
             if (sName == iterDisable.key())
                 sName = sName + "_deepin";
         }
@@ -205,10 +210,12 @@ bool OperateDBusData::startLauncherManage()
 
     return true;
 }
+
 QString OperateDBusData::getAppsInfoEnable()
 {
     return m_enableAppsInfo;
 }
+
 QString OperateDBusData::getAppsInfoDisable()
 {
     return m_disableAppsInfo;
@@ -238,6 +245,7 @@ bool OperateDBusData::exeAutostart(int nStatus, QString sPath)
         return flag;
     }
 }
+
 // 外部调用刷新表格数据
 void OperateDBusData::refreshData(bool bAdd, QString sID)
 {
@@ -360,7 +368,10 @@ QStringList OperateDBusData::GetCacheInfoList()
     }
 
     // 获取/var/cache/apt/archives 可清理deb缓存
-    QJsonArray debObjArrayApt = object.value(CLEANER_SYSTEM_CACHE_ARRAY_NAME).toObject().value(CLEANER_SYSTEM_CACHE_APT_PATH).toArray();
+    QJsonArray debObjArrayApt = object.value(CLEANER_SYSTEM_CACHE_ARRAY_NAME)
+                                    .toObject()
+                                    .value(CLEANER_SYSTEM_CACHE_APT_PATH)
+                                    .toArray();
     foreach (const auto &it, debObjArrayApt) {
         QString debName = it.toObject().value(CLEANER_SYSTEM_CACHE_DEB_NAME).toString();
 
@@ -369,7 +380,10 @@ QStringList OperateDBusData::GetCacheInfoList()
         }
 
         // 设置文件完整路径
-        QString debFilePath = QString("%1%2%3").arg(CLEANER_SYSTEM_CACHE_APT_PATH).arg(QDir::separator()).arg(debName);
+        QString debFilePath = QString("%1%2%3")
+                                  .arg(CLEANER_SYSTEM_CACHE_APT_PATH)
+                                  .arg(QDir::separator())
+                                  .arg(debName);
         QFileInfo info(debFilePath);
         if (info.exists()) {
             debFileList.append(debFilePath);
@@ -379,7 +393,10 @@ QStringList OperateDBusData::GetCacheInfoList()
     }
 
     // 获取/var/cache/lastore/archives 可清理deb缓存
-    QJsonArray debObjArray = object.value(CLEANER_SYSTEM_CACHE_ARRAY_NAME).toObject().value(CLEANER_SYSTEM_CACHE_LASTORE_PATH).toArray();
+    QJsonArray debObjArray = object.value(CLEANER_SYSTEM_CACHE_ARRAY_NAME)
+                                 .toObject()
+                                 .value(CLEANER_SYSTEM_CACHE_LASTORE_PATH)
+                                 .toArray();
     foreach (const auto &it, debObjArray) {
         QString debName = it.toObject().value(CLEANER_SYSTEM_CACHE_DEB_NAME).toString();
 
@@ -388,7 +405,10 @@ QStringList OperateDBusData::GetCacheInfoList()
         }
 
         // 设置文件完整路径
-        QString debFilePath = QString("%1%2%3").arg(CLEANER_SYSTEM_CACHE_LASTORE_PATH).arg(QDir::separator()).arg(debName);
+        QString debFilePath = QString("%1%2%3")
+                                  .arg(CLEANER_SYSTEM_CACHE_LASTORE_PATH)
+                                  .arg(QDir::separator())
+                                  .arg(debName);
         QFileInfo info(debFilePath);
         if (info.exists()) {
             debFileList.append(debFilePath);
@@ -480,7 +500,7 @@ QString OperateDBusData::GetAppTrashInfoList()
 
     // 由于另外模块中使用double型作为大小值类型。此处也使用double
     // 该map用于元素自动排序
-    QMap<qint64, QJsonObject> appTrashMap;
+    QMultiMap<qint64, QJsonObject> appTrashMap;
 
     QEventLoop loop;
     QtConcurrent::run([&] {
@@ -566,7 +586,7 @@ QString OperateDBusData::GetAppTrashInfoList()
 
             // 通过MAP进行升序排列
             // 存在同样大小的项，不要使用insert()
-            appTrashMap.insertMulti(appTrashSize, appInfo);
+            appTrashMap.insert(appTrashSize, appInfo);
 
             m_dbCleanerSum += appTrashSize;
         }
@@ -598,7 +618,9 @@ void OperateDBusData::scanFile(const QString &path)
             m_fileList.append(abpath);
         } else if (info.isDir()) {
             QDir dir(path);
-            for (const QFileInfo &i : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks)) {
+            for (const QFileInfo &i :
+                 dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden
+                                   | QDir::NoSymLinks)) {
                 // 递归扫描目录内容
                 scanFile(i.absoluteFilePath());
             }
@@ -646,7 +668,7 @@ void OperateDBusData::RequestStartTrashScan()
     m_homepageCleanerResultSize = m_dbCleanerSum;
 
     // 发送扫描结果
-    Q_EMIT m_adaptpr->TrashScanFinished(m_homepageCleanerResultSize);
+    Q_EMIT TrashScanFinished(m_homepageCleanerResultSize);
 }
 
 // 请求清理选中的垃圾文件
@@ -658,7 +680,7 @@ void OperateDBusData::RequestCleanSelectTrash()
     }
     DeleteAllCleaner();
     // 清理完成
-    Q_EMIT m_adaptpr->CleanSelectTrashFinished();
+    Q_EMIT CleanSelectTrashFinished();
 }
 
 // 清理指定的用户文件
@@ -672,7 +694,9 @@ void OperateDBusData::DeleteSpecifiedFiles(QStringList filePaths)
 }
 
 // 发生应用安装或卸载时的响应
-void OperateDBusData::OnLauncherItemChanged(const QString &action, const LauncherItemInfo &appInfo, qint64 code)
+void OperateDBusData::OnLauncherItemChanged(const QString &action,
+                                            const LauncherItemInfo &appInfo,
+                                            qint64 code)
 {
     Q_UNUSED(code);
 
@@ -693,7 +717,10 @@ void OperateDBusData::OnLauncherItemChanged(const QString &action, const Launche
             filter.FromJson(appPathsFile);
             if (filter.isExistInConfig(appId)) {
                 DBUS_NOBLOCK_INVOKE(m_rootMonitorDBusInter, "DeleteUninstalledAppRecord", appId);
-                DBUS_NOBLOCK_INVOKE(m_rootMonitorDBusInter, "InsertUninstalledAppRecord", appId, appName);
+                DBUS_NOBLOCK_INVOKE(m_rootMonitorDBusInter,
+                                    "InsertUninstalledAppRecord",
+                                    appId,
+                                    appName);
             }
         }
         return;
@@ -704,8 +731,7 @@ void OperateDBusData::OnLauncherItemChanged(const QString &action, const Launche
 void OperateDBusData::initSystemArchitecture()
 {
     QProcess fileCheck;
-    QString cmdLine = QString("uname -m");
-    fileCheck.start(cmdLine);
+    fileCheck.start("uname", {"-m"});
     fileCheck.waitForFinished(1000);
     m_sSystemArchitecture = fileCheck.readAll().trimmed();
 }

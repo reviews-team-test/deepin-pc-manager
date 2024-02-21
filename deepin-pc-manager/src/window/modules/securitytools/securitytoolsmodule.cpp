@@ -4,8 +4,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "securitytoolsmodule.h"
-#include "securitytoolswidget.h"
+
 #include "securitytoolsmodel.h"
+#include "securitytoolswidget.h"
 
 #include <QModelIndex>
 #include <QStandardItemModel>
@@ -30,13 +31,9 @@ SecurityToolsModule::~SecurityToolsModule()
     deactive();
 }
 
-void SecurityToolsModule::initialize()
-{
-}
+void SecurityToolsModule::initialize() { }
 
-void SecurityToolsModule::preInitialize()
-{
-}
+void SecurityToolsModule::preInitialize() { }
 
 const QString SecurityToolsModule::name() const
 {

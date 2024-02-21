@@ -9,10 +9,10 @@
 #include "defsecuritytoolinfo.h"
 
 #include <DFrame>
-#include <DPushButton>
-#include <DSuggestButton>
-#include <DSpinner>
 #include <DLabel>
+#include <DPushButton>
+#include <DSpinner>
+#include <DSuggestButton>
 
 #include <QMap>
 
@@ -29,7 +29,7 @@ public:
     ~DefSecurityToolsFrontUnit() override;
 
 public:
-    //设置第三方应用信息
+    // 设置第三方应用信息
     void setToolsInfo(const DEFSECURITYTOOLINFO &info);
     void setAppStatus(DEFSECURITYTOOLSTATUS status);
     void setDataModel(QObject *pModel);

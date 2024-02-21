@@ -4,18 +4,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "invokerfactory.h"
+
 #include "dbusinvoker.h"
 #include "deepindefendersettingsInvoker.h"
 
-InvokerFactory::InvokerFactory()
-{
-}
+InvokerFactory::InvokerFactory() { }
 
-InvokerFactory::~InvokerFactory()
-{
-}
+InvokerFactory::~InvokerFactory() { }
 
-DBusInvokerInterface *InvokerFactory::CreateInvoker(const QString &service, const QString &path, const QString &interface, ConnectType type, QObject *parent)
+DBusInvokerInterface *InvokerFactory::CreateInvoker(const QString &service,
+                                                    const QString &path,
+                                                    const QString &interface,
+                                                    ConnectType type,
+                                                    QObject *parent)
 {
 #ifdef DEEPIN_DEFENDER_UNITTEST
     if (m_intefaceMap.contains(interface)) {
@@ -31,7 +32,9 @@ DBusInvokerInterface *InvokerFactory::CreateInvoker(const QString &service, cons
     return new DBusInvoker(service, path, interface, type, parent);
 }
 
-SettingsInvokerInterface *InvokerFactory::CreateSettings(const QByteArray &schema_id, const QByteArray &path, QObject *parent)
+SettingsInvokerInterface *InvokerFactory::CreateSettings(const QByteArray &schema_id,
+                                                         const QByteArray &path,
+                                                         QObject *parent)
 {
 #ifdef DEEPIN_DEFENDER_UNITTEST
     if (m_settingsMap.contains(schema_id)) {
@@ -47,7 +50,8 @@ SettingsInvokerInterface *InvokerFactory::CreateSettings(const QByteArray &schem
 }
 
 // 单元测试扩展处理
-void InvokerFactory::setInvokerInteface(const QString &interfaceName, DBusInvokerInterface *interface)
+void InvokerFactory::setInvokerInteface(const QString &interfaceName,
+                                        DBusInvokerInterface *interface)
 {
 #ifdef DEEPIN_DEFENDER_UNITTEST
     // 不关心是否重复
@@ -59,7 +63,8 @@ void InvokerFactory::setInvokerInteface(const QString &interfaceName, DBusInvoke
 }
 
 // 单元测试扩展处理
-void InvokerFactory::setSettinsInteface(const QString &settingName, SettingsInvokerInterface *interface)
+void InvokerFactory::setSettinsInteface(const QString &settingName,
+                                        SettingsInvokerInterface *interface)
 {
 #ifdef DEEPIN_DEFENDER_UNITTEST
     // 不关心是否重复

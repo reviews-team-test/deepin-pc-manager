@@ -5,7 +5,7 @@
 
 /*
  * 因为unit test的需求，将后端分离以完成mock工作，提供虚函数使得gmock框架可以模拟dbus的输入与输出
-*/
+ */
 
 #ifndef CLEANERDBUSADAPTORINTERFACE_H
 #define CLEANERDBUSADAPTORINTERFACE_H
@@ -26,7 +26,8 @@ public:
     virtual QString GetValueFromeGSettings(const QString &key) = 0;
     virtual void SetValueToGSettings(const QString &key, const QString &value) = 0;
     virtual void DeleteSpecifiedAppUninstallInfo(const QString &pkgName) = 0;
-    virtual ~CleanerDBusAdaptorInterface() {}
+
+    virtual ~CleanerDBusAdaptorInterface() { }
 };
 
 #endif // CLEANERDBUSADAPTORINTERFACE_H

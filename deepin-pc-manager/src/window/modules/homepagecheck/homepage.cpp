@@ -4,18 +4,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "homepage.h"
-#include "widgets/scorebar.h"
+
 #include "widgets/systemcheckdefinition.h"
 
-#include <DFontSizeManager>
 #include <DApplicationHelper>
+#include <DFontSizeManager>
+#include <DLabel>
 #include <DSuggestButton>
 #include <DSysInfo>
-#include <DLabel>
 
+#include <QButtonGroup>
 #include <QLabel>
 #include <QPushButton>
-#include <QButtonGroup>
 #include <QVBoxLayout>
 
 HomePage::HomePage(HomePageModel *mode, QWidget *parent)
@@ -100,7 +100,10 @@ HomePage::HomePage(HomePageModel *mode, QWidget *parent)
     // 连接信号
     connect(m_examBtn, &DSuggestButton::clicked, this, &HomePage::notifyShowCheckPage);
     // 主题变换
-    connect(m_guiHelper, &DGuiApplicationHelper::themeTypeChanged, this, &HomePage::changePicWithTheme);
+    connect(m_guiHelper,
+            &DGuiApplicationHelper::themeTypeChanged,
+            this,
+            &HomePage::changePicWithTheme);
 }
 
 HomePage::~HomePage()
@@ -132,9 +135,8 @@ void HomePage::updateUI()
     // 非常安全分数阶段;
     else if (PERFECTLY_SAFE_SCORE_ABOVE <= score) {
         // 分数提示项
-        m_lbScoreTip->setText(tr("Last Result: <font color=%1>%2</font> points")
-                                  .arg(k90_100Color)
-                                  .arg(score));
+        m_lbScoreTip->setText(
+            tr("Last Result: <font color=%1>%2</font> points").arg(k90_100Color).arg(score));
         m_examBtn->setText(tr("Check Now"));
         m_greetingInfo->setText(k90_100GreetingStatus);
         m_examTip->setText(k90_100GreetingInfo);
@@ -142,9 +144,8 @@ void HomePage::updateUI()
     // 安全分数阶段
     else if (SAFE_SCORE_ABOVE <= score) {
         // 分数提示项
-        m_lbScoreTip->setText(tr("Last Result: <font color=%1>%2</font> points")
-                                  .arg(k75_90Color)
-                                  .arg(score));
+        m_lbScoreTip->setText(
+            tr("Last Result: <font color=%1>%2</font> points").arg(k75_90Color).arg(score));
         m_examTip->setText(k75_90GreetingInfo);
         m_examBtn->setText(tr("Check Now"));
         m_greetingInfo->setText(k75_90GreetingStatus);
@@ -152,9 +153,8 @@ void HomePage::updateUI()
     // 危险分数阶段
     else if (DANGEROUS_SCORE_ABOVE <= score) {
         // 分数提示项
-        m_lbScoreTip->setText(tr("Last Result: <font color=%1>%2</font> points")
-                                  .arg(k60_75Color)
-                                  .arg(score));
+        m_lbScoreTip->setText(
+            tr("Last Result: <font color=%1>%2</font> points").arg(k60_75Color).arg(score));
         m_examTip->setText(k60_75GreetingInfo);
         m_examBtn->setText(tr("Check Now"));
 
@@ -164,17 +164,17 @@ void HomePage::updateUI()
     // 非常危险分数阶段
     else {
         // 分数提示项
-        m_lbScoreTip->setText(tr("Last Result: <font color=%1>%2</font> points")
-                                  .arg(k0_60Color)
-                                  .arg(score));
+        m_lbScoreTip->setText(
+            tr("Last Result: <font color=%1>%2</font> points").arg(k0_60Color).arg(score));
         m_examTip->setText(k0_60GreetingInfo);
         m_examBtn->setText(tr("Check Now"));
 
-        QString coloredGreeting = kyouComputer + SystemCheckHelper::getColoredText(score, katHighRist);
+        QString coloredGreeting =
+            kyouComputer + SystemCheckHelper::getColoredText(score, katHighRist);
         m_greetingInfo->setText(coloredGreeting);
     }
 
-    //根据上次体检时间，调整体检提示标签文字
+    // 根据上次体检时间，调整体检提示标签文字
     QDateTime lastCheckTime = m_mode->GetLastCheckTime();
     qint64 days = lastCheckTime.daysTo(QDateTime::currentDateTime());
     if (days > 5) {

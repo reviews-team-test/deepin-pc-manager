@@ -8,6 +8,7 @@
 #include <DLog>
 
 #include <QCoreApplication>
+#include <QThreadPool>
 
 DCORE_USE_NAMESPACE
 

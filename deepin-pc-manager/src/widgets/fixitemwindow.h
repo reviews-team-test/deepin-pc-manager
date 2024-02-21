@@ -10,10 +10,10 @@
 #include <DCommandLinkButton>
 #include <DPushButton>
 
-#include <QWidget>
+#include <QDebug>
 #include <QLabel>
 #include <QObject>
-#include <QDebug>
+#include <QWidget>
 
 DWIDGET_USE_NAMESPACE
 
@@ -28,6 +28,7 @@ public:
     DCommandLinkButton *getButton();
     // 获得按钮的名字
     QString getButtonText();
+
 protected:
     void resizeEvent(QResizeEvent *event);
 
@@ -37,6 +38,6 @@ private:
     QLabel *m_leftLabel;
     DCommandLinkButton *m_rightBtn;
     bool m_isFlag;
-//    DPushButton *m_rightBtn;
-//    DPushButton *m_rightBtn;
+    //    DPushButton *m_rightBtn;
+    //    DPushButton *m_rightBtn;
 };

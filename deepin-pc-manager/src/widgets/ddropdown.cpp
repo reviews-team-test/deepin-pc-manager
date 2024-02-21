@@ -5,13 +5,12 @@
 
 #include "ddropdown.h"
 
-#include <QDebug>
-#include <QHBoxLayout>
-#include <QMouseEvent>
-
+#include <DIconButton>
 #include <DLabel>
 #include <DMenu>
-#include <DIconButton>
+
+#include <QDebug>
+#include <QHBoxLayout>
 #include <QMouseEvent>
 
 class DDropdownPrivate : public QObject
@@ -95,9 +94,7 @@ DDropdown::DDropdown(QWidget *parent)
     });
 }
 
-DDropdown::~DDropdown()
-{
-}
+DDropdown::~DDropdown() { }
 
 QString DDropdown::status() const
 {

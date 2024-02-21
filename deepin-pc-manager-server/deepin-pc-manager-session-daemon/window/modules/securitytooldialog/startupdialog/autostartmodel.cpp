@@ -4,7 +4,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "autostartmodel.h"
-#include "common/invokers/invokerfactory.h"
+
+#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerfactory.h"
+
+#include <qglobal.h>
 
 AutoStartModel::AutoStartModel(QObject *parent)
     : QObject(parent)
@@ -14,9 +17,7 @@ AutoStartModel::AutoStartModel(QObject *parent)
     initSignalSLot();
 }
 
-AutoStartModel::~AutoStartModel()
-{
-}
+AutoStartModel::~AutoStartModel() { }
 
 // 更新所有应用自启动状态
 bool AutoStartModel::updateAppsAutoStartStatus() const
@@ -64,18 +65,24 @@ bool AutoStartModel::setAppAutoStart(int status, const QString &path) const
 // 添加日志
 void AutoStartModel::addSecurityLog(int type, const QString &log) const
 {
+    Q_UNUSED(type);
+    Q_UNUSED(log);
 }
 
 void AutoStartModel::init()
 {
-    m_dataInterfaceInvoker = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
-                                                                         "/com/deepin/pc/manager/session/daemon",
-                                                                         "com.deepin.pc.manager.session.daemon",
-                                                                         ConnectType::SESSION, this);
+    m_dataInterfaceInvoker =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
+                                                    "/com/deepin/pc/manager/session/daemon",
+                                                    "com.deepin.pc.manager.session.daemon",
+                                                    ConnectType::SESSION,
+                                                    this);
 }
 
 void AutoStartModel::initSignalSLot()
 {
     // 后台自启动数据刷新信号连接
-    m_dataInterfaceInvoker->Connect("AccessRefreshData", this, SLOT(itemStatusChanged(bool, QString)));
+    m_dataInterfaceInvoker->Connect("AccessRefreshData",
+                                    this,
+                                    SLOT(itemStatusChanged(bool, QString)));
 }

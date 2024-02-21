@@ -5,14 +5,14 @@
 
 #include "safetyprotectionitem.h"
 
-#include <DFontSizeManager>
-#include <DBackgroundGroup>
 #include <DApplicationHelper>
+#include <DBackgroundGroup>
+#include <DFontSizeManager>
 
-#include <QPainter>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QVBoxLayout>
 
 SafetyProtectionItem::SafetyProtectionItem(QWidget *parent)
     : DFrame(parent)
@@ -57,9 +57,7 @@ SafetyProtectionItem::SafetyProtectionItem(QWidget *parent)
     m_lbText->setMouseTracking(true);
 }
 
-SafetyProtectionItem::~SafetyProtectionItem()
-{
-}
+SafetyProtectionItem::~SafetyProtectionItem() { }
 
 // 设置相关标签名称
 void SafetyProtectionItem::setAccessibleParentText(QString sAccessibleName)

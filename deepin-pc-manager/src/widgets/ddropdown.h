@@ -5,12 +5,14 @@
 
 #pragma once
 
-#include <QScopedPointer>
 #include <DWidget>
+
+#include <QScopedPointer>
 
 DWIDGET_USE_NAMESPACE
 
 class DDropdownPrivate;
+
 class DDropdown : public DWidget
 {
     Q_OBJECT

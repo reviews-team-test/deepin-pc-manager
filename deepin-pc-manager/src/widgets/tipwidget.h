@@ -2,17 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//#ifndef TIPWIDGET_H
-//#define TIPWIDGET_H
+// #ifndef TIPWIDGET_H
+// #define TIPWIDGET_H
 
 #pragma once
 
 #include "window/namespace.h"
 
 #include <DFrame>
-#include <QWidget>
 #include <DPalette>
+
 #include <QIcon>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -32,14 +33,11 @@ public:
     void setIcon(QIcon icon);
 signals:
 
-
-
 public slots:
 
 private:
-    QLabel  *m_tipTitle = nullptr;
-    QLabel  *m_leftIcon = nullptr;
-
+    QLabel *m_tipTitle = nullptr;
+    QLabel *m_leftIcon = nullptr;
 };
 
-//#endif // TIPWIDGET_H
+// #endif // TIPWIDGET_H

@@ -6,9 +6,9 @@
 #pragma once
 #include "window/namespace.h"
 
+#include <DCommandLinkButton>
 #include <DFrame>
 #include <DLabel>
-#include <DCommandLinkButton>
 #include <DSpinner>
 
 class QHBoxLayout;
@@ -19,9 +19,15 @@ class CheckItem : public DFrame
 {
     Q_OBJECT
 public:
-    CheckItem(DLabel *titlePic, DLabel *title, DLabel *tipPic, DLabel *tip, DCommandLinkButton *btn = nullptr,
-              DCommandLinkButton *ignoreBtn = nullptr, DCommandLinkButton *notIgnoreBtn = nullptr,
-              DSpinner *spinner = nullptr, QWidget *parent = nullptr);
+    CheckItem(DLabel *titlePic,
+              DLabel *title,
+              DLabel *tipPic,
+              DLabel *tip,
+              DCommandLinkButton *btn = nullptr,
+              DCommandLinkButton *ignoreBtn = nullptr,
+              DCommandLinkButton *notIgnoreBtn = nullptr,
+              DSpinner *spinner = nullptr,
+              QWidget *parent = nullptr);
 
 private:
     // 标题图标

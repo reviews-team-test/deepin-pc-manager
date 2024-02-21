@@ -19,10 +19,8 @@ DefSecurityToolListWidget::DefSecurityToolListWidget(QWidget *parent)
     setFlow(QListView::LeftToRight);
     setUniformItemSizes(true);
     setDragEnabled(false);
-    //setStyleSheet("QListWidget {border:1px solid gray;}");
+    // setStyleSheet("QListWidget {border:1px solid gray;}");
     setContentsMargins(0, 0, 0, 0);
 }
 
-DefSecurityToolListWidget::~DefSecurityToolListWidget()
-{
-}
+DefSecurityToolListWidget::~DefSecurityToolListWidget() { }

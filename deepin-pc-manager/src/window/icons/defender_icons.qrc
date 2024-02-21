@@ -8,6 +8,7 @@
         <file>icons/dcc_full_marks_empty_150px.svg</file>
         <file>icons/dcc_home_image_300px.svg</file>
         <file>icons/deepin-defender.svg</file>
+        <file>icons/deepin-pc-manager.svg</file>
         <file>icons/dcc_network_protection_detection_image_300px.svg</file>
         <file>icons/dcc_startup_disable_29px.svg</file>
         <file>icons/dcc_startup_enable_29px.svg</file>
@@ -184,8 +185,5 @@
         <file>icons/Data Usage_48px.svg</file>
         <file>icons/def_superior_protection_350px.svg</file>
         <file>icons/No_related_tool_is_found_96px.svg</file>
-        <file>icons/def_net_check_tool_96px.svg</file>
-        <file>icons/def_net_check_96px.svg</file>
-        <file>icons/Netcheck_Programs_48xp.svg</file>
     </qresource>
 </RCC>

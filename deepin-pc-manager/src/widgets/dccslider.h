@@ -15,17 +15,14 @@ class DCCSlider : public DTK_WIDGET_NAMESPACE::DSlider
 {
     Q_OBJECT
 public:
-    enum SliderType {
-        Normal,
-        Vernier,
-        Progress
-    };
+    enum SliderType { Normal, Vernier, Progress };
 
 public:
     explicit DCCSlider(SliderType type = Normal, QWidget *parent = nullptr);
     explicit DCCSlider(Qt::Orientation orientation, QWidget *parent = nullptr);
 
     inline DCCSlider *slider() const { return const_cast<DCCSlider *>(this); }
+
     QSlider *qtSlider();
 
     void setType(SliderType type);
@@ -41,10 +38,9 @@ protected:
 
 private:
     QSlider::TickPosition tickPosition = QSlider::TicksBelow;
-
 };
 
-}
-}
+} // namespace widgets
+} // namespace def
 
 #endif // DEFSLIDER_H
