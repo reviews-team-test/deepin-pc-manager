@@ -4,18 +4,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "checkitem.h"
+
 #include "src/window/modules/common/common.h"
 
-#include <DLabel>
 #include <DCommandLinkButton>
-#include <DSpinner>
 #include <DFontSizeManager>
+#include <DLabel>
+#include <DSpinner>
 
 #include <QHBoxLayout>
 
-CheckItem::CheckItem(DLabel *titlePic, DLabel *title, DLabel *tipPic, DLabel *tip, DCommandLinkButton *btn,
-                     DCommandLinkButton *ignoreBtn, DCommandLinkButton *notIgnoreBtn,
-                     DSpinner *spinner, QWidget *parent)
+CheckItem::CheckItem(DLabel *titlePic,
+                     DLabel *title,
+                     DLabel *tipPic,
+                     DLabel *tip,
+                     DCommandLinkButton *btn,
+                     DCommandLinkButton *ignoreBtn,
+                     DCommandLinkButton *notIgnoreBtn,
+                     DSpinner *spinner,
+                     QWidget *parent)
     : DFrame(parent)
     , m_lbTitlePic(titlePic)
     , m_lbTitle(title)

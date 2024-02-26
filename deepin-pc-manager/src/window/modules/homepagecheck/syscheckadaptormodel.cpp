@@ -4,7 +4,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "syscheckadaptormodel.h"
-#include "src/window/dialogmanage.h"
+
+#include <QProcess>
 
 #define SEPERATOR ", "
 
@@ -156,9 +157,7 @@ bool SysCheckAdaptorModel::isProcessingFastFixing()
     return m_fixingItems.size() > 0;
 }
 
-void SysCheckAdaptorModel::onCheckStarted()
-{
-}
+void SysCheckAdaptorModel::onCheckStarted() { }
 
 void SysCheckAdaptorModel::onCheckDone()
 {
@@ -244,7 +243,7 @@ void SysCheckAdaptorModel::onSysVersionCheckTimeout()
 
 void SysCheckAdaptorModel::fixDisk()
 {
-    QProcess::startDetached("deepin-diskmanager");
+    QProcess::startDetached("deepin-diskmanager", {});
     m_model->addSecurityLog(KDiskChecked);
 }
 
@@ -277,14 +276,35 @@ void SysCheckAdaptorModel::fixAutoStart()
 
 void SysCheckAdaptorModel::initConnection()
 {
-    connect(this, &SysCheckAdaptorModel::SSHExamFinished, this, &SysCheckAdaptorModel::startAutoStartExam);
-    connect(this, &SysCheckAdaptorModel::AutoStartExamFinished, this, &SysCheckAdaptorModel::startSysVersionExam);
-    connect(this, &SysCheckAdaptorModel::SysVersionExamFinished, this, &SysCheckAdaptorModel::startTrashExam);
-    connect(this, &SysCheckAdaptorModel::TrashExamFinished, this, &SysCheckAdaptorModel::startDiskExam);
-    connect(this, &SysCheckAdaptorModel::DiskExamFinished, this, &SysCheckAdaptorModel::startDevModeExam);
-    connect(this, &SysCheckAdaptorModel::DevModeExamFinished, this, &SysCheckAdaptorModel::onCheckDone);
+    connect(this,
+            &SysCheckAdaptorModel::SSHExamFinished,
+            this,
+            &SysCheckAdaptorModel::startAutoStartExam);
+    connect(this,
+            &SysCheckAdaptorModel::AutoStartExamFinished,
+            this,
+            &SysCheckAdaptorModel::startSysVersionExam);
+    connect(this,
+            &SysCheckAdaptorModel::SysVersionExamFinished,
+            this,
+            &SysCheckAdaptorModel::startTrashExam);
+    connect(this,
+            &SysCheckAdaptorModel::TrashExamFinished,
+            this,
+            &SysCheckAdaptorModel::startDiskExam);
+    connect(this,
+            &SysCheckAdaptorModel::DiskExamFinished,
+            this,
+            &SysCheckAdaptorModel::startDevModeExam);
+    connect(this,
+            &SysCheckAdaptorModel::DevModeExamFinished,
+            this,
+            &SysCheckAdaptorModel::onCheckDone);
 
-    connect(&m_sysVersionTimer, &QTimer::timeout, this, &SysCheckAdaptorModel::onSysVersionCheckTimeout);
+    connect(&m_sysVersionTimer,
+            &QTimer::timeout,
+            this,
+            &SysCheckAdaptorModel::onSysVersionCheckTimeout);
     connect(m_model, &HomePageModel::trashScanFinished, this, [this](double size) {
         if (m_processingIndex != SysCheckItemID::Trash) {
             return;
@@ -293,7 +313,8 @@ void SysCheckAdaptorModel::initConnection()
         QStandardItem *trashItem = m_resultItems[SysCheckItemID::Trash];
         trashItem->setData(SysCheckItemID::Trash, CheckResultModelRole::ID);
         trashItem->setData(CheckProgressStatus::Success, CheckResultModelRole::CheckProgressFlag);
-        trashItem->setData(m_totalTrashSize >= (100 * MB_COUNT), CheckResultModelRole::IsIssueHappen);
+        trashItem->setData(m_totalTrashSize >= (100 * MB_COUNT),
+                           CheckResultModelRole::IsIssueHappen);
         trashItem->setData(m_totalTrashSize, CheckResultModelRole::Details);
 
         Q_EMIT TrashExamFinished();
@@ -309,7 +330,8 @@ void SysCheckAdaptorModel::initConnection()
 
         QStandardItem *sysVersionItem = m_resultItems[SysCheckItemID::SystemUpdate];
         sysVersionItem->setData(SysCheckItemID::SystemUpdate, CheckResultModelRole::ID);
-        sysVersionItem->setData(CheckProgressStatus::Success, CheckResultModelRole::CheckProgressFlag);
+        sysVersionItem->setData(CheckProgressStatus::Success,
+                                CheckResultModelRole::CheckProgressFlag);
         sysVersionItem->setData(m_isSysOutDate, CheckResultModelRole::IsIssueHappen);
         sysVersionItem->setData(m_isSysOutDate, CheckResultModelRole::Details);
         Q_EMIT SysVersionExamFinished();
@@ -323,7 +345,8 @@ void SysCheckAdaptorModel::initConnection()
         m_model->SetAutoStartAppChecking(false);
         QStandardItem *autoStartItem = m_resultItems[SysCheckItemID::AutoStartApp];
         autoStartItem->setData(SysCheckItemID::AutoStartApp, CheckResultModelRole::ID);
-        autoStartItem->setData(CheckProgressStatus::Success, CheckResultModelRole::CheckProgressFlag);
+        autoStartItem->setData(CheckProgressStatus::Success,
+                               CheckResultModelRole::CheckProgressFlag);
         autoStartItem->setData(m_autoStartCount > 0, CheckResultModelRole::IsIssueHappen);
         autoStartItem->setData(m_model->ignoreAutoStartChecking(), CheckResultModelRole::IsIgnored);
         autoStartItem->setData(m_autoStartCount, CheckResultModelRole::Details);
@@ -336,12 +359,16 @@ void SysCheckAdaptorModel::initConnection()
         }
         m_totalTrashSize = 0.0;
         m_resultItems[SysCheckItemID::Trash]->setData(false, CheckResultModelRole::IsIssueHappen);
-        m_resultItems[SysCheckItemID::Trash]->setData(m_totalTrashSize, CheckResultModelRole::Details);
+        m_resultItems[SysCheckItemID::Trash]->setData(m_totalTrashSize,
+                                                      CheckResultModelRole::Details);
         m_fixingItems.removeAll(SysCheckItemID::Trash);
         Q_EMIT fixItemFinished(SysCheckItemID::Trash);
     });
 
-    connect(m_model, &HomePageModel::autoStartAppCountChanged, this, &SysCheckAdaptorModel::onAutoStartAppCountChanged);
+    connect(m_model,
+            &HomePageModel::autoStartAppCountChanged,
+            this,
+            &SysCheckAdaptorModel::onAutoStartAppCountChanged);
 }
 
 // 更新检查结果
@@ -361,7 +388,8 @@ void SysCheckAdaptorModel::updateIssuePoint()
     }
 
     // trash
-    m_issuePoint += m_totalTrashSize >= (100 * MB_COUNT) ? kIssuePointInfoList[SysCheckItemID::Trash] : 0;
+    m_issuePoint +=
+        m_totalTrashSize >= (100 * MB_COUNT) ? kIssuePointInfoList[SysCheckItemID::Trash] : 0;
     m_issueCount += m_totalTrashSize >= (100 * MB_COUNT) ? 1 : 0;
     // trash总量大于1G时，有修正值
     m_issuePoint += m_totalTrashSize > (1 * GB_COUNT) ? kTrashSizeTooLargeAdjustPoint : 0;

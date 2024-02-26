@@ -3,7 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "defenderdbusservice.h"
+
 #include "window/mainwindow.h"
+
+#include <QDBusConnection>
 
 const QString service = "com.deepin.pc.manager";
 const QString path = "/com/deepin/pc/manager";
@@ -11,9 +14,9 @@ const QString path = "/com/deepin/pc/manager";
 DefenderDBusService::DefenderDBusService(QObject *parent)
     : QObject(parent)
 {
-    m_adaptor = new ManagerAdaptor(this);
-
-    if (!QDBusConnection::sessionBus().registerService(service) || !QDBusConnection::sessionBus().registerObject(path, this)) {
+    m_managerAdaptor = new ManagerAdaptor(this);
+    if (!QDBusConnection::sessionBus().registerService(service)
+        || !QDBusConnection::sessionBus().registerObject(path, this)) {
         qDebug() << "dbus service already registered! " << service;
 
         exit(0);

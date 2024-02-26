@@ -8,22 +8,23 @@
 
 #include "systemcheckdefinition.h"
 
+#include <DCommandLinkButton>
 #include <DFrame>
 #include <DLabel>
-#include <DTipLabel>
-#include <DSpinner>
 #include <DPushButton>
-#include <DCommandLinkButton>
+#include <DSpinner>
+#include <DTipLabel>
 
-#include <QWidget>
 #include <QStandardItemModel>
+#include <QWidget>
 
 class SysCheckResultItemWidget : public Dtk::Widget::DFrame
 {
     Q_OBJECT
 public:
     explicit SysCheckResultItemWidget(SysCheckItemID id, QWidget *parent = nullptr);
-    ~SysCheckResultItemWidget() {}
+
+    ~SysCheckResultItemWidget() { }
 
 public Q_SLOTS:
     void onNotifyComplete(SysCheckItemID index, bool isAbnormal);

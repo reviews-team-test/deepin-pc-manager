@@ -7,9 +7,9 @@
 
 #include <DPalette>
 
+#include <QResizeEvent>
 #include <QStyle>
 #include <QVBoxLayout>
-#include <QResizeEvent>
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
@@ -21,7 +21,6 @@ SettingsItem::SettingsItem(QWidget *parent)
     : QFrame(parent)
     , m_isErr(false)
 {
-
 }
 
 bool SettingsItem::isErr() const
@@ -31,7 +30,8 @@ bool SettingsItem::isErr() const
 
 void SettingsItem::setIsErr(const bool err)
 {
-    if (m_isErr == err) return;
+    if (m_isErr == err)
+        return;
     m_isErr = err;
 
     style()->unpolish(this);
@@ -40,17 +40,17 @@ void SettingsItem::setIsErr(const bool err)
 
 void SettingsItem::addBackground()
 {
-    //加入一个 DFrame 作为圆角背景
+    // 加入一个 DFrame 作为圆角背景
     if (m_bgGroup)
         m_bgGroup->deleteLater();
     m_bgGroup = new DFrame(this);
-//    m_bgGroup->setContentsMargins(0, 0, 0, 0);
+    //    m_bgGroup->setContentsMargins(0, 0, 0, 0);
     m_bgGroup->setBackgroundRole(DPalette::ItemBackground);
     m_bgGroup->setLineWidth(0);
 
-    //将 m_bgGroup 沉底
+    // 将 m_bgGroup 沉底
     m_bgGroup->lower();
-    //设置m_bgGroup 的大小
+    // 设置m_bgGroup 的大小
     m_bgGroup->setFixedSize(size());
 }
 
@@ -58,10 +58,9 @@ void SettingsItem::resizeEvent(QResizeEvent *event)
 {
     QFrame::resizeEvent(event);
 
-    //设置m_bgGroup 的大小
+    // 设置m_bgGroup 的大小
     if (m_bgGroup)
         m_bgGroup->setFixedSize(size());
 }
-}
-}
-
+} // namespace widgets
+} // namespace def

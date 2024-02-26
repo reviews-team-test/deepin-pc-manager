@@ -5,12 +5,9 @@
 
 #pragma once
 
-#include "window/namespace.h"
-#include "dtkwidget_global.h"
-#include "window/modules/common/common.h"
-#include "window/modules/common/gsettingkey.h"
-#include "window/modules/common/comdata.h"
 #include "sysupdatermodel.h"
+#include "window/modules/common/common.h"
+#include "window/namespace.h"
 
 #include <QDateTime>
 
@@ -36,8 +33,10 @@ public:
 
     // 设置是否处于自启动app数检测中
     inline void SetAutoStartAppChecking(bool checking) { m_autoStartAppChecking = checking; }
+
     // 是否处于自启动app数检测中
     inline bool autoStartAppChecking() { return m_autoStartAppChecking; }
+
     // 打开自启动管理页
     void openStartupControlPage();
     // 检查自启动
@@ -57,24 +56,28 @@ public:
 
     //// 系统更新检测
     // 设置是否处于系统版本检测中
-    inline void SetSysVersionChecking(bool checking)
-    {
-        m_sysVersionChecking = checking;
-    }
+    inline void SetSysVersionChecking(bool checking) { m_sysVersionChecking = checking; }
+
     // 是否处于系统版本检测中
     inline bool sysVersionChecking() const { return m_sysVersionChecking; }
+
     // 打开系统更新界面
     void openSysUpdatePage();
+
     // 设置是否处于垃圾文件检测中
     inline void SetTrashChecking(bool checking) { m_trashChecking = checking; }
+
     // 磁盘管理器 是否已安装
     bool isDiskManagerInterValid();
     // 获取磁盘状态
     bool getDiskStatus();
+
     // 设置是否处于磁盘检测中
     inline void SetDiskChecking(bool checking) { m_diskChecking = checking; }
+
     // 设置是否处于正在检测开发者模式
     inline void SetDevelopModeChecking(bool checking) { m_developModeChecking = checking; }
+
     // 是否处于开发者模式
     bool IsDeveloperMode();
     // 是否忽略检测开发者模式

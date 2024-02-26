@@ -5,24 +5,23 @@
 
 #pragma once
 
+#include "interface/frameproxyinterface.h"
+#include "interface/moduleinterface.h"
+#include "modules/common/common.h"
 #include "utils.h"
-#include "src/window/modules/common/comdata.h"
-#include "window/modules/common/common.h"
-#include "window/interface/frameproxyinterface.h"
-#include "window/interface/moduleinterface.h"
 
-#include <DMainWindow>
+#include <DDialog>
 #include <DGuiApplicationHelper>
 #include <DIconButton>
-#include <QCloseEvent>
-#include <QGSettings>
-#include <DDialog>
-#include <QStack>
-#include <QPair>
-#include <QDBusContext>
-#include <QSystemTrayIcon>
-#include <QStackedWidget>
+#include <DMainWindow>
+
 #include <QCheckBox>
+#include <QCloseEvent>
+#include <QDBusContext>
+#include <QPair>
+#include <QStack>
+#include <QStackedWidget>
+#include <QSystemTrayIcon>
 
 DWIDGET_BEGIN_NAMESPACE
 class DListView;
@@ -58,17 +57,13 @@ DEF_NAMESPACE_END
 
 DWIDGET_USE_NAMESPACE
 
-enum closeType {
-    Tray,
-    Exit,
-    Ask,
-    Count
-};
+enum closeType { Tray, Exit, Ask, Count };
 
 DEF_NAMESPACE_BEGIN
-class MainWindow : public DTK_WIDGET_NAMESPACE::DMainWindow
-    , public FrameProxyInterface
-    , protected QDBusContext
+
+class MainWindow : public DTK_WIDGET_NAMESPACE::DMainWindow,
+                   public FrameProxyInterface,
+                   protected QDBusContext
 {
     Q_OBJECT
 public:
@@ -76,13 +71,13 @@ public:
     ~MainWindow() override;
 
     // 模板函数,供各模块调用
-    void popWidget(ModuleInterface *const inter) override; //弹栈
+    void popWidget(ModuleInterface *const inter) override; // 弹栈
     void popAndDelWidget(ModuleInterface *const inter) override;
-    void pushWidget(ModuleInterface *const inter, QWidget *const w) override; //压栈
-    void setModuleVisible(ModuleInterface *const inter, const bool visible) override; //模块可视化
-    void setCurrentModule(int iModuleIdx, int iPageIdx = 0) override; //设置当前模块
+    void pushWidget(ModuleInterface *const inter, QWidget *const w) override;         // 压栈
+    void setModuleVisible(ModuleInterface *const inter, const bool visible) override; // 模块可视化
+    void setCurrentModule(int iModuleIdx, int iPageIdx = 0) override; // 设置当前模块
     ModuleInterface *getCurrentModule() override;
-    int getModuleIndex(const QString &name) override; //获得模块下标
+    int getModuleIndex(const QString &name) override;      // 获得模块下标
     void setBackForwardButtonStatus(bool status) override; // 设置后退按钮可用状态
 
     // 显示默认设置弹框
@@ -139,7 +134,8 @@ private:
     void initCloseDialog(QCloseEvent *event);
     void modulePreInitialize();
     void popAllWidgets(int place = 0); // place is Remain count
-    void pushNormalWidget(ModuleInterface *const inter, QWidget *const w); // exchange third widget : push new widget
+    void pushNormalWidget(ModuleInterface *const inter,
+                          QWidget *const w); // exchange third widget : push new widget
 
     // 主界面关闭方式配置项 获取/设置
     int getCloseType();
@@ -161,21 +157,22 @@ private:
     QStandardItemModel *m_navModel;
     QStack<QPair<ModuleInterface *, QWidget *>> m_contentStack;
     HomePageModule *m_homePageModule; // 首页体检模块
-    HomePageModel *m_homePageModel; // 首页体检数据处理对象
+    HomePageModel *m_homePageModel;   // 首页体检数据处理对象
     SecurityToolsModule *m_securityToolsModule;
     QList<QPair<ModuleInterface *, QString>> m_modules;
-    DIconButton *m_backwardBtn; // 上一步
+    DIconButton *m_backwardBtn;     // 上一步
     QSystemTrayIcon *m_pSystemTray; // 系统托盘图标
-    QMenu *m_trayMenu; // 托盘目录
+    QMenu *m_trayMenu;              // 托盘目录
     DDialog *m_trayDialag;
     SettingsInvokerInterface *m_gsetting; // 安全中心gsetting配置
-    DSettingsDialog *m_dsd; // 设置弹框
+    DSettingsDialog *m_dsd;               // 设置弹框
 
     DGuiApplicationHelper *m_guiHelper; // 方便得到系统主题
     QStringList m_modulesDarakIconList; // 深色主题图标列表
     QStringList m_modulesLightIconList; // 浅色主题图标列表
 
     // 安全工具
-    DBusInvokerInterface *m_pSecurityToolDBusInter; //安全工具
+    DBusInvokerInterface *m_pSecurityToolDBusInter; // 安全工具
 };
+
 DEF_NAMESPACE_END

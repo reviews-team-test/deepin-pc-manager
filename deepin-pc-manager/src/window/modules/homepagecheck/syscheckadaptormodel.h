@@ -20,8 +20,14 @@ class SysCheckAdaptorModel : public QObject
 public:
     explicit SysCheckAdaptorModel(HomePageModel *model, QObject *parent = nullptr);
     ~SysCheckAdaptorModel();
+
     inline int getIssueCount() { return m_issueCount; }
-    inline int getIssuePoint() { return CHECK_MAX_POINT > m_issuePoint ? CHECK_MAX_POINT - m_issuePoint : 0; }
+
+    inline int getIssuePoint()
+    {
+        return CHECK_MAX_POINT > m_issuePoint ? CHECK_MAX_POINT - m_issuePoint : 0;
+    }
+
     bool isFastFixValid();
 
 Q_SIGNALS:
@@ -85,7 +91,7 @@ private:
     // 用于检查页结果展示的数据
     QList<QStandardItem *> m_resultItems;
     QStandardItemModel m_resultModel;
-    int m_issuePoint; // 检查项累积扣分
+    int m_issuePoint;      // 检查项累积扣分
     int m_processingIndex; // 检查进度索引，避免受外部信号影响检查过程
     int m_issueCount;
     QTimer m_sysVersionTimer; // 系统体检超时处理

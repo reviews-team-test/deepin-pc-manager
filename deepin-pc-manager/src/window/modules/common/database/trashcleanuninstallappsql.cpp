@@ -17,9 +17,7 @@ TrashCleanUninstallAppSql::TrashCleanUninstallAppSql(QObject *parent)
 {
 }
 
-TrashCleanUninstallAppSql::~TrashCleanUninstallAppSql()
-{
-}
+TrashCleanUninstallAppSql::~TrashCleanUninstallAppSql() { }
 
 // 提供给基类以检查表是否存在
 QString TrashCleanUninstallAppSql::tableName()
@@ -51,7 +49,7 @@ void TrashCleanUninstallAppSql::sendResult(int cmdID, QSqlQuery &query)
         break;
     case UninstalledAppSqlCmdType::GET_ALL_RECORDS:
         while (query.next()) {
-            QStringList record = {query.value(1).toString(), query.value(2).toString()};
+            QStringList record = { query.value(1).toString(), query.value(2).toString() };
             queryResult.append(QVariant::fromValue(record));
         }
         Q_EMIT sendQueryResultSignal(queryResult);

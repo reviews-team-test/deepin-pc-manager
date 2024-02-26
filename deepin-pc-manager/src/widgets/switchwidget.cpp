@@ -4,10 +4,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "widgets/switchwidget.h"
+
 #include "widgets/labels/normallabel.h"
 
-#include <QHBoxLayout>
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QMouseEvent>
 
 DWIDGET_USE_NAMESPACE

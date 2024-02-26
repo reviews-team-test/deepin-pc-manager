@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include "../../deepin-pc-manager/src/window/namespace.h"
+#include "src/window/namespace.h"
 
 #include <DDesktopServices>
 #include <DGuiApplicationHelper>
 #include <DTreeWidget>
 
-#include <QWidget>
 #include <QItemDelegate>
+#include <QWidget>
 
 DWIDGET_BEGIN_NAMESPACE
 class DFrame;
@@ -45,6 +45,7 @@ class TCTableDelegateTree : public QItemDelegate
     Q_OBJECT
 public:
     explicit TCTableDelegateTree(QObject *parent = nullptr);
+
     virtual ~TCTableDelegateTree() { }
 
     // 重绘
@@ -65,21 +66,17 @@ public:
      * 清理启动
      * 清理完成
      */
-    enum ScanStages {
-        PREPARING,
-        SCAN_STARTED,
-        SCAN_FINISHED,
-        CLEAN_STARTED,
-        CLEAN_FINISHED
-    };
+    enum ScanStages { PREPARING, SCAN_STARTED, SCAN_FINISHED, CLEAN_STARTED, CLEAN_FINISHED };
 
-    explicit TrashCleanResultWidget(CleanerDBusAdaptorInterface *interfact, QWidget *parent = nullptr);
+    explicit TrashCleanResultWidget(CleanerDBusAdaptorInterface *interfact,
+                                    QWidget *parent = nullptr);
     ~TrashCleanResultWidget();
 
     void processScan();
     void haltScan();
 
     void setServerInterface(CleanerDBusAdaptorInterface *);
+
     inline quint64 GetScanedSize() const { return m_totalSize; }
 
     inline quint64 GetCleanedSize() const { return m_cleanedSize; }
@@ -109,8 +106,14 @@ private:
     void addUninstalledAppCheckItems();
     void addBrowserCookies();
     void addChildrenCheckItems();
-    void addChildItem(int rootIndex, const QString &title, const QString &tip, const QStringList &paths);
-    void addChildItem(int rootIndex, const QString &title, const QString &pkgName, const QString &tip, const QList<QStringList> &paths, bool isRemained = false);
+    void
+    addChildItem(int rootIndex, const QString &title, const QString &tip, const QStringList &paths);
+    void addChildItem(int rootIndex,
+                      const QString &title,
+                      const QString &pkgName,
+                      const QString &tip,
+                      const QList<QStringList> &paths,
+                      bool isRemained = false);
 
     void startScan();
     void stopScan();

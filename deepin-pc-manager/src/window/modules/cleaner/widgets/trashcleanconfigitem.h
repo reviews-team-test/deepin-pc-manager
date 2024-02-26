@@ -6,11 +6,11 @@
 #ifndef TRASHCLEANCONFIGITEM_H
 #define TRASHCLEANCONFIGITEM_H
 
-#include <DLabel>
 #include <DFrame>
+#include <DLabel>
 
-#include <QWidget>
 #include <QCheckBox>
+#include <QWidget>
 
 DWIDGET_BEGIN_NAMESPACE
 class DLable;
@@ -24,11 +24,15 @@ class TrashCleanConfigItem : public Dtk::Widget::DFrame
 
 public:
     explicit TrashCleanConfigItem(QWidget *parent = nullptr);
-    ~TrashCleanConfigItem() {}
+
+    ~TrashCleanConfigItem() { }
+
     void setTitles(const QString &, const QString &);
     void setCheckBoxStatus(bool);
     void setIconPath(const QString &path);
+
     inline void setIndex(int index) { m_configIndex = index; }
+
 Q_SIGNALS:
     void stageChanged(int, int);
 

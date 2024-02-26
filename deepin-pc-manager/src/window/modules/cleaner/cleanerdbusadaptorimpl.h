@@ -13,12 +13,12 @@
 class DBusInvokerInterface;
 class SettingsInvokerInterface;
 
-class CleanerDBusAdaptorImpl : public QObject
-    , public CleanerDBusAdaptorInterface
+class CleanerDBusAdaptorImpl : public QObject, public CleanerDBusAdaptorInterface
 {
     Q_OBJECT
 public:
     explicit CleanerDBusAdaptorImpl(QObject *parent = nullptr);
+
     virtual ~CleanerDBusAdaptorImpl() { }
 
     // 后台服务：deepin-pc-manager-session-daemon

@@ -19,6 +19,6 @@ public:
 };
 
 } // namespace widgets
-} // namespace dcc
+} // namespace def
 
 #endif // TIPSLABEL_H

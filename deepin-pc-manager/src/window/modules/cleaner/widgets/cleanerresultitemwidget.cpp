@@ -4,17 +4,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "cleanerresultitemwidget.h"
-#include "window/modules/common/compixmap.h"
+
 #include "window/modules/common/common.h"
+#include "window/modules/common/compixmap.h"
 
 #include <DCheckBox>
-#include <DTipLabel>
-#include <DSpinner>
 #include <DFontSizeManager>
+#include <DSpinner>
+#include <DTipLabel>
 
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QThread>
-#include <QEvent>
 
 #define ROOT_NODE_WIDTH 734
 #define ITEM_INDENTATION 16
@@ -35,7 +36,7 @@ CleanerResultItemWidget::CleanerResultItemWidget(QWidget *parent)
     , m_root(nullptr)
     , m_isWorking(false)
 {
-    this->setFixedHeight(46); // 单个项目高度固定
+    this->setFixedHeight(46);               // 单个项目高度固定
     this->setFixedWidth(FATHER_NODE_WIDTH); // 单个项目宽度固定,避免在不同位置产生变化
     this->setBackgroundRole(DPalette::NoType);
     QHBoxLayout *mainLayout = new QHBoxLayout;
@@ -81,9 +82,9 @@ CleanerResultItemWidget::CleanerResultItemWidget(QWidget *parent)
     m_headLabel->adjustSize();
     firstLayerLayout->addWidget(m_headLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
 
-//    QPalette headPal;
-//    headPal.setColor(QPalette::Text, QColor("#001a2e"));
-//    m_headLabel->setPalette(headPal);
+    //    QPalette headPal;
+    //    headPal.setColor(QPalette::Text, QColor("#001a2e"));
+    //    m_headLabel->setPalette(headPal);
     QFont headFont = m_headLabel->font();
     headFont.setWeight(QFont::Medium);
     headFont.setPixelSize(13);
@@ -150,9 +151,7 @@ CleanerResultItemWidget::CleanerResultItemWidget(QWidget *parent)
     connect(m_checkBox, &DCheckBox::clicked, this, &CleanerResultItemWidget::childSelected);
 }
 
-CleanerResultItemWidget::~CleanerResultItemWidget()
-{
-}
+CleanerResultItemWidget::~CleanerResultItemWidget() { }
 
 // 设置标题
 void CleanerResultItemWidget::setHeadText(const QString &text)

@@ -5,20 +5,19 @@
 
 #include "titledslideritem.h"
 
-#include <QLabel>
-#include <QSlider>
-#include <QPixmap>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QDebug>
-#include <QFile>
-#include <QIcon>
-#include <QTimer>
-
-#include "labels/normallabel.h"
 #include "dccslider.h"
 #include "dccsliderannotated.h"
-#include "basiclistdelegate.h"
+#include "labels/normallabel.h"
+
+#include <QDebug>
+#include <QFile>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QLabel>
+#include <QPixmap>
+#include <QSlider>
+#include <QTimer>
+#include <QVBoxLayout>
 
 namespace def {
 namespace widgets {

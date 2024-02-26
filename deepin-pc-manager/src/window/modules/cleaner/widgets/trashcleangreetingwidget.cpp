@@ -4,12 +4,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "trashcleangreetingwidget.h"
-#include "trashcleanconfigitem.h"
-#include "../cleanerdbusadaptorinterface.h"
-#include "../trashcleandefinition.h"
 
-#include <DLabel>
+#include "../trashcleandefinition.h"
+#include "trashcleanconfigitem.h"
+
 #include <DFontSizeManager>
+#include <DLabel>
 
 #include <QGridLayout>
 #include <QPixmap>
@@ -26,12 +26,12 @@ TrashCleanGreetingWidget::TrashCleanGreetingWidget(QWidget *parent)
     , m_hisItem(nullptr)
     , m_cookiesItem(nullptr)
     , m_scanBtn(nullptr)
-    //, m_guiHelper(nullptr)
+//, m_guiHelper(nullptr)
 {
     this->setFixedSize(770, 590);
     this->setFocusPolicy(Qt::NoFocus);
     this->setFrameShape(QFrame::NoFrame);
-    m_scanConfigList = {0, 0, 0, 0};
+    m_scanConfigList = { 0, 0, 0, 0 };
     initUI();
     initConnection();
 
@@ -41,9 +41,10 @@ TrashCleanGreetingWidget::TrashCleanGreetingWidget(QWidget *parent)
     m_cookiesItem->setCheckBoxStatus(false);
 
     // 主题变换 改变部分图标颜色
-//    m_guiHelper = DGuiApplicationHelper::instance();
-//    setPixmapByTheme(m_guiHelper->themeType());
-//    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TrashCleanGreetingWidget::setPixmapByTheme);
+    //    m_guiHelper = DGuiApplicationHelper::instance();
+    //    setPixmapByTheme(m_guiHelper->themeType());
+    //    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this,
+    //    &TrashCleanGreetingWidget::setPixmapByTheme);
 }
 
 void TrashCleanGreetingWidget::setGreeing(const QString &info)
@@ -158,10 +159,22 @@ void TrashCleanGreetingWidget::initUI()
 
 void TrashCleanGreetingWidget::initConnection()
 {
-    connect(m_sysItem, &TrashCleanConfigItem::stageChanged, this, &TrashCleanGreetingWidget::onItemStageChanged);
-    connect(m_appItem, &TrashCleanConfigItem::stageChanged, this, &TrashCleanGreetingWidget::onItemStageChanged);
-    connect(m_hisItem, &TrashCleanConfigItem::stageChanged, this, &TrashCleanGreetingWidget::onItemStageChanged);
-    connect(m_cookiesItem, &TrashCleanConfigItem::stageChanged, this, &TrashCleanGreetingWidget::onItemStageChanged);
+    connect(m_sysItem,
+            &TrashCleanConfigItem::stageChanged,
+            this,
+            &TrashCleanGreetingWidget::onItemStageChanged);
+    connect(m_appItem,
+            &TrashCleanConfigItem::stageChanged,
+            this,
+            &TrashCleanGreetingWidget::onItemStageChanged);
+    connect(m_hisItem,
+            &TrashCleanConfigItem::stageChanged,
+            this,
+            &TrashCleanGreetingWidget::onItemStageChanged);
+    connect(m_cookiesItem,
+            &TrashCleanConfigItem::stageChanged,
+            this,
+            &TrashCleanGreetingWidget::onItemStageChanged);
 
     connect(m_scanBtn, &QPushButton::clicked, this, &TrashCleanGreetingWidget::notifyStartScan);
 }

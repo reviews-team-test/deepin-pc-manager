@@ -4,14 +4,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "settingsgroup.h"
-#include "settingsitem.h"
+
 #include "settingsheaderitem.h"
+#include "settingsitem.h"
 
 #include <DBackgroundGroup>
 
-#include <QVBoxLayout>
-#include <QEvent>
 #include <QDebug>
+#include <QEvent>
+#include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
 
@@ -72,7 +73,7 @@ void SettingsGroup::setHeaderVisible(const bool visible)
 void SettingsGroup::insertItem(const int index, SettingsItem *item)
 {
     if (ItemBackground == m_bgStyle) {
-        //当SettingsItem 被加入　SettingsGroup　时，为其加入背景
+        // 当SettingsItem 被加入　SettingsGroup　时，为其加入背景
         item->addBackground();
     }
 
@@ -88,7 +89,7 @@ void SettingsGroup::appendItem(SettingsItem *item)
 void SettingsGroup::appendItem(SettingsItem *item, BackgroundStyle bgStyle)
 {
     if ((ItemBackground == bgStyle) && (m_bgStyle == ItemBackground)) {
-        //当SettingsItem 被加入　SettingsGroup　时，为其加入背景
+        // 当SettingsItem 被加入　SettingsGroup　时，为其加入背景
         item->addBackground();
     }
 
@@ -150,5 +151,5 @@ SettingsItem *SettingsGroup::getItem(int index)
 
     return nullptr;
 }
-}
-}
+} // namespace widgets
+} // namespace def

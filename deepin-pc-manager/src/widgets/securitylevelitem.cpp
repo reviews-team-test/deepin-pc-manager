@@ -5,14 +5,14 @@
 
 #include "securitylevelitem.h"
 
-#include <DBackgroundGroup>
 #include <DApplicationHelper>
+#include <DBackgroundGroup>
 
-#include <QPainter>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGraphicsOpacityEffect>
 #include <QDebug>
+#include <QGraphicsOpacityEffect>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
 
@@ -63,10 +63,7 @@ SecurityLevelItem::SecurityLevelItem(QWidget *parent)
     setLineWidth(0);
 }
 
-SecurityLevelItem::~SecurityLevelItem()
-{
-
-}
+SecurityLevelItem::~SecurityLevelItem() { }
 
 void SecurityLevelItem::mousePressEvent(QMouseEvent *event)
 {
@@ -118,5 +115,5 @@ void SecurityLevelItem::setDisableStyle(bool disable)
 
 void SecurityLevelItem::setStatusIcon(QIcon icon)
 {
-     m_statusIcon->setPixmap(icon.pixmap(16, 16));
+    m_statusIcon->setPixmap(icon.pixmap(16, 16));
 }

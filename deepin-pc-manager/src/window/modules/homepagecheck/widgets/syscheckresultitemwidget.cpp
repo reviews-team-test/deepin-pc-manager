@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "syscheckresultitemwidget.h"
+
 #include "systemcheckdefinition.h"
 
 #include <QGridLayout>
@@ -136,8 +137,8 @@ void SysCheckResultItemWidget::onNotifyIgnored(bool isIgnored)
     // 仅两个项目需要处理忽略状态
     if (SysCheckItemID::DevMode == m_id) {
         QString info = m_resultItem->data(CheckResultModelRole::IsIssueHappen).toBool()
-                           ? kStatusAbnormal7
-                           : kStatusNormal7;
+            ? kStatusAbnormal7
+            : kStatusNormal7;
         if (isIgnored) {
             // 被忽略时不要隐藏，依照早期需求处理
             // this->hide();
@@ -151,10 +152,12 @@ void SysCheckResultItemWidget::onNotifyIgnored(bool isIgnored)
             m_ignoreBtn->show();
             m_disIgnoreBtn->hide();
             if (m_resultItem->data(CheckResultModelRole::IsIssueHappen).toBool()) {
-                m_statusIconLabel->setPixmap(QIcon::fromTheme(kAbnormalStatusIconPath).pixmap(12, 12));
+                m_statusIconLabel->setPixmap(
+                    QIcon::fromTheme(kAbnormalStatusIconPath).pixmap(12, 12));
                 m_statusInfoLabel->setText(SystemCheckHelper::getColoredText(65, info));
             } else {
-                m_statusIconLabel->setPixmap(QIcon::fromTheme(kNormalStatusIconPath).pixmap(12, 12));
+                m_statusIconLabel->setPixmap(
+                    QIcon::fromTheme(kNormalStatusIconPath).pixmap(12, 12));
                 QString info = m_statusInfoLabel->text();
                 m_statusInfoLabel->setText(SystemCheckHelper::getColoredText(100, info));
             }
@@ -171,12 +174,14 @@ void SysCheckResultItemWidget::onNotifyIgnored(bool isIgnored)
             if (isIgnored) {
                 m_ignoreBtn->hide();
                 m_disIgnoreBtn->show();
-                m_statusIconLabel->setPixmap(QIcon::fromTheme(kNormalStatusIconPath).pixmap(12, 12));
+                m_statusIconLabel->setPixmap(
+                    QIcon::fromTheme(kNormalStatusIconPath).pixmap(12, 12));
                 m_statusInfoLabel->setText(SystemCheckHelper::getColoredText(100, autoStartDetail));
             } else {
                 m_ignoreBtn->show();
                 m_disIgnoreBtn->hide();
-                m_statusIconLabel->setPixmap(QIcon::fromTheme(kAbnormalStatusIconPath).pixmap(12, 12));
+                m_statusIconLabel->setPixmap(
+                    QIcon::fromTheme(kAbnormalStatusIconPath).pixmap(12, 12));
                 m_statusInfoLabel->setText(SystemCheckHelper::getColoredText(65, autoStartDetail));
             }
             return;
@@ -296,10 +301,10 @@ void SysCheckResultItemWidget::initUI()
     FIXED_COL(0, 46); // 靠右放置图标
     FIXED_COL(1, 10);
     FIXED_COL(2, 174); // 项目说明
-    FIXED_COL(3, 12); // 状态图标
+    FIXED_COL(3, 12);  // 状态图标
     FIXED_COL(4, 10);
     FIXED_COL(5, 354); // 状态说明
-    FIXED_COL(6, 16); // 忽略图标
+    FIXED_COL(6, 16);  // 忽略图标
     FIXED_COL(7, 20);
     FIXED_COL(8, 108); // 跳转与spinner
 

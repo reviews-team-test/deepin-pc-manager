@@ -4,16 +4,19 @@
 
 #include "common.h"
 
-#include <DPinyin>
-#include <DFontSizeManager>
+#include "src/window/modules/common/invokers/invokerfactory.h"
 
-#include <QFontMetrics>
-#include <QDebug>
-#include <QSqlDatabase>
-#include <QSqlQuery>
+#include <DFontSizeManager>
+#include <DPinyin>
+
+#include <QDBusMessage>
 #include <QDBusVariant>
+#include <QDebug>
+#include <QFontMetrics>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QTextCodec>
 
 // 汉字方法相关
@@ -30,7 +33,7 @@ const QRegularExpression OnlyNumRegular = QRegularExpression("^[0-9]+$");
  */
 QString Utils::wordwrapText(const QFontMetrics &font, const QString &text, int nLabelLenth)
 {
-    int textLenth = font.width(text);
+    int textLenth = font.horizontalAdvance(text);
     if (textLenth <= nLabelLenth)
         return text;
 
@@ -38,7 +41,8 @@ QString Utils::wordwrapText(const QFontMetrics &font, const QString &text, int n
     QString lineString;
     for (int i = 0; i < text.size(); i++) {
         lineString.append(text.at(i));
-        long lenthTmp = font.width(lineString); //积累的字符串长度，到达标签长度时重置，并向返回的字符串retStr后添加"\n"
+        long lenthTmp = font.horizontalAdvance(
+            lineString); // 积累的字符串长度，到达标签长度时重置，并向返回的字符串retStr后添加"\n"
         if (nLabelLenth < lenthTmp) {
             lineString = lineString.left(lineString.count() - 1);
             i--;
@@ -57,13 +61,13 @@ QString Utils::changeFlowValueUnit(double input, int prec)
 {
     QString flowValueStr;
     if (GB_COUNT < input) {
-        //单位为GB
+        // 单位为GB
         flowValueStr = QString::number(input / GB_COUNT, 'd', prec) + "GB";
     } else if (MB_COUNT < input) {
-        //单位为MB
+        // 单位为MB
         flowValueStr = QString::number(input / MB_COUNT, 'd', prec) + "MB";
     } else {
-        //单位为KB
+        // 单位为KB
         flowValueStr = QString::number(input / KB_COUNT, 'd', prec) + "KB";
     }
     return flowValueStr;
@@ -74,13 +78,13 @@ QString Utils::changeFlowSpeedValueUnit(double input, int prec)
 {
     QString flowSpeedValueStr;
     if (GB_COUNT < input) {
-        //单位为GB
+        // 单位为GB
         flowSpeedValueStr = QString::number(input / GB_COUNT, 'd', prec) + "GB/s";
     } else if (MB_COUNT < input) {
-        //单位为MB
+        // 单位为MB
         flowSpeedValueStr = QString::number(input / MB_COUNT, 'd', prec) + "MB/s";
     } else {
-        //单位为KB
+        // 单位为KB
         flowSpeedValueStr = QString::number(input / KB_COUNT, 'd', prec) + "KB/s";
     }
     return flowSpeedValueStr;
@@ -90,16 +94,32 @@ QString Utils::formatBytes(qint64 input, int prec)
 {
     QString flowValueStr;
     if (KB_COUNT > input) {
-        flowValueStr = QString::number(input / 1, 'd', prec) + " B";
+        flowValueStr = QString::number(input / 1.0, 'd', prec) + " B";
     } else if (MB_COUNT > input) {
-        flowValueStr = QString::number(input / KB_COUNT + double(input % KB_COUNT) / KB_COUNT, 'd', prec) + " KB";
+        flowValueStr =
+            QString::number(input / double(KB_COUNT) + double(input % KB_COUNT) / KB_COUNT,
+                            'd',
+                            prec)
+            + " KB";
     } else if (GB_COUNT > input) {
-        flowValueStr = QString::number(input / MB_COUNT + double(input % MB_COUNT) / MB_COUNT, 'd', prec) + " MB";
+        flowValueStr =
+            QString::number(input / double(MB_COUNT) + double(input % MB_COUNT) / MB_COUNT,
+                            'd',
+                            prec)
+            + " MB";
     } else if (TB_COUNT > input) {
-        flowValueStr = QString::number(input / GB_COUNT + double(input % GB_COUNT) / GB_COUNT, 'd', prec) + " GB";
+        flowValueStr =
+            QString::number(input / double(GB_COUNT) + double(input % GB_COUNT) / GB_COUNT,
+                            'd',
+                            prec)
+            + " GB";
     } else {
         // 大于TB单位
-        flowValueStr = QString::number(input / TB_COUNT + double(input % TB_COUNT) / TB_COUNT, 'd', prec) + " TB";
+        flowValueStr =
+            QString::number(input / double(TB_COUNT) + double(input % TB_COUNT) / TB_COUNT,
+                            'd',
+                            prec)
+            + " TB";
     }
     return flowValueStr;
 }
@@ -159,18 +179,25 @@ PinyinInfo Utils::getPinYinInfoFromStr(const QString &words)
 // 显示普通系统通知信息
 bool Utils::showNormalNotification(DBusInvokerInterface *notifInter, const QString &msg)
 {
-    QString name = "deepin-defender";
+    QString name = "deepin-pc-manager";
     uint id = 0;
-    QString themeIconName = "deepin-defender";
+    QString themeIconName = "deepin-pc-manager";
     QString abstract = "";
     QString content = msg;
     QStringList btnInfoList;
     QVariantMap cmdMapOfBtn;
     int timeout = 3000; // ms
 
-    QDBusMessage dbusMsg = DBUS_NOBLOCK_INVOKE(notifInter, "Notify", name, id,
-                                               themeIconName, abstract, content,
-                                               btnInfoList, cmdMapOfBtn, timeout);
+    QDBusMessage dbusMsg = DBUS_NOBLOCK_INVOKE(notifInter,
+                                               "Notify",
+                                               name,
+                                               id,
+                                               themeIconName,
+                                               abstract,
+                                               content,
+                                               btnInfoList,
+                                               cmdMapOfBtn,
+                                               timeout);
 
     if (QDBusMessage::MessageType::ErrorMessage == dbusMsg.type()
         || QDBusMessage::MessageType::InvalidMessage == dbusMsg.type()) {
@@ -195,16 +222,19 @@ QString Utils::getAppNameFromDesktop(const QString &desktopPath)
     // 应用名称
     QString xDeepinVendor = readIniSettingMethod.value("X-Deepin-Vendor").toString();
     if (X_DEEPIN_VENDOR_STR == xDeepinVendor) {
-        appName = readIniSettingMethod.value(QString("GenericName[%1]").arg(sysLanguage)).toString();
+        appName =
+            readIniSettingMethod.value(QString("GenericName[%1]").arg(sysLanguage)).toString();
         // 如果没获取到语言对应的应用名称，则获取语言前缀对应的应用名称
         if (appName.isEmpty()) {
-            appName = readIniSettingMethod.value(QString("GenericName[%1]").arg(sysLanguagePrefix)).toString();
+            appName = readIniSettingMethod.value(QString("GenericName[%1]").arg(sysLanguagePrefix))
+                          .toString();
         }
     } else {
         appName = readIniSettingMethod.value(QString("Name[%1]").arg(sysLanguage)).toString();
         // 如果没获取到语言对应的应用名称，则获取语言前缀对应的应用名称
         if (appName.isEmpty()) {
-            appName = readIniSettingMethod.value(QString("Name[%1]").arg(sysLanguagePrefix)).toString();
+            appName =
+                readIniSettingMethod.value(QString("Name[%1]").arg(sysLanguagePrefix)).toString();
         }
     }
 

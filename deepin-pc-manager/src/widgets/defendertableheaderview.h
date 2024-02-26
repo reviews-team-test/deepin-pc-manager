@@ -22,6 +22,7 @@ public:
 
     // 表头间隔
     inline int getSpacing() const { return m_spacing; }
+
     inline void setSpacing(int spacing) { m_spacing = spacing; }
 
     // 掩藏某列表头下标
@@ -32,7 +33,9 @@ public:
 protected:
     // 表头类绘制事件
     void paintEvent(QPaintEvent *e) override;
-    virtual void paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const override;
+    virtual void paintSection(QPainter *painter,
+                              const QRect &rect,
+                              int logicalIndex) const override;
 
     // 焦点事件
     void focusInEvent(QFocusEvent *event) override;

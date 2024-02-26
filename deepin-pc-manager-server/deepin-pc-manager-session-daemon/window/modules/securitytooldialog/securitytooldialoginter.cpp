@@ -4,40 +4,43 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "securitytooldialoginter.h"
-#include "window/modules/securitytooldialog/startupdialog/autostartmodel.h"
 
-#include <QDBusContext>
+#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
+
+#include <QDBusConnection>
 #include <QGSettings>
 
 const QString service = "com.deepin.pc.manager.securitytooldialog";
 const QString path = "/com/deepin/pc/manager/securitytooldialog";
 
 // 自动化标签
-#define SET_ACCESS_NAME_T(control, className, name) control->setAccessibleName(ACCNAMESTR(className##_##name));
+#define SET_ACCESS_NAME_T(control, className, name) \
+    control->setAccessibleName(ACCNAMESTR(className##_##name));
 #define SET_ACC_NAME(control, name) SET_ACCESS_NAME_T(control, securityToolDialogInter, name)
 
 SecurityToolDialogInter::SecurityToolDialogInter(QObject *parent)
     : QObject(parent)
+    , m_securityToolsAdaptor(nullptr)
     , m_guiHelper(nullptr)
     , m_gsetting(new QGSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, QByteArray(), this))
-    , m_adaptor(nullptr)
     , m_autoStartupMwnd(nullptr)
     , m_netCheckMwnd(nullptr)
 {
-    m_adaptor = new SecuritytooldialogAdaptor(this);
+    m_securityToolsAdaptor = new SecuritytooldialogAdaptor(this);
+    if (!QDBusConnection::sessionBus().registerService(service)
+        || !QDBusConnection::sessionBus().registerObject(path, this)) {
+        exit(0);
+    }
+
     m_pToolBusLineMgr = new DefSecurityToolsBusLineMgr;
     DefToolAuthorityCheckObj *pCheckObj = new DefToolAuthorityCheckObj(m_pToolBusLineMgr);
     m_pToolBusLineMgr->setAutorityCheckObj(pCheckObj);
-
-    if (!QDBusConnection::sessionBus().registerService(service) || !QDBusConnection::sessionBus().registerObject(path, this)) {
-        exit(0);
-    }
 
     // 主题
     m_guiHelper = DGuiApplicationHelper::instance();
     getDefenderPaletteType();
 
-    //安全工具信息
+    // 安全工具信息
     registerDefSecurityToolInfo();
     registerDefSecurityToolInfoList();
     initConnections();
@@ -62,8 +65,14 @@ SecurityToolDialogInter::~SecurityToolDialogInter()
 
 void SecurityToolDialogInter::initConnections()
 {
-    QObject::connect(m_pToolBusLineMgr, &DefSecurityToolsBusLineMgr::notifyToolsInfoUpdate, this, &SecurityToolDialogInter::notifyToolsInfoUpdate);
-    QObject::connect(m_pToolBusLineMgr, &DefSecurityToolsBusLineMgr::notifyAppStatusChanged, this, &SecurityToolDialogInter::acceptAppStatusChanged);
+    QObject::connect(m_pToolBusLineMgr,
+                     &DefSecurityToolsBusLineMgr::notifyToolsInfoUpdate,
+                     this,
+                     &SecurityToolDialogInter::notifyToolsInfoUpdate);
+    QObject::connect(m_pToolBusLineMgr,
+                     &DefSecurityToolsBusLineMgr::notifyAppStatusChanged,
+                     this,
+                     &SecurityToolDialogInter::acceptAppStatusChanged);
 }
 
 void SecurityToolDialogInter::getDefenderPaletteType()
@@ -134,7 +143,8 @@ void SecurityToolDialogInter::OnShowTool(const QString &strPackageKey, const QSt
 }
 
 // 接收app状态改变槽
-void SecurityToolDialogInter::acceptAppStatusChanged(const QString &strPackageKey, DEFSECURITYTOOLSTATUS status)
+void SecurityToolDialogInter::acceptAppStatusChanged(const QString &strPackageKey,
+                                                     DEFSECURITYTOOLSTATUS status)
 {
     Q_EMIT notifyAppStatusChanged(strPackageKey, status);
 

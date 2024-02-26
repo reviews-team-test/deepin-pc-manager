@@ -5,8 +5,9 @@
 #ifndef CUSTOMPUSHBUTTON_H
 #define CUSTOMPUSHBUTTON_H
 
-#include <QWidget>
 #include <DPushButton>
+
+#include <QWidget>
 
 DWIDGET_USE_NAMESPACE
 
@@ -32,7 +33,7 @@ signals:
     void clicked();
 
 private:
-    DPushButton        *m_button;
+    DPushButton *m_button;
 };
 
 #endif // CUSTOMPUSHBUTTON_H

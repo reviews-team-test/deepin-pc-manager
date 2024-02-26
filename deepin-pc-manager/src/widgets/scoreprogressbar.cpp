@@ -5,19 +5,17 @@
 
 #include "scoreprogressbar.h"
 
-#include <QPainter>
-#include <QHBoxLayout>
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QPainter>
 #include <QPropertyAnimation>
-
-DWIDGET_USE_NAMESPACE
 
 // 单个矩形条宽
 const int SingleRectangleWidth = 60;
 // 单个矩形条高
-const int SingleRectangleHeight = 11;
+const qreal SingleRectangleHeight = 11.0;
 // 整体最小宽
-const int MiniWidth = SingleRectangleWidth * 3 + 20;
+const qreal MiniWidth = SingleRectangleWidth * 3 + 20.0;
 // 背景颜色
 const QColor BackgroundColor(229, 229, 229);
 
@@ -36,9 +34,7 @@ ScoreProgressBar::ScoreProgressBar(QWidget *parent)
     m_valueAnimation = new QPropertyAnimation(this, "currentValue", this);
 }
 
-ScoreProgressBar::~ScoreProgressBar()
-{
-}
+ScoreProgressBar::~ScoreProgressBar() { }
 
 // 设置当前显示值
 void ScoreProgressBar::setCurrentValue(int value)
@@ -81,19 +77,25 @@ void ScoreProgressBar::paintEvent(QPaintEvent *)
 {
     int scaleWidth = this->width();
     int scaleHeight = this->height();
-    if (MiniWidth > scaleWidth) scaleWidth = MiniWidth; //放大比例不能小于1
-    if (SingleRectangleHeight > scaleHeight) scaleHeight = SingleRectangleHeight;
+    if (MiniWidth > scaleWidth)
+        scaleWidth = MiniWidth; // 放大比例不能小于1
+    if (SingleRectangleHeight > scaleHeight)
+        scaleHeight = SingleRectangleHeight;
 
     QPainter painter(this);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing); //设置渲染特性：反锯齿
+    painter.setRenderHints(QPainter::Antialiasing
+                           | QPainter::TextAntialiasing); // 设置渲染特性：反锯齿
     painter.scale(scaleWidth / MiniWidth, scaleHeight / SingleRectangleHeight);
     painter.save();
 
-    //三个圆角矩形尺寸
+    // 三个圆角矩形尺寸
     QRect rect1(1, 1, SingleRectangleWidth - 1, SingleRectangleHeight - 1);
-    QRect rect2(1 + SingleRectangleWidth + 10, 1, SingleRectangleWidth - 1, SingleRectangleHeight - 1);
+    QRect rect2(1 + SingleRectangleWidth + 10,
+                1,
+                SingleRectangleWidth - 1,
+                SingleRectangleHeight - 1);
 
-    //绘制当前进度
+    // 绘制当前进度
     painter.setBrush(m_color);
     painter.setPen(Qt::NoPen);
 

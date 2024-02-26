@@ -5,9 +5,9 @@
 
 #include "syscheckresultheaderwidget.h"
 
+#include <DFontSizeManager>
 #include <DPalette>
 #include <DPaletteHelper>
-#include <DFontSizeManager>
 
 #include <QGridLayout>
 
@@ -27,10 +27,10 @@ SysCheckResultHeaderWidget::SysCheckResultHeaderWidget(QWidget *parent)
 {
     this->setFixedSize(750, 146);
     this->setLineWidth(0);
-    this->setBackgroundRole(DPalette::Background);
+    this->setBackgroundRole(DPalette::Window);
     this->setContentsMargins(0, 0, 0, 0);
     DPalette dpa = DPaletteHelper::instance()->palette(this, this->palette());
-    dpa.setColor(DPalette::Background, QColor::fromRgb(163, 211, 255, int(0.13 * 255)));
+    dpa.setColor(DPalette::Window, QColor::fromRgb(163, 211, 255, int(0.13 * 255)));
     DPaletteHelper::instance()->setPalette(this, dpa);
     initUI();
 
@@ -55,7 +55,9 @@ void SysCheckResultHeaderWidget::onPointChanged(int value, int issueCount)
         m_tips->setText(kNormalResultTip);
         m_logo->setPixmap(QIcon::fromTheme(k100PointResultLogoPath).pixmap(190, 146));
     } else {
-        m_title->setText(QString(kAbnormalResultTitle).arg(SystemCheckHelper::getColoredText(value, QString("%1").arg(issueCount))));
+        m_title->setText(
+            QString(kAbnormalResultTitle)
+                .arg(SystemCheckHelper::getColoredText(value, QString("%1").arg(issueCount))));
         m_tips->setText(kAbnormalResultTip);
         m_logo->setPixmap(QIcon::fromTheme(kAbnormalResultLogoPath).pixmap(190, 146));
     }

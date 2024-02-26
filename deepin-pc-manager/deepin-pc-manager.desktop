@@ -4,7 +4,7 @@ Comment=Deepin PC Manager is an application tool designed to help users quickly 
 Encoding=UTF-8
 Exec=dbus-send --print-reply --dest=com.deepin.pc.manager /com/deepin/pc/manager com.deepin.pc.manager.Show
 GenericName=PC Manager
-Icon=deepin-defender
+Icon=deepin-pc-manager
 Name=Deepin PC Manager
 StartupNotify=false
 Terminal=false

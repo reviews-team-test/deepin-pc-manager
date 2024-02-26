@@ -6,12 +6,12 @@
 #ifndef SETTINGSGROUP_H
 #define SETTINGSGROUP_H
 
+#include "translucentframe.h"
+
 #include <DBackgroundGroup>
 
 #include <QFrame>
 #include <QTimer>
-
-#include "translucentframe.h"
 
 class QVBoxLayout;
 
@@ -28,17 +28,14 @@ class SettingsGroup : public TranslucentFrame
     Q_OBJECT
 
 public:
-    enum BackgroundStyle {
-        ItemBackground = 0,
-        GroupBackground,
-        NoneBackground
-    };
+    enum BackgroundStyle { ItemBackground = 0, GroupBackground, NoneBackground };
 
     explicit SettingsGroup(QFrame *parent = nullptr, BackgroundStyle bgStyle = ItemBackground);
     explicit SettingsGroup(const QString &title, QFrame *parent = nullptr);
     ~SettingsGroup();
 
     SettingsHeaderItem *headerItem() const { return m_headerItem; }
+
     void setHeaderVisible(const bool visible);
 
     SettingsItem *getItem(int index);
@@ -51,16 +48,17 @@ public:
 
     int itemCount() const;
     void clear();
+
     QVBoxLayout *getLayout() const { return m_layout; }
 
 private:
-    BackgroundStyle m_bgStyle{ItemBackground};
+    BackgroundStyle m_bgStyle{ ItemBackground };
     QVBoxLayout *m_layout;
     SettingsHeaderItem *m_headerItem;
-    DTK_WIDGET_NAMESPACE::DBackgroundGroup *m_bggroup{nullptr};
+    DTK_WIDGET_NAMESPACE::DBackgroundGroup *m_bggroup{ nullptr };
 };
 
-}
-}
+} // namespace widgets
+} // namespace def
 
 #endif // SETTINGSGROUP_H

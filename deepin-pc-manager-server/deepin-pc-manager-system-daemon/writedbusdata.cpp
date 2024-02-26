@@ -4,40 +4,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "writedbusdata.h"
-#include "localcache/settingssql.h"
-#include "localcache/securitypkgnamesql.h"
+
 #include "../../deepin-pc-manager/src/window/modules/common/common.h"
 #include "../../deepin-pc-manager/src/window/modules/common/database/trashcleanuninstallappsql.h"
-#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerfactory.h"
+#include "disk/disk.h"
+#include "localcache/securitypkgnamesql.h"
+#include "localcache/settingssql.h"
 
 #include <DTrashManager>
 
-#include <QDebug>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDateTime>
-#include <QtConcurrent/QtConcurrent>
+#include <QDBusConnection>
 #include <QDBusContext>
-#include <QMetaType>
 #include <QDBusMetaType>
+#include <QDateTime>
+#include <QDebug>
+#include <QMetaType>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QtConcurrent/QtConcurrent>
 
 // 合法调用进程路径列表
-const QStringList ValidInvokerExePathList =
-    {"/usr/bin/deepin-pc-manager",
-     "/usr/bin/deepin-pc-manager-session-daemon",
-     "/usr/bin/deepin-pc-manager-system-daemon"};
+const QStringList ValidInvokerExePathList = {"/usr/bin/deepin-pc-manager",
+                                             "/usr/bin/deepin-pc-manager-session-daemon",
+                                             "/usr/bin/deepin-pc-manager-system-daemon"};
 
 WriteDBusData::WriteDBusData(QObject *parent)
     : QObject(parent)
-    , m_adaptor(new DaemonAdaptor(this))
+    , m_daemonAdaptor(nullptr)
     , m_settingsSql(new SettingsSql("WriteDBusData_Settings", this))
     , m_isInitSqlDatabase(false)
 {
-    if (!QDBusConnection::systemBus().registerService(service) || !QDBusConnection::systemBus().registerObject(path, this)) {
+    m_daemonAdaptor = new DaemonAdaptor(this);
+    if (!QDBusConnection::systemBus().registerService(service)
+        || !QDBusConnection::systemBus().registerObject(path, this)) {
         exit(0);
     }
-
-    registerSystemLogInfoType();
 
     // 初始化localcache.db数据库
     initLocalCache();
@@ -82,7 +83,8 @@ bool WriteDBusData::SetSysSettingValue(const QString &key, const QDBusVariant &v
     bool success = m_settingsSql->setValue(key, settingValueOfKey);
     if (lastValueOfKey != settingValueOfKey) {
         Q_EMIT SysSettingValueChanged(key, value);
-        qInfo() << "[WriteDBusData] [SetSysSettingValue] key:" << key << " value:" << value.variant();
+        qInfo() << "[WriteDBusData] [SetSysSettingValue] key:" << key
+                << " value:" << value.variant();
     }
 
     return success;
@@ -112,13 +114,13 @@ QDBusVariant WriteDBusData::GetSysSettingValue(const QString &key)
 // 初始化localcache.db数据库
 void WriteDBusData::initLocalCache()
 {
-    //初始化数据库
+    // 初始化数据库
     QDir defenderDataDir;
     if (!defenderDataDir.exists(DEFENDER_DATA_DIR_PATH)) {
         defenderDataDir.mkdir(DEFENDER_DATA_DIR_PATH);
     }
 
-    //在打开之前判断数据库文件是否已存在，若不存在创建并修改其文件属性，存在则进行判断和修改
+    // 在打开之前判断数据库文件是否已存在，若不存在创建并修改其文件属性，存在则进行判断和修改
     QString strDbFileName = QString("%1%2").arg(DEFENDER_DATA_DIR_PATH).arg(LOCAL_CACHE_DB_NAME);
     QFile dbFile(strDbFileName);
 
@@ -130,8 +132,10 @@ void WriteDBusData::initLocalCache()
         QFile::Permissions permissons = dbFile.permissions();
 
         if (permissons != (QFile::Permission::WriteUser | QFile::Permission::ReadOwner)) {
-            if (!dbFile.setPermissions(QFile::Permission::WriteUser | QFile::Permission::ReadOwner)) {
-                qCritical() << "[WriteDBusData] [initLocalCache] change database permission failed!";
+            if (!dbFile.setPermissions(QFile::Permission::WriteUser
+                                       | QFile::Permission::ReadOwner)) {
+                qCritical()
+                    << "[WriteDBusData] [initLocalCache] change database permission failed!";
             }
         }
     } else {
@@ -141,7 +145,7 @@ void WriteDBusData::initLocalCache()
 
         m_localCacheDb.close();
 
-        //修改数据库文件权限
+        // 修改数据库文件权限
         if (!dbFile.setPermissions(QFile::Permission::WriteUser | QFile::Permission::ReadOwner)) {
             qCritical() << "[WriteDBusData] [initLocalCache] modify database permission failed!";
         }
@@ -153,12 +157,21 @@ void WriteDBusData::initLocalCache()
 
     // 1.包名及相关联文件数据库表
     m_securityPkgNameSql = new SecurityPkgNameSql(m_localCacheDb);
-    connect(this, &WriteDBusData::requestRefreshPackageTable, m_securityPkgNameSql, &SecurityPkgNameSql::refreshPackageLinkTable);
-    connect(m_securityPkgNameSql, &SecurityPkgNameSql::notifySqlInsertFinish, this, &WriteDBusData::acceptSqlInsertFinish);
+    connect(this,
+            &WriteDBusData::requestRefreshPackageTable,
+            m_securityPkgNameSql,
+            &SecurityPkgNameSql::refreshPackageLinkTable);
+    connect(m_securityPkgNameSql,
+            &SecurityPkgNameSql::notifySqlInsertFinish,
+            this,
+            &WriteDBusData::acceptSqlInsertFinish);
 
     m_securityPkgNameSqlThread = new QThread;
     m_securityPkgNameSql->moveToThread(m_securityPkgNameSqlThread);
-    connect(m_securityPkgNameSqlThread, &QThread::started, m_securityPkgNameSql, &SecurityPkgNameSql::createPackageLinkTable);
+    connect(m_securityPkgNameSqlThread,
+            &QThread::started,
+            m_securityPkgNameSql,
+            &SecurityPkgNameSql::createPackageLinkTable);
 }
 
 // 接受数据库插入完成信号
@@ -174,7 +187,8 @@ void WriteDBusData::acceptSqlInsertFinish()
     QString sCmd;
     sCmd = QString("select * from package_binary_file");
     if (!query.exec(sCmd)) {
-        qCritical() << "[WriteDBusData] [acceptSqlInsertFinish] query localcachedb error :" << query.lastError();
+        qCritical() << "[WriteDBusData] [acceptSqlInsertFinish] query localcachedb error :"
+                    << query.lastError();
     } else {
         // 将已有的所有包名插入到QStringList容器当中
         while (query.next()) {
@@ -259,15 +273,10 @@ void WriteDBusData::CleanJournal()
 
     // 先停止sshd服务运行
     QProcess procSSHD;
-    procSSHD.start(QString("journalctl --rotate --vacuum-size=1M"));
+    procSSHD.start("journalctl", {"--rotate", "--vacuum-size=1M"});
     procSSHD.waitForFinished();
     procSSHD.close();
     procSSHD.deleteLater();
-}
-
-// 添加安全日志
-void WriteDBusData::AddSecurityLog(int nType, QString sInfo)
-{
 }
 
 // 递归函数-获取/usr/share/deepin-pc-manager/config/目录下所有的lock文件
@@ -283,7 +292,9 @@ void WriteDBusData::scanFile(const QString &path)
             }
         } else if (info.isDir()) {
             QDir dir(path);
-            for (const QFileInfo &i : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks)) {
+            for (const QFileInfo &i :
+                 dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs | QDir::Hidden
+                                   | QDir::NoSymLinks)) {
                 // 递归扫描目录内容
                 scanFile(i.absoluteFilePath());
             }
@@ -303,7 +314,8 @@ void WriteDBusData::InsertUninstalledAppRecord(const QString &appID, const QStri
     // m_uninstallAppSql->executeCmd();
     TrashCleanUninstallAppSql db;
     if (db.init()) {
-        db.executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::INSERT_A_RECORD, {appID, appName});
+        db.executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::INSERT_A_RECORD,
+                      {appID, appName});
     }
 }
 
@@ -314,10 +326,12 @@ void WriteDBusData::DeleteUninstalledAppRecord(const QString &appID)
         qDebug() << Q_FUNC_INFO << "invalid invoker!";
         return;
     }
-    // m_uninstallAppSql->executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::DELETE_A_RECORD, {appID});
+    // m_uninstallAppSql->executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::DELETE_A_RECORD,
+    // {appID});
     TrashCleanUninstallAppSql db;
     if (db.init()) {
-        db.executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::DELETE_A_RECORD, {appID});
+        db.executeCmd(TrashCleanUninstallAppSql::UninstalledAppSqlCmdType::DELETE_A_RECORD,
+                      {appID});
     }
 }
 
@@ -329,11 +343,14 @@ QVariantList WriteDBusData::GetUnInstalledApps()
     if (db.init()) {
         bool queryFinished = false;
 
-        connect(&db, &TrashCleanUninstallAppSql::sendQueryResultSignal, this, [&](QVariantList rst) {
-            varList = rst;
-            disconnect(&db);
-            queryFinished = true;
-        });
+        connect(&db,
+                &TrashCleanUninstallAppSql::sendQueryResultSignal,
+                this,
+                [&](QVariantList rst) {
+                    varList = rst;
+                    disconnect(&db);
+                    queryFinished = true;
+                });
 
         db.executeCmd(TrashCleanUninstallAppSql::GET_ALL_RECORDS);
         QTime timer = QTime::currentTime().addMSecs(3000);

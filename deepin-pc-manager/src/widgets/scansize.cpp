@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "scansize.h"
+
 #include "../window/modules/common/common.h"
 
+#include <QCheckBox>
+#include <QDebug>
+#include <QHBoxLayout>
 #include <QIntValidator>
 #include <QLabel>
 #include <QLineEdit>
-#include <QHBoxLayout>
-#include <QDebug>
-#include <QCheckBox>
 #include <QRegularExpressionValidator>
 
 ScanSize::ScanSize(QWidget *parent)
@@ -28,7 +29,8 @@ ScanSize::ScanSize(QWidget *parent)
     m_context->setText(tr("Do not scan archives larger than"));
     m_unit->setText("MB(20-5120)");
     m_pLineEdit->setText("20");
-    m_pLineEdit->lineEdit()->setValidator(new QRegularExpressionValidator(QRegularExpression("0|[1-9]\\d{0,3}"), m_pLineEdit));
+    m_pLineEdit->lineEdit()->setValidator(
+        new QRegularExpressionValidator(QRegularExpression("0|[1-9]\\d{0,3}"), m_pLineEdit));
     // 不可以编辑
     m_pLineEdit->setEnabled(false);
     layout->addWidget(m_check);
@@ -68,9 +70,10 @@ void ScanSize::checkBoxChange(int status)
 // 编辑改变
 void ScanSize::lineEditChange(QString str)
 {
-    if ((str == "" )|| (m_pLineEdit->text().toInt() < MIN_SCAN) || (m_pLineEdit->text().toInt() > MAX_SCAN)){
+    if ((str == "") || (m_pLineEdit->text().toInt() < MIN_SCAN)
+        || (m_pLineEdit->text().toInt() > MAX_SCAN)) {
         // 该注释下一版需要,暂时不删
-        //m_pLineEdit->showAlertMessage(tr("Limited between 20-5120"), this->parentWidget(), -1);
+        // m_pLineEdit->showAlertMessage(tr("Limited between 20-5120"), this->parentWidget(), -1);
         m_pLineEdit->setAlert(true);
         m_pLineEdit->setAlertMessageAlignment(Qt::AlignLeft);
     } else {

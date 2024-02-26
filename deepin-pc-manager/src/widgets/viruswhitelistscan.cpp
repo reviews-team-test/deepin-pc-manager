@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "viruswhitelistscan.h"
-#include "../window/modules/common/compixmap.h"
 
 #include <DFontSizeManager>
 #include <DPalette>
@@ -50,9 +49,7 @@ VirusWhitelistScanItem::VirusWhitelistScanItem(QWidget *parent)
     connect(m_dialogBtn, &DIconButton::clicked, this, &VirusWhitelistScanItem::pushButtonTrigger);
 }
 
-VirusWhitelistScanItem::~VirusWhitelistScanItem()
-{
-}
+VirusWhitelistScanItem::~VirusWhitelistScanItem() { }
 
 // 设置label显示内容
 void VirusWhitelistScanItem::setText(const QString &text)

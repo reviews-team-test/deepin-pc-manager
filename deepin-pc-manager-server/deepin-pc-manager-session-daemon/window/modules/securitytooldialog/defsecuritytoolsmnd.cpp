@@ -3,14 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "defsecuritytoolsmnd.h"
-#include "common/gsettingkey.h"
 
 #include <DTitlebar>
 
-#include <QHBoxLayout>
 #include <QApplication>
-#include <QShowEvent>
+#include <QHBoxLayout>
 #include <QScreen>
+#include <QShowEvent>
 
 DefSecurityToolsMnd::DefSecurityToolsMnd(QWidget *pWidget)
     : DMainWindow(pWidget)
@@ -18,9 +17,7 @@ DefSecurityToolsMnd::DefSecurityToolsMnd(QWidget *pWidget)
     initUI();
 }
 
-DefSecurityToolsMnd::~DefSecurityToolsMnd()
-{
-}
+DefSecurityToolsMnd::~DefSecurityToolsMnd() { }
 
 void DefSecurityToolsMnd::addContent(QWidget *pWidget)
 {

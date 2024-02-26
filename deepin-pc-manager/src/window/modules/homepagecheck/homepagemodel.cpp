@@ -4,16 +4,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "homepagemodel.h"
-#include "../common/comdata.h"
-#include "../src/window/modules/common/invokers/invokerfactory.h"
 
-#include <QGSettings>
-#include <QStorageInfo>
-#include <QDebug>
+#include "src/window/modules/common/gsettingkey.h"
+#include "src/window/modules/common/invokers/invokerfactory.h"
+
+#include <DWidget>
+
 #include <QApplication>
+#include <QDebug>
+#include <QStorageInfo>
 #include <QtConcurrent>
 
-#define DIALOG_WIDTH 380 // dialog  宽度
+#define DIALOG_WIDTH 380  // dialog  宽度
 #define DIALOG_HEIGHT 145 // dialog  高度
 
 DWIDGET_USE_NAMESPACE
@@ -34,42 +36,56 @@ HomePageModel::HomePageModel(QObject *parent)
     , m_diskChecking(false)
     , m_developModeChecking(false)
 {
-    //使用GSetting读取参数
-    m_gSettingsInvokerInter = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, "", this);
-    m_defenderDataInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
-                                                                             "/com/deepin/pc/manager/session/daemon",
-                                                                             "com.deepin.pc.manager.session.daemon",
-                                                                             ConnectType::SESSION, this);
+    // 使用GSetting读取参数
+    m_gSettingsInvokerInter =
+        InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, "", this);
+    m_defenderDataInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
+                                                    "/com/deepin/pc/manager/session/daemon",
+                                                    "com.deepin.pc.manager.session.daemon",
+                                                    ConnectType::SESSION,
+                                                    this);
     // 控制中心dbus服务对象
-    m_controlCenterInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.dde.ControlCenter",
-                                                                              "/com/deepin/dde/ControlCenter",
-                                                                              "com.deepin.dde.ControlCenter",
-                                                                              ConnectType::SESSION, this);
+    m_controlCenterInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.dde.ControlCenter",
+                                                    "/com/deepin/dde/ControlCenter",
+                                                    "com.deepin.dde.ControlCenter",
+                                                    ConnectType::SESSION,
+                                                    this);
     // 安全中心dbus服务对象
-    m_defenderWindowInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager",
-                                                                               "/com/deepin/pc/manager",
-                                                                               "com.deepin.pc.manager",
-                                                                               ConnectType::SESSION, this);
+    m_defenderWindowInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager",
+                                                    "/com/deepin/pc/manager",
+                                                    "com.deepin.pc.manager",
+                                                    ConnectType::SESSION,
+                                                    this);
     // 同步助手dbus服务，用于查询是否处于开发者模式
     m_helperInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.sync.Helper",
                                                                        "/com/deepin/sync/Helper",
                                                                        "com.deepin.sync.Helper",
-                                                                       ConnectType::SYSTEM, this);
+                                                                       ConnectType::SYSTEM,
+                                                                       this);
     // 磁盘管理dbus服务
-    m_diskManagerInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.diskmanager",
-                                                                            "/com/deepin/diskmanager",
-                                                                            "com.deepin.diskmanager",
-                                                                            ConnectType::SYSTEM, this);
+    m_diskManagerInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.diskmanager",
+                                                    "/com/deepin/diskmanager",
+                                                    "com.deepin.diskmanager",
+                                                    ConnectType::SYSTEM,
+                                                    this);
     // 流量监控系统dbus服务
-    m_netFlowMonitorInvokerInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
-                                                                               "/com/deepin/pc/manager/MonitorNetFlow",
-                                                                               "com.deepin.pc.manager.MonitorNetFlow",
-                                                                               ConnectType::SYSTEM, this);
+    m_netFlowMonitorInvokerInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
+                                                    "/com/deepin/pc/manager/MonitorNetFlow",
+                                                    "com.deepin.pc.manager.MonitorNetFlow",
+                                                    ConnectType::SYSTEM,
+                                                    this);
 
-    m_securityCenterInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.datainterface",
-                                                                        "/com/deepin/pc/manager/securitytooldialog",
-                                                                        "com.deepin.pc.manager.securitytooldialog",
-                                                                        ConnectType::SESSION, this);
+    m_securityCenterInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.datainterface",
+                                                    "/com/deepin/pc/manager/securitytooldialog",
+                                                    "com.deepin.pc.manager.securitytooldialog",
+                                                    ConnectType::SESSION,
+                                                    this);
 
     // 系统更新数据处理对象
     m_sysUpdaterModel = new SysUpdaterModel(this);
@@ -79,18 +95,32 @@ HomePageModel::HomePageModel(QObject *parent)
 
     //// 自启动
     // 更新自启动应用个数
-    m_defenderDataInvokerInter->Connect("AccessRefreshData", this, SLOT(updateStartUpAppCount(bool, QString)));
+    m_defenderDataInvokerInter->Connect("AccessRefreshData",
+                                        this,
+                                        SLOT(updateStartUpAppCount(bool, QString)));
     //// ssh
     // 当ssh状态改变时
     m_netFlowMonitorInvokerInter->Connect("SendSSHStatus", this, SIGNAL(sendSSHStatus(bool)));
     //// 系统版本
     // 通知去检查系统更新
-    connect(this, &HomePageModel::NotifyCheckSysUpdate, m_sysUpdaterModel, &SysUpdaterModel::CheckForUpdates);
+    connect(this,
+            &HomePageModel::NotifyCheckSysUpdate,
+            m_sysUpdaterModel,
+            &SysUpdaterModel::CheckForUpdates);
     // 通知去停止检查系统更新
-    connect(this, &HomePageModel::notifyStopCheckSysUpdate, m_sysUpdaterModel, &SysUpdaterModel::stopCheckingSysVer);
-    connect(this, &HomePageModel::notifyTimeroutSysUpdate, m_sysUpdaterModel, &SysUpdaterModel::onCheckJobStatusChanged);
+    connect(this,
+            &HomePageModel::notifyStopCheckSysUpdate,
+            m_sysUpdaterModel,
+            &SysUpdaterModel::stopCheckingSysVer);
+    connect(this,
+            &HomePageModel::notifyTimeroutSysUpdate,
+            m_sysUpdaterModel,
+            &SysUpdaterModel::onCheckJobStatusChanged);
     // 检查系统更新完成
-    connect(m_sysUpdaterModel, &SysUpdaterModel::SendHaveUpdates, this, &HomePageModel::CheckSysUpdateFinished);
+    connect(m_sysUpdaterModel,
+            &SysUpdaterModel::SendHaveUpdates,
+            this,
+            &HomePageModel::CheckSysUpdateFinished);
     /// 垃圾清理
     // 请求开始垃圾文件扫描
     connect(this, &HomePageModel::requestStartTrashScan, this, [this] {
@@ -98,13 +128,17 @@ HomePageModel::HomePageModel(QObject *parent)
     });
 
     // 垃圾文件扫描完成时
-    m_defenderDataInvokerInter->Connect("TrashScanFinished", this, SIGNAL(trashScanFinished(double)));
+    m_defenderDataInvokerInter->Connect("TrashScanFinished",
+                                        this,
+                                        SIGNAL(trashScanFinished(double)));
     // 请求清理选中的垃圾文件
     connect(this, &HomePageModel::requestCleanSelectTrash, this, [this] {
         DBUS_NOBLOCK_INVOKE(m_defenderDataInvokerInter, "RequestCleanSelectTrash");
     });
     // 清理选中的垃圾文件完成时
-    m_defenderDataInvokerInter->Connect("CleanSelectTrashFinished", this, SIGNAL(cleanSelectTrashFinished()));
+    m_defenderDataInvokerInter->Connect("CleanSelectTrashFinished",
+                                        this,
+                                        SIGNAL(cleanSelectTrashFinished()));
 }
 
 // 设置上次体检分数
@@ -125,7 +159,8 @@ int HomePageModel::GetSafetyScore()
 // 设置上次体检时间
 void HomePageModel::SetLastCheckTime(QDateTime dateTime)
 {
-    qInfo() << "[HomePageModel] [SetLastCheckTime] homecheck time set " << dateTime.toString("yyyy-MM-dd-hh-mm-ss");
+    qInfo() << "[HomePageModel] [SetLastCheckTime] homecheck time set "
+            << dateTime.toString("yyyy-MM-dd-hh-mm-ss");
     m_gSettingsInvokerInter->SetValue(LAST_CHECK_TIME, dateTime.toString("yyyy-MM-dd-hh-mm-ss"));
 }
 
@@ -156,7 +191,7 @@ bool HomePageModel::isDiskManagerInterValid()
 {
     QProcess proc;
     // 查询是否已经安装 磁盘管理器
-    proc.start("dpkg -s deepin-diskmanager");
+    proc.start("dpkg", { "-s", "deepin-diskmanager" });
     proc.waitForFinished();
     QString status = proc.readAllStandardOutput();
     qInfo() << "[HomePageModel] [isDiskManagerInterValid] disk status " << status;
@@ -286,5 +321,8 @@ int HomePageModel::getAutoStartAppCount() const
 // 添加安全日志
 void HomePageModel::addSecurityLog(QString sInfo)
 {
-    DBUS_NOBLOCK_INVOKE(m_netFlowMonitorInvokerInter, "AddSecurityLog", SECURITY_LOG_TYPE_HOME, sInfo);
+    DBUS_NOBLOCK_INVOKE(m_netFlowMonitorInvokerInter,
+                        "AddSecurityLog",
+                        SECURITY_LOG_TYPE_HOME,
+                        sInfo);
 }

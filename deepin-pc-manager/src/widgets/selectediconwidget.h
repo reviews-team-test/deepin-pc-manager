@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <QWidget>
 #include <QIcon>
+#include <QWidget>
 
 namespace def {
 namespace widgets {

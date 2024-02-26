@@ -7,8 +7,8 @@
 
 #include <DFontSizeManager>
 
-#include <QFont>
 #include <QEvent>
+#include <QFont>
 
 DWIDGET_USE_NAMESPACE
 

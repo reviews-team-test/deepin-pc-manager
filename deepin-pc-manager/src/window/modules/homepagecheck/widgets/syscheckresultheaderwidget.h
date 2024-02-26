@@ -19,7 +19,8 @@ class SysCheckResultHeaderWidget : public Dtk::Widget::DFrame
     Q_OBJECT
 public:
     explicit SysCheckResultHeaderWidget(QWidget *parent = nullptr);
-    ~SysCheckResultHeaderWidget() {}
+
+    ~SysCheckResultHeaderWidget() { }
 
 public Q_SLOTS:
     void onPointChanged(int, int);

@@ -4,12 +4,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "trashcleanappinfofilter.h"
-#include "window/modules/common/defenderlauncherinfo.h"
-#include "../../deepin-pc-manager/src/window/modules/common/common.h"
-#include "../../deepin-pc-manager/src/window/modules/common/database/trashcleanuninstallappsql.h"
 
-#include <QtDBus/QDBusInterface>
+#include "../../deepin-pc-manager/src/window/modules/common/common.h"
+#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerfactory.h"
+#include "window/modules/common/defenderlauncherinfo.h"
+
 #include <QDBusReply>
+#include <QtDBus/QDBusInterface>
 
 #define LAUNCHER_PATH "/com/deepin/dde/daemon/Launcher"
 #define LAUNCHER_SERVICE "com.deepin.dde.daemon.Launcher"
@@ -21,10 +22,12 @@ TrashCleanAppInfoFilter::TrashCleanAppInfoFilter(QObject *parent)
     // 向qt注册用于dbus返回解析的数据结构类型
     registerLauncherItemInfoMetaType();
     registerLauncherItemInfoListMetaType();
-    m_monitorInterFaceServer = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.system.daemon",
-                                                                           "/com/deepin/pc/manager/system/daemon",
-                                                                           "com.deepin.pc.manager.system.daemon",
-                                                                           ConnectType::SYSTEM, this);
+    m_monitorInterFaceServer =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.system.daemon",
+                                                    "/com/deepin/pc/manager/system/daemon",
+                                                    "com.deepin.pc.manager.system.daemon",
+                                                    ConnectType::SYSTEM,
+                                                    this);
 }
 
 TrashCleanAppInfoFilter::~TrashCleanAppInfoFilter()
@@ -220,12 +223,14 @@ void TrashCleanAppInfoFilter::MergeInstalledAppInfo(const QMap<QString, QString>
         m_installedAppPaths.append(it->appCachePaths);
         m_installedAppPaths.append(it->appConfigPaths); // 避免config配置目录被删除
         // 存在性能问题，但当前场景下应当不会有大影响，数据量应该少于30
-        m_installedAppPaths = m_installedAppPaths.toSet().toList();
+        m_installedAppPaths =
+            QSet<QString>(m_installedAppPaths.begin(), m_installedAppPaths.end()).values();
     }
 }
 
 // uninstalledApps内容，应由数据库返回，ID从大到小排序列
-void TrashCleanAppInfoFilter::MergeUninstalledAppInfo(const QList<QPair<QString, QString>> &uninstalledApps)
+void TrashCleanAppInfoFilter::MergeUninstalledAppInfo(
+    const QList<QPair<QString, QString>> &uninstalledApps)
 {
     auto findItemInList = [&](const QString appID, QString &appName) {
         foreach (auto it, uninstalledApps) {
@@ -274,7 +279,8 @@ void TrashCleanAppInfoFilter::MergeUninstalledAppInfo(const QList<QPair<QString,
 
         m_uninstalledAppPaths.append(it->appCachePaths);
         m_uninstalledAppPaths.append(it->appConfigPaths);
-        m_uninstalledAppPaths.toSet().toList();
+        m_uninstalledAppPaths =
+            QSet<QString>(m_uninstalledAppPaths.begin(), m_uninstalledAppPaths.end()).values();
     }
 }
 

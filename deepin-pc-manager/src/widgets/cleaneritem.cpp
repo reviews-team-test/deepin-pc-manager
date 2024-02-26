@@ -5,15 +5,15 @@
 
 #include "cleaneritem.h"
 
-#include <DBackgroundGroup>
 #include <DApplicationHelper>
+#include <DBackgroundGroup>
 #include <DFontSizeManager>
 
-#include <QPainter>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGraphicsOpacityEffect>
 #include <QDebug>
+#include <QGraphicsOpacityEffect>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
 
@@ -78,9 +78,7 @@ CleanerItem::CleanerItem(QWidget *parent)
     connect(m_checkBox, &QCheckBox::clicked, this, &CleanerItem::setCheckBoxStatus);
 }
 
-CleanerItem::~CleanerItem()
-{
-}
+CleanerItem::~CleanerItem() { }
 
 // 设置相关标签名称
 void CleanerItem::setAccessibleParentText(const QString &sAccessibleName)

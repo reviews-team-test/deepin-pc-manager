@@ -4,13 +4,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dlistviewmulticol.h"
-#include "dlistviewmulticoldelegate.h"
-#include "dlistviewmulticolcommon.h"
 
-#include <QDebug>
-#include <QMenu>
+#include "dlistviewmulticolcommon.h"
+#include "dlistviewmulticoldelegate.h"
+
 #include <QContextMenuEvent>
+#include <QDebug>
 #include <QHeaderView>
+#include <QMenu>
 #include <QScrollBar>
 #include <QTimer>
 
@@ -24,9 +25,7 @@ DListViewMultiCol::DListViewMultiCol(QStandardItemModel *model, QWidget *parent)
     initConnection();
 }
 
-DListViewMultiCol::~DListViewMultiCol()
-{
-}
+DListViewMultiCol::~DListViewMultiCol() { }
 
 void DListViewMultiCol::setRowHeight(int height)
 {
@@ -57,7 +56,8 @@ void DListViewMultiCol::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     // 调整表头位置
-    m_headerView->move(m_headerWidget->pos().x() - horizontalScrollBar()->value(), m_headerWidget->pos().y());
+    m_headerView->move(m_headerWidget->pos().x() - horizontalScrollBar()->value(),
+                       m_headerWidget->pos().y());
 
     // 调整表头高度
     m_headerView->setFixedHeight(m_headerView->sizeHint().height());
@@ -101,7 +101,8 @@ void DListViewMultiCol::updateHeaderWidth()
     m_headerWidget->setFixedWidth(m_headerView->width());
 
     // 设置参数
-    m_model->setProperty(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST, QVariant::fromValue<QList<int>>(m_headerWidthList));
+    m_model->setProperty(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST,
+                         QVariant::fromValue<QList<int>>(m_headerWidthList));
 
     // 使滚动条适应界面
     updateGeometries();
@@ -179,9 +180,15 @@ void DListViewMultiCol::initConnection()
         updateHeaderWidth();
     });
     // 水平滑动条变动
-    connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, &DListViewMultiCol::onHorizontalScrollBarValueChanged);
+    connect(horizontalScrollBar(),
+            &QScrollBar::valueChanged,
+            this,
+            &DListViewMultiCol::onHorizontalScrollBarValueChanged);
     // 排序改变
-    connect(m_headerView, &QHeaderView::sortIndicatorChanged, this, &DListViewMultiCol::onHeadViewSortIndicatorChanged);
+    connect(m_headerView,
+            &QHeaderView::sortIndicatorChanged,
+            this,
+            &DListViewMultiCol::onHeadViewSortIndicatorChanged);
 }
 
 void DListViewMultiCol::stretchLastSectionToRightest()

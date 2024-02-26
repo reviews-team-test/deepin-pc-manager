@@ -5,6 +5,8 @@
 
 #include "defendermoduleauthorizebase.h"
 
+#include "../common/invokers/invokerfactory.h"
+
 #include <QDebug>
 
 #define SERVER_NAME "com.deepin.pc.manager.session.daemon"
@@ -15,14 +17,16 @@ DefenderModuleAuthorizeBase::DefenderModuleAuthorizeBase(const QString &moduleNa
     , m_authService(nullptr)
     , m_moduleName(moduleName)
 {
-    m_authService = InvokerFactory::GetInstance().CreateInvoker(SERVER_NAME, SERVER_PATH, SERVER_NAME, ConnectType::SESSION, this);
+    m_authService = InvokerFactory::GetInstance().CreateInvoker(SERVER_NAME,
+                                                                SERVER_PATH,
+                                                                SERVER_NAME,
+                                                                ConnectType::SESSION,
+                                                                this);
     initServiceConnection();
     init();
 }
 
-DefenderModuleAuthorizeBase::~DefenderModuleAuthorizeBase()
-{
-}
+DefenderModuleAuthorizeBase::~DefenderModuleAuthorizeBase() { }
 
 void DefenderModuleAuthorizeBase::init()
 {
@@ -46,7 +50,9 @@ void DefenderModuleAuthorizeBase::initServiceConnection()
     if (!connSuccess) {
         qWarning() << Q_FUNC_INFO << "[NotifyAuthFinished] connecte failed!";
     }
-    connSuccess = m_authService->Connect("NotifyAuthResult", this, SLOT(onAuthResultRecived(const QString &, int, bool)));
+    connSuccess = m_authService->Connect("NotifyAuthResult",
+                                         this,
+                                         SLOT(onAuthResultRecived(const QString &, int, bool)));
     if (!connSuccess) {
         qWarning() << Q_FUNC_INFO << "[NotifyAuthResult] connecte failed!";
     }
@@ -66,7 +72,9 @@ void DefenderModuleAuthorizeBase::requestAuthWithID(int id)
 
 // 转发结果
 // 连接到这个信号以处理授权结果
-void DefenderModuleAuthorizeBase::onAuthResultRecived(const QString &moduleName, int id, bool result)
+void DefenderModuleAuthorizeBase::onAuthResultRecived(const QString &moduleName,
+                                                      int id,
+                                                      bool result)
 {
     if (moduleName == m_moduleName) {
         Q_EMIT onAuthorized(id, result);

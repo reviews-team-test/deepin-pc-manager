@@ -5,13 +5,14 @@
 
 #pragma once
 
-#include "../window/modules/common/comdata.h"
+#include "modules/common/comdata.h"
 
 #include <DDialog>
 
 #include <QObject>
 
 DWIDGET_USE_NAMESPACE
+
 ///
 /// \brief 安全中心弹窗管理类
 ///

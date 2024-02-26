@@ -24,9 +24,7 @@ SelectedIconWidget::SelectedIconWidget(QWidget *parent)
     m_icon = DStyleHelper(style()).standardIcon(DStyle::SP_IndicatorChecked, &option, this);
 }
 
-SelectedIconWidget::~SelectedIconWidget()
-{
-}
+SelectedIconWidget::~SelectedIconWidget() { }
 
 void SelectedIconWidget::paintEvent(QPaintEvent *event)
 {

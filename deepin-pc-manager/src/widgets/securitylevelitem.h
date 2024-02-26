@@ -5,15 +5,15 @@
 
 #pragma once
 
-#include "window/namespace.h"
 #include "dtkwidget_global.h"
+#include "window/namespace.h"
 
 #include <DFrame>
 #include <DTipLabel>
 
-#include <QWidget>
 #include <QLabel>
 #include <QTimer>
+#include <QWidget>
 
 DEF_NAMESPACE_BEGIN
 DEF_ANTIVIRUS_NAMESPACE_BEGIN
@@ -45,5 +45,6 @@ private:
     DTipLabel *m_tipLabel;
     DLabel *m_statusIcon;
 };
+
 DEF_ANTIVIRUS_NAMESPACE_END
 DEF_NAMESPACE_END

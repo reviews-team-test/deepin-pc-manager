@@ -4,9 +4,10 @@
 
 #include "custompushbutton.h"
 
+#include <DFontSizeManager>
+
 #include <QHBoxLayout>
 #include <QIcon>
-#include <DFontSizeManager>
 
 CustomPushbutton::CustomPushbutton(QWidget *parent)
     : QWidget(parent)

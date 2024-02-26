@@ -5,14 +5,10 @@
 
 #pragma once
 
-//#include "../common/common.h"
-#include "../common/gsettingkey.h"
-//#include "../common/comdata.h"
-
 #include <QObject>
 #include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlQuery>
 
 class QXmlStreamReader;
 
@@ -36,7 +32,9 @@ private:
     // 解析gsetting xml文件，并根据文件内容设置默认值
     void setDefaultKeyValues();
     // 从xml中读取默认值，并向数据库中写入
-    void readAndSetKeyDefaultValueFromXml(QXmlStreamReader *xmlReader, QString &keyName, QString &keyType);
+    void readAndSetKeyDefaultValueFromXml(QXmlStreamReader *xmlReader,
+                                          QString &keyName,
+                                          QString &keyType);
 
 private:
     QString m_connName;

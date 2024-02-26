@@ -31,8 +31,8 @@ Q_SIGNALS:
 
 private:
     DTK_WIDGET_NAMESPACE::DLabel *m_context; // 内容
-    DTK_WIDGET_NAMESPACE::DLabel *m_tips; // 单位
-    QCheckBox *m_check; // 选择框
+    DTK_WIDGET_NAMESPACE::DLabel *m_tips;    // 单位
+    QCheckBox *m_check;                      // 选择框
 };
 
 #endif // AVCPULIMITATION_H

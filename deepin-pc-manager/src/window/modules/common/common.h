@@ -5,13 +5,11 @@
 
 #pragma once
 
-#include "invokers/invokerfactory.h"
-#include "systemloginfo.h"
 #include <DSysInfo>
 
-#include <QMap>
-#include <QIcon>
 #include <QFont>
+#include <QIcon>
+#include <QMap>
 #include <QWidget>
 
 DCORE_USE_NAMESPACE
@@ -25,24 +23,21 @@ DCORE_USE_NAMESPACE
 // 用于添加accessname
 #define ACCNAMESTR(content) #content
 #ifdef QT_DEBUG
-#define SET_ACCESS_NAME(control, className, name) control->setAccessibleName(ACCNAMESTR(className##_##name));
+#define SET_ACCESS_NAME(control, className, name) \
+    control->setAccessibleName(ACCNAMESTR(className##_##name));
 #else
 #define SET_ACCESS_NAME(control, className, name) control->setAccessibleName(ACCNAMESTR(name));
 #endif
-//系统更新标志
-enum UpdatesStatus {
-    UpdateDefault = 0,
-    Checking,
-    DeependenciesBrokenError,
-    CheckUpdatesFailed
-};
+// 系统更新标志
+enum UpdatesStatus { UpdateDefault = 0,
+                     Checking,
+                     DeependenciesBrokenError,
+                     CheckUpdatesFailed };
 
 // 主题类型
-enum ColorType {
-    UnknownType,
-    LightType,
-    DarkType
-};
+enum ColorType { UnknownType,
+                 LightType,
+                 DarkType };
 
 // 病毒库离线导入错误状态
 enum VirusImportError {
@@ -62,7 +57,7 @@ enum ScheduleScanTimeType {
     Everyday = 0, // 每天
     Everyweek, // 每周
     Everymonth, // 每月
-    CustomizeType //自定义
+    CustomizeType // 自定义
 };
 
 const QSize Q_IconSize(28, 28);
@@ -71,6 +66,7 @@ const QSize Q_IconSize(28, 28);
 enum PwdLimitLevel { Low = 1,
                      Medium,
                      High };
+
 // 不同类型对应的密码修改提醒时间
 #define PWD_CHANGE_DEADLINE_OF_TYPE_ONE 30
 #define PWD_CHANGE_DEADLINE_OF_TYPE_TWO 60
@@ -81,11 +77,9 @@ enum PwdLimitLevel { Low = 1,
 #define PWD_CHANGE_DEADLINE_OF_TYPE_SEVEN 0
 
 // 登录密码安全级别枚举
-enum SystemLevelSynType {
-    TrustFile = 0,
-    FireWall,
-    SystemMonitor
-};
+enum SystemLevelSynType { TrustFile = 0,
+                          FireWall,
+                          SystemMonitor };
 
 #define ARCH_AMD "x86_64" // AMD平台
 #define ARCH_ARM "aarch64" // ARM平台
@@ -97,7 +91,8 @@ enum SystemLevelSynType {
 #define SETTING_JSON ":/dt-settings.json" // 获取文件配置
 #define SETTING_BASE_VIRUS_ENGIN "base.virus_engin.virus_engin_type" // 病毒引擎设置
 #define SETTING_BASE_CLOSE_WINDOW "base.close_window.close_window_type" // 关闭主窗口设置
-#define SETTING_SAFETY_USB_STORAGE_DEVICES "safety.usb_storage_devices.usb_storage_devices_type" // USB存储设备设置
+#define SETTING_SAFETY_USB_STORAGE_DEVICES \
+    "safety.usb_storage_devices.usb_storage_devices_type" // USB存储设备设置
 
 // 设置窗口的json key
 #define SETTING_CLOSE_WINDOW_TYPE "close_window_type" // 关闭窗口类型
@@ -274,6 +269,7 @@ struct UsbDeviceInfo {
     QString sParentSize; // 父设备大小
     QString sSize; // 分区大小
     QString fsType; // 文件系统类型
+
     UsbDeviceInfo()
     {
         isMtp = false;
@@ -349,8 +345,10 @@ enum NetConnResult {
     NetConnSucessed
 };
 
+class DBusInvokerInterface;
+
 namespace Utils {
-//字符换行
+// 字符换行
 QString wordwrapText(const QFontMetrics &font, const QString &text, int nLabelSize);
 // 根据流量数据大小改变单位
 QString changeFlowValueUnit(double input, int prec);

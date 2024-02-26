@@ -6,8 +6,8 @@
 #ifndef MULTICOMBOX_H
 #define MULTICOMBOX_H
 
-#include <QWidget>
 #include <QComboBox>
+#include <QWidget>
 
 class MenuItem;
 class QLineEdit;
@@ -22,7 +22,7 @@ public:
     explicit MultiComBox(QWidget *parent = nullptr);
     ~MultiComBox() override;
 
-    //添加Iiem
+    // 添加Iiem
     void addItems(QList<MenuItem *> menus);
 
     QStringList getItemsText();

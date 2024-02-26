@@ -43,5 +43,5 @@ void TitleButtonItem::setButtonText(QString str)
     m_button->setText(str);
 }
 
-} //namespace widgets
-} //namespace def
+} // namespace widgets
+} // namespace def

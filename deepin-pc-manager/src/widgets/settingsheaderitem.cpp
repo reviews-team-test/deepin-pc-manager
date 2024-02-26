@@ -9,13 +9,13 @@ namespace def {
 namespace widgets {
 
 SettingsHeaderItem::SettingsHeaderItem(QWidget *parent)
-    : SettingsItem(parent),
-      m_mainLayout(new QHBoxLayout),
-      m_headerText(new TitleLabel(this))
+    : SettingsItem(parent)
+    , m_mainLayout(new QHBoxLayout)
+    , m_headerText(new TitleLabel(this))
 {
     m_headerText->setObjectName("SettingsHeaderItemTitle");
 
-//    m_mainLayout->addSpacing(20);
+    //    m_mainLayout->addSpacing(20);
     m_mainLayout->addWidget(m_headerText);
     m_mainLayout->addStretch();
 
@@ -38,5 +38,5 @@ void SettingsHeaderItem::setRightWidget(QWidget *widget)
     m_mainLayout->addWidget(widget, 0, Qt::AlignRight);
 }
 
-}
-}
+} // namespace widgets
+} // namespace def

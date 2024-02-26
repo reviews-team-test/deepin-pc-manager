@@ -21,7 +21,9 @@ bool PasswordEdit::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == lineEdit() && event->type() == QEvent::KeyPress) {
         QKeyEvent *e = dynamic_cast<QKeyEvent *>(event);
-        if (e && (e->matches(QKeySequence::Copy) || e->matches(QKeySequence::Cut) || e->matches(QKeySequence::Paste))) {
+        if (e
+            && (e->matches(QKeySequence::Copy) || e->matches(QKeySequence::Cut)
+                || e->matches(QKeySequence::Paste))) {
             return true;
         }
     }

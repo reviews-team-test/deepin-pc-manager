@@ -7,8 +7,8 @@
 #define BASICLISTDELEGATE_H
 
 #include <QAbstractItemDelegate>
-#include <QIcon>
 #include <QApplication>
+#include <QIcon>
 #include <QImageReader>
 
 namespace def {
@@ -24,12 +24,14 @@ class BasicListDelegate : public QAbstractItemDelegate
 public:
     explicit BasicListDelegate(QObject *parent = nullptr);
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-}
+} // namespace widgets
 
-}
+} // namespace def
 
 #endif // BASICLISTDELEGATE_H

@@ -5,16 +5,16 @@
 
 #include "defendertableheaderview.h"
 
+#include <DApplication>
+#include <DApplicationHelper>
+#include <DPalette>
+#include <DStyle>
+#include <DStyleHelper>
+
 #include <QDebug>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPainterPath>
-
-#include <DApplication>
-#include <DApplicationHelper>
-#include <DPalette>
-#include <DStyleHelper>
-#include <DStyle>
 
 static const int kSpacingMargin = 4;
 
@@ -37,7 +37,9 @@ DefenderTableHeaderView::DefenderTableHeaderView(Qt::Orientation orientation, QW
 }
 
 // 绘制表头
-void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
+void DefenderTableHeaderView::paintSection(QPainter *painter,
+                                           const QRect &rect,
+                                           int logicalIndex) const
 {
     // 绘制设置
     painter->save();
@@ -48,8 +50,7 @@ void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect,
     cg = DPalette::Active;
 
     // 获取系统样式
-    DApplicationHelper *dAppHelper = DApplicationHelper::instance();
-    DPalette palette = dAppHelper->applicationPalette();
+    DPalette palette = qApp->palette();
 
     // 设置风格
     DStyle *style = dynamic_cast<DStyle *>(DApplication::style());
@@ -61,7 +62,9 @@ void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect,
 
     // 标题
     QRect contentRect(rect.x(), rect.y(), rect.width(), rect.height() - m_spacing);
-    QRect hSpacingRect(rect.x(), contentRect.height(), rect.width(),
+    QRect hSpacingRect(rect.x(),
+                       contentRect.height(),
+                       rect.width(),
                        rect.height() - contentRect.height());
 
     QBrush contentBrush(palette.color(cg, DPalette::Base));
@@ -69,7 +72,9 @@ void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect,
     QBrush hSpacingBrush(palette.color(cg, DPalette::FrameBorder));
     // 纵向间隔
     QBrush vSpacingBrush(palette.color(cg, DPalette::FrameBorder));
-    QRectF vSpacingRect(rect.x(), rect.y() + kSpacingMargin, m_spacing,
+    QRectF vSpacingRect(rect.x(),
+                        rect.y() + kSpacingMargin,
+                        m_spacing,
                         rect.height() - kSpacingMargin * 2);
     QBrush clearBrush(palette.color(cg, DPalette::Window));
 
@@ -87,11 +92,15 @@ void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect,
     // 绘制文字
     QRect textRect;
     if (sortIndicatorSection() == logicalIndex) {
-        textRect = {contentRect.x() + margin, contentRect.y(), contentRect.width() - margin * 3 - 8,
-                    contentRect.height()};
+        textRect = { contentRect.x() + margin,
+                     contentRect.y(),
+                     contentRect.width() - margin * 3 - 8,
+                     contentRect.height() };
     } else {
-        textRect = {contentRect.x() + margin, contentRect.y(), contentRect.width() - margin,
-                    contentRect.height()};
+        textRect = { contentRect.x() + margin,
+                     contentRect.y(),
+                     contentRect.width() - margin,
+                     contentRect.height() };
     }
     QString title = model()->headerData(logicalIndex, orientation(), Qt::DisplayRole).toString();
     int align = Qt::AlignLeft | Qt::AlignVCenter;
@@ -114,7 +123,9 @@ void DefenderTableHeaderView::paintSection(QPainter *painter, const QRect &rect,
         && !m_indicatorHiddingColList.contains(logicalIndex)) {
         // 绘制排序的箭头图标（8×5）
         QRect sortIndicator(textRect.x() + textRect.width() + margin,
-                            textRect.y() + (textRect.height() - 5) / 2, 8, 5);
+                            textRect.y() + (textRect.height() - 5) / 2,
+                            8,
+                            5);
         option.rect = sortIndicator;
         if (sortIndicatorOrder() == Qt::DescendingOrder) {
             style->drawPrimitive(DStyle::PE_IndicatorArrowDown, &option, painter, this);
@@ -142,8 +153,7 @@ void DefenderTableHeaderView::paintEvent(QPaintEvent *event)
     cg = DPalette::Active;
 
     // 获取系统样式
-    DApplicationHelper *dAppHelper = DApplicationHelper::instance();
-    DPalette palette = dAppHelper->applicationPalette();
+    DPalette palette = qApp->palette();
 
     // 设置风格
     DStyle *style = dynamic_cast<DStyle *>(DApplication::style());
@@ -171,7 +181,10 @@ void DefenderTableHeaderView::paintEvent(QPaintEvent *event)
     if (hasFocus() && (m_reson == Qt::TabFocusReason || m_reson == Qt::BacktabFocusReason)) {
         QStyleOptionFocusRect o;
         o.QStyleOption::operator=(option);
-        QRect focusRect {rect.x() - offset(), rect.y(), length() - sectionPosition(0), rect.height()};
+        QRect focusRect{ rect.x() - offset(),
+                         rect.y(),
+                         length() - sectionPosition(0),
+                         rect.height() };
         o.rect = style->visualRect(layoutDirection(), rect, focusRect);
         style->drawPrimitive(DStyle::PE_FrameFocusRect, &o, &painter);
     }
@@ -193,9 +206,9 @@ int DefenderTableHeaderView::sectionSizeHint(int logicalIndex) const
     QFontMetrics fm(DApplication::font());
     QString buf = model()->headerData(logicalIndex, Qt::Horizontal, Qt::DisplayRole).toString();
     if (sortIndicatorSection() == logicalIndex) {
-        return fm.width(buf) + margin * 3 + 8;
+        return fm.horizontalAdvance(buf) + margin * 3 + 8;
     } else {
-        return fm.width(buf) + margin * 2;
+        return fm.horizontalAdvance(buf) + margin * 2;
     }
 }
 

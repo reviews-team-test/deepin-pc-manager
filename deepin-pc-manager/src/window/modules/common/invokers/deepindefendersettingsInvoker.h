@@ -12,13 +12,15 @@
 
 class QGSettings;
 
-class DeepinDefenderSettingsInvoker : public QObject
-    , public SettingsInvokerInterface
+class DeepinDefenderSettingsInvoker : public QObject, public SettingsInvokerInterface
 {
     Q_OBJECT
 public:
-    explicit DeepinDefenderSettingsInvoker(const QByteArray &schema_id, const QByteArray &path = QByteArray(), QObject *parent = nullptr);
-    virtual ~DeepinDefenderSettingsInvoker() override {}
+    explicit DeepinDefenderSettingsInvoker(const QByteArray &schema_id,
+                                           const QByteArray &path = QByteArray(),
+                                           QObject *parent = nullptr);
+
+    virtual ~DeepinDefenderSettingsInvoker() override { }
 
     virtual QVariant GetValue(const QString &key) const override;
     virtual void SetValue(const QString &key, const QVariant &value) override;

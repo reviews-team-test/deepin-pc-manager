@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "tipwidget.h"
+
 #include <DPalette>
-#include <QHBoxLayout>
+
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QLabel>
 
 DWIDGET_USE_NAMESPACE
@@ -37,6 +39,5 @@ void TipWidget::setTitle(QString title)
 
 void TipWidget::setIcon(QIcon icon)
 {
-    m_leftIcon->setPixmap(icon.pixmap(20,20));
+    m_leftIcon->setPixmap(icon.pixmap(20, 20));
 }
-

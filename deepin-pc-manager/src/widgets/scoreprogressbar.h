@@ -6,7 +6,6 @@
 #pragma once
 
 #include "window/namespace.h"
-#include "dtkwidget_global.h"
 
 #include <QWidget>
 
@@ -31,6 +30,7 @@ public:
     // 获取当前显示值
     int currentValue() const;
     void setValue(int value);
+
     inline void setColor(QColor color) { m_color = color; }
 
 protected:
@@ -47,5 +47,6 @@ private:
     // 进度条数值动画
     QPropertyAnimation *m_valueAnimation;
 };
+
 DEF_ANTIVIRUS_NAMESPACE_END
 DEF_NAMESPACE_END

@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "manager_adaptor.h"
+
 #include <QObject>
 #include "manager_adaptor.h"
 
@@ -26,5 +28,5 @@ public Q_SLOTS:
     void ExitApp();
 
 private:
-    ManagerAdaptor *m_adaptor;
+    ManagerAdaptor *m_managerAdaptor;
 };

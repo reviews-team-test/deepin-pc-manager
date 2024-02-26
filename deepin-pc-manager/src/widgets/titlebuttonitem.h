@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "settingsitem.h"
 #include "labels/tipslabel.h"
+#include "settingsitem.h"
 
 #include <QPushButton>
 
@@ -20,6 +20,7 @@ public:
     explicit TitleButtonItem(QWidget *parent = nullptr);
 
     inline QPushButton *button() { return m_button; }
+
     void setTitle(QString str);
     void setButtonText(QString str);
 

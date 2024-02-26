@@ -9,13 +9,13 @@
 #include "syscheckresultheaderwidget.h"
 #include "syscheckresultitemwidget.h"
 
-#include <DSuggestButton>
-#include <DPushButton>
 #include <DFrame>
+#include <DPushButton>
+#include <DSuggestButton>
 
-#include <QWidget>
 #include <QList>
 #include <QStandardItemModel>
+#include <QWidget>
 
 class SysCheckResultWidget : public Dtk::Widget::DFrame
 {

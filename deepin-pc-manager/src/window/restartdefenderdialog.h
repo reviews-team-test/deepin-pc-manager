@@ -12,6 +12,7 @@
 class DBusInvokerInterface;
 
 DWIDGET_USE_NAMESPACE
+
 class RestartDefenderDialog : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT

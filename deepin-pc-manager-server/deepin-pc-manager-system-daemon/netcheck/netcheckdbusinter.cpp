@@ -1,6 +1,8 @@
+// Copyright (C) 2019 ~ 2023 Deepin Technology Co., Ltd.
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "netcheckdbusinter.h"
 #include "netchecksyssrvmodel.h"
 

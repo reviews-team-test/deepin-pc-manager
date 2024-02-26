@@ -3,16 +3,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "dccslider.h"
 #include "dccsliderannotated.h"
-#include "basiclistdelegate.h"
 
-#include <QStylePainter>
-#include <QStyleOption>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QEvent>
+#include "basiclistdelegate.h"
+#include "dccslider.h"
+
 #include <QDebug>
+#include <QEvent>
+#include <QLabel>
+#include <QStyleOption>
+#include <QStylePainter>
+#include <QVBoxLayout>
 
 namespace def {
 namespace widgets {
@@ -25,7 +26,6 @@ DCCSliderAnnotated::DCCSliderAnnotated(QWidget *parent)
     , m_rightIconLabel(new QLabel(this))
 {
     m_annotation->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
 
     m_leftIconLabel->setObjectName("SliderLeftIcon");
     m_rightIconLabel->setObjectName("SliderRightIcon");
@@ -68,8 +68,8 @@ void DCCSliderAnnotated::setSlider(DCCSlider *slider)
     m_slider = slider;
 }
 
-SliderAnnotation::SliderAnnotation(QWidget *parent) :
-    QWidget(parent)
+SliderAnnotation::SliderAnnotation(QWidget *parent)
+    : QWidget(parent)
 {
     QFont font;
     QFontMetrics fm(font);
@@ -149,10 +149,11 @@ bool DCCSliderAnnotated::event(QEvent *evnet)
 {
     if (evnet->type() == QEvent::Resize && (m_leftIconLabel || m_rightIconLabel)) {
         QStyleOptionSlider styleoption;
-//        slider()->initStyleOption(&styleoption);
+        //        slider()->initStyleOption(&styleoption);
 
         auto ts = slider()->style();
-        auto rect = ts->subControlRect(QStyle::CC_Slider, &styleoption, QStyle::SC_SliderGroove, slider());
+        auto rect =
+            ts->subControlRect(QStyle::CC_Slider, &styleoption, QStyle::SC_SliderGroove, slider());
 
         if (m_leftIconLabel) {
             m_leftIconLabel->adjustSize();
@@ -164,7 +165,8 @@ bool DCCSliderAnnotated::event(QEvent *evnet)
         if (m_rightIconLabel) {
             m_rightIconLabel->adjustSize();
             auto rightRect = m_rightIconLabel->rect();
-            rightRect.moveCenter(QPoint(this->rect().right() - rightRect.width() / 2, rect.center().y()));
+            rightRect.moveCenter(
+                QPoint(this->rect().right() - rightRect.width() / 2, rect.center().y()));
             m_rightIconLabel->setGeometry(rightRect);
         }
     }

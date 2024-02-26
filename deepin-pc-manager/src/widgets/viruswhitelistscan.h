@@ -37,8 +37,8 @@ signals:
     void buttonTrigger(bool val);
 
 private:
-    QLabel *m_lbText; // 内容
-    QLabel *m_lbTip; // 提示
+    QLabel *m_lbText;         // 内容
+    QLabel *m_lbTip;          // 提示
     DIconButton *m_dialogBtn; // 前进按钮
 };
 

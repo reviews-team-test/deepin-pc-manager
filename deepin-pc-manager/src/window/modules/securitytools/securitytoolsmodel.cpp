@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "securitytoolsmodel.h"
-#include "window/modules/common/common.h"
-#include "window/modules/common/gsettingkey.h"
-#include "window/modules/common/invokers/invokerfactory.h"
+
 #include "defsecuritytoolinfo.h"
+#include "window/modules/common/common.h"
+#include "window/modules/common/invokers/invokerfactory.h"
 
 #include <QDebug>
 #include <QProcess>
@@ -27,25 +27,29 @@ SecurityToolsModel::SecurityToolsModel(QObject *parent)
     initConnectoin();
 }
 
-SecurityToolsModel::~SecurityToolsModel()
-{
-}
+SecurityToolsModel::~SecurityToolsModel() { }
 
 void SecurityToolsModel::initData()
 {
     registerDefSecurityToolInfo();
     registerDefSecurityToolInfoList();
 
-    m_pSecurityToolDBusInter = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.securitytooldialog",
-                                                                           "/com/deepin/pc/manager/securitytooldialog",
-                                                                           "com.deepin.pc.manager.securitytooldialog",
-                                                                           ConnectType::SESSION, this);
+    m_pSecurityToolDBusInter =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.securitytooldialog",
+                                                    "/com/deepin/pc/manager/securitytooldialog",
+                                                    "com.deepin.pc.manager.securitytooldialog",
+                                                    ConnectType::SESSION,
+                                                    this);
 }
 
 void SecurityToolsModel::initConnectoin()
 {
-    m_pSecurityToolDBusInter->Connect("notifyToolsInfoUpdate", this, SLOT(onToolsInfoUpdate(const DEFSECURITYTOOLINFOLIST &)));
-    m_pSecurityToolDBusInter->Connect("notifyAppStatusChanged", this, SLOT(onAppStatusChanged(const QString &, int)));
+    m_pSecurityToolDBusInter->Connect("notifyToolsInfoUpdate",
+                                      this,
+                                      SLOT(onToolsInfoUpdate(const DEFSECURITYTOOLINFOLIST &)));
+    m_pSecurityToolDBusInter->Connect("notifyAppStatusChanged",
+                                      this,
+                                      SLOT(onAppStatusChanged(const QString &, int)));
 }
 
 void SecurityToolsModel::onToolsInfoUpdate(const DEFSECURITYTOOLINFOLIST &infos)
@@ -59,7 +63,8 @@ void SecurityToolsModel::onAppStatusChanged(const QString &strPackageKey, int st
 {
     DEFSECURITYTOOLSTATUS curStatus = DEFSECURITYTOOLSTATUS(status);
 
-    if (curStatus == DEFSECURITYTOOLSTATUS::INSTALLSUCCESS || curStatus == DEFSECURITYTOOLSTATUS::INSTALLFAILED) {
+    if (curStatus == DEFSECURITYTOOLSTATUS::INSTALLSUCCESS
+        || curStatus == DEFSECURITYTOOLSTATUS::INSTALLFAILED) {
         bool bInstalled = false;
 
         if (curStatus == DEFSECURITYTOOLSTATUS::INSTALLSUCCESS) {
@@ -78,9 +83,7 @@ void SecurityToolsModel::onAppStatusChanged(const QString &strPackageKey, int st
     Q_EMIT notityAppStatusChanged(strPackageKey, status);
 }
 
-void SecurityToolsModel::onStatusCheckFinished()
-{
-}
+void SecurityToolsModel::onStatusCheckFinished() { }
 
 void SecurityToolsModel::updateToolsInfo()
 {
@@ -136,6 +139,7 @@ QStringList SecurityToolsModel::getInstallingApps()
     GET_MESSAGE_VALUE(QStringList, applist, msg);
     return applist;
 }
+
 QStringList SecurityToolsModel::getUpdatingApps()
 {
     // 获取等保开启状态
@@ -143,6 +147,7 @@ QStringList SecurityToolsModel::getUpdatingApps()
     GET_MESSAGE_VALUE(QStringList, applist, msg);
     return applist;
 }
+
 QStringList SecurityToolsModel::getUninstallingApps()
 {
     // 获取等保开启状态

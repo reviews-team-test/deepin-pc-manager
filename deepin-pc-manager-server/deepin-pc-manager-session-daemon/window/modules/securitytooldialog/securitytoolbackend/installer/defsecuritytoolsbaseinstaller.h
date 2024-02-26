@@ -6,13 +6,14 @@
 #ifndef DEFSECURITYTOOLSBASEINSTALLER_H
 #define DEFSECURITYTOOLSBASEINSTALLER_H
 
-#include "window/modules/securitytools/defsecuritytoolinfo.h"
-#include "window/modules/common/invokers/invokerinterface.h"
+#include "../../deepin-pc-manager/src/window/modules/common/invokers/invokerinterface.h"
+#include "../../deepin-pc-manager/src/window/modules/securitytools/defsecuritytoolinfo.h"
 
-#include <QObject>
 #include <QDebug>
+#include <QObject>
 
-typedef struct PackageMsg {
+typedef struct PackageMsg
+{
     explicit PackageMsg()
         : strPackageName("")
         , strVersion("")
@@ -56,7 +57,7 @@ public:
     bool isUpdatable();
     bool isPackageInstallable();
 
-    //virtual
+    // virtual
 public:
     virtual void showtool(const QStringList &strParams);
 
@@ -65,7 +66,12 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void onInstallStart(const QString &strID, const QString &strPackage);
-    void onSigIntallProgress(const QString &strID, const QString &strPackage, int iState, int iTotal, int iProcess, const QString &strStatusMsg);
+    void onSigIntallProgress(const QString &strID,
+                             const QString &strPackage,
+                             int iState,
+                             int iTotal,
+                             int iProcess,
+                             const QString &strStatusMsg);
     void onSigRemoveProgress(const QString &strID, const QString &strPackage, bool bSuccess);
 
 private:

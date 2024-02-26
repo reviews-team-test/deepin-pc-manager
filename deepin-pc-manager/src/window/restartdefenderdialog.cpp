@@ -4,7 +4,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "restartdefenderdialog.h"
-#include "window/modules/common/invokers/invokerfactory.h"
+
+#include "modules/common/invokers/invokerfactory.h"
 
 #include <DLabel>
 
@@ -16,10 +17,12 @@ RestartDefenderDialog::RestartDefenderDialog(DDialog *parent)
     , m_daemonservice(nullptr)
 {
     // 安全中心心跳服务
-    m_daemonservice = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.daemonservice",
-                                                                  "/com/deepin/pc/manager/daemonservice",
-                                                                  "com.deepin.pc.manager.daemonservice",
-                                                                  ConnectType::SESSION, this);
+    m_daemonservice =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.daemonservice",
+                                                    "/com/deepin/pc/manager/daemonservice",
+                                                    "com.deepin.pc.manager.daemonservice",
+                                                    ConnectType::SESSION,
+                                                    this);
     // 初始化界面
     initUi();
 }
@@ -37,7 +40,7 @@ void RestartDefenderDialog::initUi()
     // 清除布局
     clearContents();
     clearButtons();
-    setIcon(QIcon::fromTheme("deepin-defender"));
+    setIcon(QIcon::fromTheme("deepin-pc-manager"));
 
     // 添加弹框文字
     DLabel *txt = nullptr;
@@ -52,7 +55,10 @@ void RestartDefenderDialog::initUi()
     addButton(tr("Restart", "button"));
 
     // 按钮点击信号槽
-    connect(this, &RestartDefenderDialog::buttonClicked, this, &RestartDefenderDialog::doButtonClicked);
+    connect(this,
+            &RestartDefenderDialog::buttonClicked,
+            this,
+            &RestartDefenderDialog::doButtonClicked);
 }
 
 RestartDefenderDialog::~RestartDefenderDialog()

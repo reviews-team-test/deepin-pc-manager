@@ -4,27 +4,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "cleanerdbusadaptorimpl.h"
+
+#include "window/modules/common/gsettingkey.h"
 #include "window/modules/common/invokers/invokerfactory.h"
-
-#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
-
-#include <QGSettings>
 
 CleanerDBusAdaptorImpl::CleanerDBusAdaptorImpl(QObject *parent)
     : QObject(parent)
     , m_dataInterFaceServer(nullptr)
     , m_monitorInterFaceServer(nullptr)
 {
-    m_dataInterFaceServer = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
-                                                                        "/com/deepin/pc/manager/session/daemon",
-                                                                        "com.deepin.pc.manager.session.daemon",
-                                                                        ConnectType::SESSION, this);
-    m_monitorInterFaceServer = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
-                                                                           "/com/deepin/pc/manager/MonitorNetFlow",
-                                                                           "com.deepin.pc.manager.MonitorNetFlow",
-                                                                           ConnectType::SYSTEM, this);
+    m_dataInterFaceServer =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.session.daemon",
+                                                    "/com/deepin/pc/manager/session/daemon",
+                                                    "com.deepin.pc.manager.session.daemon",
+                                                    ConnectType::SESSION,
+                                                    this);
+    m_monitorInterFaceServer =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
+                                                    "/com/deepin/pc/manager/MonitorNetFlow",
+                                                    "com.deepin.pc.manager.MonitorNetFlow",
+                                                    ConnectType::SYSTEM,
+                                                    this);
 
-    m_gsettings = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH, QByteArray(), this);
+    m_gsettings = InvokerFactory::GetInstance().CreateSettings(DEEPIN_PC_MANAGER_GSETTING_PATH,
+                                                               QByteArray(),
+                                                               this);
 }
 
 QStringList CleanerDBusAdaptorImpl::GetTrashInfoList()

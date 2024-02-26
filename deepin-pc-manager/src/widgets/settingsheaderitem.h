@@ -23,6 +23,7 @@ public:
     explicit SettingsHeaderItem(QWidget *parent = nullptr);
 
     TitleLabel *textLabel() const { return m_headerText; }
+
     QHBoxLayout *layout() const { return m_mainLayout; }
 
     void setTitle(const QString &title);
@@ -33,7 +34,7 @@ private:
     TitleLabel *m_headerText;
 };
 
-}
-}
+} // namespace widgets
+} // namespace def
 
 #endif // SETTINGSHEADERITEM_H

@@ -13,7 +13,9 @@ class TitleLabel : public QLabel
     Q_OBJECT
 public:
     TitleLabel(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    TitleLabel(const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    TitleLabel(const QString &text,
+               QWidget *parent = nullptr,
+               Qt::WindowFlags f = Qt::WindowFlags());
 
 protected:
     bool event(QEvent *e) override;

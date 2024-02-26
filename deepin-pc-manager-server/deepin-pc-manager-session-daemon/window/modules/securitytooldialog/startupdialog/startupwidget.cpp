@@ -4,52 +4,54 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "startupwidget.h"
-#include "qpaintdevice.h"
-#include "common/common.h"
 
+#include "../../deepin-pc-manager/src/window/modules/common/common.h"
 #include "autostartmodel.h"
 
-#include <DTreeView>
-#include <DHeaderView>
-#include <DFontSizeManager>
-#include <DPinyin>
-#include <DDialog>
-#include <DFrame>
-#include <DTitlebar>
+#include <qnamespace.h>
 
-#include <QScrollBar>
-#include <QFontMetrics>
-#include <QFile>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QWidget>
-#include <QTableView>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
+#include <DDialog>
+#include <DFontSizeManager>
+#include <DFrame>
+#include <DHeaderView>
+#include <DPinyin>
+#include <DTitlebar>
+#include <DTreeView>
+
 #include <QAbstractItemView>
+#include <QCloseEvent>
+#include <QDBusPendingReply>
+#include <QFile>
+#include <QFileInfo>
+#include <QFontMetrics>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QModelIndex>
 #include <QPainter>
+#include <QPair>
 #include <QPixmap>
 #include <QPushButton>
-#include <QDBusPendingReply>
-#include <QPair>
-#include <QFileInfo>
+#include <QScrollBar>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QTableView>
 #include <QVBoxLayout>
-#include <QCloseEvent>
+#include <QWidget>
 
 #define ALL_INTEVAL 0
 #define LEFT_INTEVAL 10
-#define PIX_INTEVAL 4 // 表格里图片距离表格边线 间隔
-#define ACTION_FLAG_DISABLE 0 // 状态标志 - 不允许
-#define ACTION_FLAG_ENABLE 1 // 状态标志 - 允许
+#define PIX_INTEVAL 4            // 表格里图片距离表格边线 间隔
+#define ACTION_FLAG_DISABLE 0    // 状态标志 - 不允许
+#define ACTION_FLAG_ENABLE 1     // 状态标志 - 允许
 #define TABLE_HEADER_SORT_HIDE 2 // 第3列掩藏
-#define NAME_COL_NAME 697 // 第1列列宽
-#define NAME_COL_ACTION 214 // 第2列列宽
+#define NAME_COL_NAME 697        // 第1列列宽
+#define NAME_COL_ACTION 214      // 第2列列宽
 
-#define Startup_Disable ":/icons/deepin/builtin/icons/dcc_startup_disable_29px.svg" // 状态资源图片 - 不允许
-#define Startup_Enable ":/icons/deepin/builtin/icons/dcc_startup_enable_29px.svg" // 状态资源图片 - 允许
+#define Startup_Disable \
+    ":/icons/deepin/builtin/icons/dcc_startup_disable_29px.svg" // 状态资源图片 - 不允许
+#define Startup_Enable \
+    ":/icons/deepin/builtin/icons/dcc_startup_enable_29px.svg" // 状态资源图片 - 允许
 
 QString GetAppsSourceType(QString sPath)
 {
@@ -253,14 +255,18 @@ void StartupWidget::loadMap(QMap<QString, QStringList> map)
 }
 
 // 加载每个应用的详细信息
-void StartupWidget::loadAppData(int nRow, QString sPath, QString sName, QString sIcon, QString sId, QString sRealName)
+void StartupWidget::loadAppData(
+    int nRow, QString sPath, QString sName, QString sIcon, QString sId, QString sRealName)
 {
     // 判断该应用状态（是否是自启动）
     bool bStatus = m_model->isAppAutoStart(sPath);
 
     // 设置每一行数据
     m_item_model->setItem(nRow, 0, new QStandardItem(QString("%1").arg(sName)));
-    m_item_model->setItem(nRow, 1, new QStandardItem(QString("%1").arg(bStatus ? ACTION_FLAG_ENABLE : ACTION_FLAG_DISABLE)));
+    m_item_model->setItem(
+        nRow,
+        1,
+        new QStandardItem(QString("%1").arg(bStatus ? ACTION_FLAG_ENABLE : ACTION_FLAG_DISABLE)));
     m_item_model->setItem(nRow, 2, new QStandardItem("statusButton"));
     m_item_model->setItem(nRow, 3, new QStandardItem(QString("%1").arg(sId)));
     m_item_model->setItem(nRow, 4, new QStandardItem(QString("%1").arg(sIcon)));
@@ -326,7 +332,8 @@ void StartupWidget::changeItemStatus(bool isStartup, QString sFlagData)
     int column = m_item_model->columnCount();
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < column; ++j) {
-            QString sData = m_item_model->data(m_item_model->index(i, j), Qt::DisplayRole).toString();
+            QString sData =
+                m_item_model->data(m_item_model->index(i, j), Qt::DisplayRole).toString();
             if (j == 3 && sData == sFlagData) {
                 QWidget *widget = m_table_view->indexWidget(m_item_model->index(i, 2));
                 QPushButton *button = widget->findChild<QPushButton *>(sFlagData);
@@ -379,7 +386,8 @@ void StartupWidget::showTotalInfo()
     nAllCount = nEnableCount + nDisableCount;
 
     // 设置统计行数据
-    m_detailInfo->setText(tr("Startup apps") + QString(": %1      ").arg(nEnableCount) + tr("All apps") + QString(": %1").arg(nAllCount));
+    m_detailInfo->setText(tr("Startup apps") + QString(": %1      ").arg(nEnableCount)
+                          + tr("All apps") + QString(": %1").arg(nAllCount));
 }
 
 // 代理函数
@@ -390,14 +398,18 @@ MyItemDelegate::MyItemDelegate(StartupWidget *widget, QObject *parent)
 }
 
 // 重绘操作
-void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void MyItemDelegate::paint(QPainter *painter,
+                           const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const
 {
     // 第一列
     if (index.column() == 0) {
         // 图标路径
-        QString sIconPath = index.model()->data(index.model()->index(index.row(), 4), Qt::DisplayRole).toString();
+        QString sIconPath =
+            index.model()->data(index.model()->index(index.row(), 4), Qt::DisplayRole).toString();
         // 读取该应用执行信息
-        QString sPath = index.model()->data(index.model()->index(index.row(), 5), Qt::DisplayRole).toString();
+        QString sPath =
+            index.model()->data(index.model()->index(index.row(), 5), Qt::DisplayRole).toString();
         // 设置图片
         QRect rect = option.rect;
 
@@ -406,8 +418,8 @@ void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         int height = rect.height() - PIX_INTEVAL * 2;
 
         QFont font2;
-        font2.setFamily("SourceHanSansSC-Normal"); //字体
-        font2.setPixelSize(12); //文字像素大小
+        font2.setFamily("SourceHanSansSC-Normal"); // 字体
+        font2.setPixelSize(12);                    // 文字像素大小
         QPen pen2;
         pen2.setColor(QColor("#52607f"));
 
@@ -440,12 +452,19 @@ void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         int x = pix_x + height + PIX_INTEVAL * 2;
         int y = pix_y + rect.height() / 4 + height / 8;
         int y1 = pix_y + rect.height() / 2 + height / 4 + PIX_INTEVAL;
-        QString sName = index.model()->data(index.model()->index(index.row(), 6), Qt::DisplayRole).toString();
-        QString sElidedName = painter->fontMetrics().elidedText(sName, Qt::ElideRight, textWidth, Qt::TextShowMnemonic);
+        QString sName =
+            index.model()->data(index.model()->index(index.row(), 6), Qt::DisplayRole).toString();
+        QString sElidedName = painter->fontMetrics().elidedText(sName,
+                                                                Qt::ElideRight,
+                                                                textWidth,
+                                                                Qt::TextShowMnemonic);
         painter->drawText(x + LEFT_INTEVAL, y, sElidedName);
 
         // 绘画应用来源
-        QString sElidedSource = painter->fontMetrics().elidedText(sAppsSources, Qt::ElideRight, textWidth, Qt::TextShowMnemonic);
+        QString sElidedSource = painter->fontMetrics().elidedText(sAppsSources,
+                                                                  Qt::ElideRight,
+                                                                  textWidth,
+                                                                  Qt::TextShowMnemonic);
         painter->setFont(font2);
         painter->setPen(pen2);
         painter->drawText(x + LEFT_INTEVAL, y1, sElidedSource);
@@ -455,9 +474,7 @@ void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     else if (index.column() == 1) {
         // 设置图片
         int nStatus = index.model()->data(index, Qt::DisplayRole).toInt();
-        QPixmap pixmap = (nStatus == 0)
-                             ? QPixmap(Startup_Disable)
-                             : QPixmap(Startup_Enable);
+        QPixmap pixmap = (nStatus == 0) ? QPixmap(Startup_Disable) : QPixmap(Startup_Enable);
 
         pixmap = m_widget->getPixmap(pixmap);
         const QPixmap &star = pixmap;
@@ -483,9 +500,7 @@ QPixmap StartupWidget::getPixmap(QPixmap pixmap)
     return pixmap;
 }
 
-StartupModel::StartupModel()
-{
-}
+StartupModel::StartupModel() { }
 
 QVariant StartupModel::data(const QModelIndex &index, int role) const
 {
@@ -496,7 +511,7 @@ QVariant StartupModel::data(const QModelIndex &index, int role) const
         return int(Qt::AlignLeft | Qt::AlignVCenter);
     } else if (role == Qt::DisplayRole) {
         return QStandardItemModel::data(index, role);
-    } else if (role == Qt::BackgroundColorRole) {
+    } else if (role == Qt::BackgroundRole) {
         if (index.row() % 2 == 0) {
             return QColor(0, 0, 0, 8);
         } else if (index.row() % 5 == 1)
@@ -518,9 +533,7 @@ StartupMainWindow::StartupMainWindow(QWidget *pParent)
     setFixedSize(960, 640);
 }
 
-StartupMainWindow::~StartupMainWindow()
-{
-}
+StartupMainWindow::~StartupMainWindow() { }
 
 void StartupMainWindow::closeEvent(QCloseEvent *event)
 {

@@ -6,13 +6,15 @@
 #pragma once
 
 #include "daemon_adaptor.h"
-#include "../../deepin-pc-manager/src/window/modules/common/gsettingkey.h"
-#include "../../deepin-pc-manager/src/window/modules/common/common.h"
-#include "disk/disk.h"
 
+#include <QDBusAbstractAdaptor>
+#include <QDBusVariant>
 #include <QObject>
-#include <QThread>
 #include <QSqlDatabase>
+#include <QThread>
+#include <QDBusContext>
+#include <QDBusMessage>
+#include <QDBusConnectionInterface>
 
 class QDBusContext;
 class NetManagerModel;
@@ -30,6 +32,7 @@ const QString service = "com.deepin.pc.manager.system.daemon";
 const QString path = "/com/deepin/pc/manager/system/daemon";
 
 class SecurityPkgNameSql;
+
 class WriteDBusData : public QObject
     , protected QDBusContext
 {
@@ -77,35 +80,32 @@ public Q_SLOTS:
     // 清理journal目录下的日志文件
     void CleanJournal();
 
-    // 添加安全日志
-    void AddSecurityLog(int nType, QString sInfo);
-
-    // 递归函数-获取/usr/share/deepin-pc-manager/config/目录下所有的lock文件
-    void scanFile(const QString &path);
-
-    // 初始化localcache.db数据库
-    void initLocalCache();
     // 查询相关联文件对应的包名信息
     QString QueryPackageName(const QString sBinaryFile);
     // 应用程序安装卸载刷新数据库
     void RefreshPackageTable();
-    // 接受数据库插入完成信号
-    void acceptSqlInsertFinish();
 
     // 插入卸载记录
     void InsertUninstalledAppRecord(const QString &, const QString &);
     // 删除卸载记录
     void DeleteUninstalledAppRecord(const QString &);
-    //获取卸载应用程序名称
+    // 获取卸载应用程序名称
     QVariantList GetUnInstalledApps();
 
 private:
     // 校验调用者
     bool isValidInvoker();
     bool openLocalDb();
+    // 递归函数-获取/usr/share/deepin-pc-manager/config/目录下所有的lock文件
+    void scanFile(const QString &path);
+
+    // 初始化localcache.db数据库
+    void initLocalCache();
+    // 接受数据库插入完成信号
+    void acceptSqlInsertFinish();
 
 private:
-    DaemonAdaptor *m_adaptor;
+    DaemonAdaptor *m_daemonAdaptor;
     SettingsSql *m_settingsSql; // 系统设置查询
 
     QString m_device;

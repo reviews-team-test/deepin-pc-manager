@@ -4,25 +4,29 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "systemsettings.h"
+
 #include "../invokers/invokerfactory.h"
 
 #include <QDebug>
+
 namespace def {
 SystemSettings::SystemSettings(QObject *parent)
     : QObject(parent)
     , m_netMonitorDBusInvoker(nullptr)
 {
-    m_netMonitorDBusInvoker = InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
-                                                                          "/com/deepin/pc/manager/MonitorNetFlow",
-                                                                          "com.deepin.pc.manager.MonitorNetFlow",
-                                                                          ConnectType::SYSTEM, this);
+    m_netMonitorDBusInvoker =
+        InvokerFactory::GetInstance().CreateInvoker("com.deepin.pc.manager.MonitorNetFlow",
+                                                    "/com/deepin/pc/manager/MonitorNetFlow",
+                                                    "com.deepin.pc.manager.MonitorNetFlow",
+                                                    ConnectType::SYSTEM,
+                                                    this);
 
-    m_netMonitorDBusInvoker->Connect("SysSettingValueChanged", this, SLOT(onValueChanged(QString, QDBusVariant)));
+    m_netMonitorDBusInvoker->Connect("SysSettingValueChanged",
+                                     this,
+                                     SLOT(onValueChanged(QString, QDBusVariant)));
 }
 
-SystemSettings::~SystemSettings()
-{
-}
+SystemSettings::~SystemSettings() { }
 
 bool SystemSettings::setValue(const QString &key, const QVariant &value)
 {

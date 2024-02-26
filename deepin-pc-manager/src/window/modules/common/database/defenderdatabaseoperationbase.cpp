@@ -6,8 +6,8 @@
 #include "defenderdatabaseoperationbase.h"
 
 #include <QDebug>
-#include <QSqlError>
 #include <QDir>
+#include <QSqlError>
 #include <QUuid>
 
 // 固定逻辑
@@ -63,7 +63,7 @@ bool DefenderDatabaseOperationBase::init()
 
 bool DefenderDatabaseOperationBase::initDataBase()
 {
-    //初始化数据库
+    // 初始化数据库
     QDir defenderDataDir;
     if (!defenderDataDir.exists(DEFENDER_DATA_DIR_PATH)) {
         defenderDataDir.mkdir(DEFENDER_DATA_DIR_PATH);
@@ -159,6 +159,7 @@ void DefenderDatabaseOperationBase::sendResultSignal(int cmdType)
     m_query.finish();
     return;
 }
+
 // 创建连接名
 QString DefenderDatabaseOperationBase::connectName()
 {

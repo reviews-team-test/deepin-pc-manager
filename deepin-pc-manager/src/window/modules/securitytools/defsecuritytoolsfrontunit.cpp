@@ -4,20 +4,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "defsecuritytoolsfrontunit.h"
+
 #include "securitytoolsmodel.h"
-#include "common/compixmap.h"
+#include "src/window/modules/common/compixmap.h"
 
 #include <DFloatingMessage>
 #include <DMessageManager>
 #include <DPalette>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPixmap>
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QFont>
 #include <QFontMetrics>
-#include <QDBusMessage>
-#include <QDBusConnection>
+#include <QHBoxLayout>
+#include <QPixmap>
+#include <QVBoxLayout>
 
 DefSecurityToolsFrontUnit::DefSecurityToolsFrontUnit(DWidget *parent)
     : DFrame(parent)
@@ -88,7 +89,9 @@ void DefSecurityToolsFrontUnit::setToolsInfo(const DEFSECURITYTOOLINFO &info)
     m_pImageLabel->setPixmap(pixmap);
     setShowString(m_pAppNameLabel, getTranslation(info.strAppName), 140);
     setShowString(m_pDesLabel, getTranslation(info.strDescription), 140);
-    setShowString(m_pCompanyNameLabel, QString(tr("Supported by %1").arg(getTranslation(info.strCompany))), 140);
+    setShowString(m_pCompanyNameLabel,
+                  QString(tr("Supported by %1").arg(getTranslation(info.strCompany))),
+                  140);
 
     if (info.bHasInstalled) {
         if (info.bCanUpdate) {
@@ -321,7 +324,7 @@ void DefSecurityToolsFrontUnit::setShowString(DLabel *pLabel, const QString &str
 {
     QFont font = pLabel->font();
     QFontMetrics metrics(font);
-    int iTextLen = metrics.width(strText);
+    int iTextLen = metrics.horizontalAdvance(strText);
     QString strShowText = strText;
 
     if (iTextLen > iLen) {
@@ -336,7 +339,7 @@ void DefSecurityToolsFrontUnit::setShowString(DPushButton *pBtn, const QString &
 {
     QFont font = pBtn->font();
     QFontMetrics metrics(font);
-    int iTextLen = metrics.width(strText);
+    int iTextLen = metrics.horizontalAdvance(strText);
     QString strShowText = strText;
 
     if (iTextLen > iLen) {

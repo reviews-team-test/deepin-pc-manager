@@ -5,8 +5,8 @@
 
 #include "avcpulimitation.h"
 
-#include <QHBoxLayout>
 #include <QCheckBox>
+#include <QHBoxLayout>
 
 AVCPULimitation::AVCPULimitation(QWidget *parent)
     : QWidget(parent)
@@ -37,9 +37,7 @@ AVCPULimitation::AVCPULimitation(QWidget *parent)
     connect(m_check, &QCheckBox::clicked, this, &AVCPULimitation::checkBoxChange);
 }
 
-AVCPULimitation::~AVCPULimitation()
-{
-}
+AVCPULimitation::~AVCPULimitation() { }
 
 void AVCPULimitation::setcheckbox(bool status)
 {

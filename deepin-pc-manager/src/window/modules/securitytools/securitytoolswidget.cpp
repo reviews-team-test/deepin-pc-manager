@@ -4,31 +4,32 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "securitytoolswidget.h"
-#include "../common/compixmap.h"
-#include "securitytoolsmodel.h"
-#include "defsecuritytoolsfrontunit.h"
+
 #include "defsecuritytoolinfo.h"
+#include "defsecuritytoolsfrontunit.h"
+#include "securitytoolsmodel.h"
+#include "window/modules/securitytools/defsecuritytoollistwidget.h"
 
 #include <DFontSizeManager>
 #include <DListView>
 #include <DPalette>
 
-#include <QLabel>
-#include <QScroller>
-#include <QScrollBar>
-#include <QScrollArea>
-#include <QSpacerItem>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDBusConnection>
 #include <QFont>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QScroller>
+#include <QSpacerItem>
 #include <QStandardItem>
+#include <QVBoxLayout>
 
 #define PACKAGEKEY Qt::UserRole + 1
 
 enum TOOLMSGPANE {
-    DATA, //有数据
-    EMPTY //无数据
+    DATA, // 有数据
+    EMPTY // 无数据
 };
 
 SecurityToolsWidget::SecurityToolsWidget(SecurityToolsModel *model, DWidget *parent)
@@ -41,7 +42,7 @@ SecurityToolsWidget::SecurityToolsWidget(SecurityToolsModel *model, DWidget *par
     , m_iClassify(TOOLCLASSIFY::ALLTOOLS)
     , m_pStackedWidget(nullptr)
 {
-    //注册信号类型
+    // 注册信号类型
     registerDefSecurityToolInfo();
     registerDefSecurityToolInfoList();
     this->setAccessibleName("rightWidget_securityToolsWidget");
@@ -52,9 +53,7 @@ SecurityToolsWidget::SecurityToolsWidget(SecurityToolsModel *model, DWidget *par
     m_model->updateToolsInfo();
 }
 
-SecurityToolsWidget::~SecurityToolsWidget()
-{
-}
+SecurityToolsWidget::~SecurityToolsWidget() { }
 
 // 初始化界面
 void SecurityToolsWidget::initUI()
@@ -137,7 +136,8 @@ void SecurityToolsWidget::initConnection()
         } else {
             m_pStackedWidget->setCurrentIndex(TOOLMSGPANE::DATA);
             DWidget *pWidget = m_pStackedWidget->widget(TOOLMSGPANE::DATA);
-            DefSecurityToolListWidget *pSecurityList = qobject_cast<DefSecurityToolListWidget *>(pWidget);
+            DefSecurityToolListWidget *pSecurityList =
+                qobject_cast<DefSecurityToolListWidget *>(pWidget);
 
             foreach (auto info, showInfos) {
                 DefSecurityToolsFrontUnit *pUnit = new DefSecurityToolsFrontUnit(pSecurityList);
@@ -164,22 +164,27 @@ void SecurityToolsWidget::initConnection()
         }
     });
 
-    QObject::connect(m_model, &SecurityToolsModel::notityAppStatusChanged, this, [&](const QString &strPackageKey, int status) {
-        DWidget *pWidget = m_pStackedWidget->widget(TOOLMSGPANE::DATA);
-        DefSecurityToolListWidget *pSecurityList = qobject_cast<DefSecurityToolListWidget *>(pWidget);
-        int iCount = pSecurityList->count();
+    QObject::connect(m_model,
+                     &SecurityToolsModel::notityAppStatusChanged,
+                     this,
+                     [&](const QString &strPackageKey, int status) {
+                         DWidget *pWidget = m_pStackedWidget->widget(TOOLMSGPANE::DATA);
+                         DefSecurityToolListWidget *pSecurityList =
+                             qobject_cast<DefSecurityToolListWidget *>(pWidget);
+                         int iCount = pSecurityList->count();
 
-        for (int i = 0; i < iCount; i++) {
-            QListWidgetItem *pItem = pSecurityList->item(i);
-            QString strPackageData = pItem->data(PACKAGEKEY).toString();
+                         for (int i = 0; i < iCount; i++) {
+                             QListWidgetItem *pItem = pSecurityList->item(i);
+                             QString strPackageData = pItem->data(PACKAGEKEY).toString();
 
-            if (strPackageData == strPackageKey) {
-                QWidget *pTempWidget = pSecurityList->itemWidget(pItem);
-                DefSecurityToolsFrontUnit *pUnit = qobject_cast<DefSecurityToolsFrontUnit *>(pTempWidget);
-                pUnit->setAppStatus(DEFSECURITYTOOLSTATUS(status));
-            }
-        }
-    });
+                             if (strPackageData == strPackageKey) {
+                                 QWidget *pTempWidget = pSecurityList->itemWidget(pItem);
+                                 DefSecurityToolsFrontUnit *pUnit =
+                                     qobject_cast<DefSecurityToolsFrontUnit *>(pTempWidget);
+                                 pUnit->setAppStatus(DEFSECURITYTOOLSTATUS(status));
+                             }
+                         }
+                     });
 
     QObject::connect(m_pDropDown, &DDropdown::triggeredAll, this, [&]() {
         updateToolsMsgByStatus(TOOLSSTATUS::ALL);
@@ -193,10 +198,13 @@ void SecurityToolsWidget::initConnection()
         updateToolsMsgByStatus(TOOLSSTATUS::UNINSTALLEDTOOL);
     });
 
-    QObject::connect(m_pSecurityButtonBox, &DButtonBox::buttonClicked, this, [&](QAbstractButton *pBtn) {
-        int iID = m_pSecurityButtonBox->id(pBtn);
-        updateToolsMsgByClassify(TOOLCLASSIFY(iID));
-    });
+    QObject::connect(m_pSecurityButtonBox,
+                     &DButtonBox::buttonClicked,
+                     this,
+                     [&](QAbstractButton *pBtn) {
+                         int iID = m_pSecurityButtonBox->id(pBtn);
+                         updateToolsMsgByClassify(TOOLCLASSIFY(iID));
+                     });
 }
 
 DButtonBoxButton *SecurityToolsWidget::createBoxButton(const QString &strText, QWidget *pParent)
@@ -229,7 +237,8 @@ void SecurityToolsWidget::clearToolInfoList()
     pSecurityList->clear();
 }
 
-DEFSECURITYTOOLINFOLIST SecurityToolsWidget::getToolInfoByClassify(const DEFSECURITYTOOLINFOLIST &infolist) const
+DEFSECURITYTOOLINFOLIST
+SecurityToolsWidget::getToolInfoByClassify(const DEFSECURITYTOOLINFOLIST &infolist) const
 {
     DEFSECURITYTOOLINFOLIST desInfolist;
 
@@ -270,7 +279,7 @@ DWidget *SecurityToolsWidget::createEmptyDataPane()
     return pEmptyWidget;
 }
 
-//设置因主题改变图标
+// 设置因主题改变图标
 void SecurityToolsWidget::changeThemeType(ColorType themeType)
 {
     Q_UNUSED(themeType);

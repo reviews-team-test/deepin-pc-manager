@@ -6,13 +6,13 @@
 #ifndef DEFENDER_DATABASE_OPERATION_BASE_H
 #define DEFENDER_DATABASE_OPERATION_BASE_H
 
-#include "../../deepin-pc-manager/src/window/modules/common/common.h"
+#include "src/window/modules/common/common.h"
 
 #include <QObject>
-#include <QVariantList>
-#include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QSqlQuery>
+#include <QVariantList>
 
 // 非线程安全
 // 不要跨线程使用

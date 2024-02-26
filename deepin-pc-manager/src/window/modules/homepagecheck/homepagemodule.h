@@ -5,13 +5,11 @@
 
 #pragma once
 
-#include "window/modules/common/common.h"
-#include "window/interface/moduleinterface.h"
-#include "window/interface/frameproxyinterface.h"
-#include "window/modules/common/common.h"
 #include "widgets/checkprocessingwidget.h"
-#include "window/modules/homepagecheck/syscheckadaptormodel.h"
 #include "widgets/syscheckresultwidget.h"
+#include "window/interface/frameproxyinterface.h"
+#include "window/interface/moduleinterface.h"
+#include "window/modules/homepagecheck/syscheckadaptormodel.h"
 
 class FrameProxyInterface;
 class ModuleInterface;
@@ -22,8 +20,7 @@ class HomePage;
 class HomePageCheckWidget;
 class QObject;
 
-class HomePageModule : public QObject
-    , public ModuleInterface
+class HomePageModule : public QObject, public ModuleInterface
 {
     Q_OBJECT
 public:
@@ -41,6 +38,7 @@ public:
     void active(int index) override;
     // 反激活
     void deactive() override;
+
     // 获得首页数据处理对象
     inline HomePageModel *getModel() { return m_homePageModel; }
 

@@ -4,23 +4,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "homepagemodule.h"
-#include "homepagemodel.h"
+
 #include "homepage.h"
-#include "window/modules/homepagecheck/homepagecheckwidget.h"
-#include "../src/window/modules/common/invokers/invokerfactory.h"
+#include "homepagemodel.h"
 
 #include <DGuiApplicationHelper>
 
-#include <QObject>
-#include <QTimer>
 #include <QModelIndex>
+#include <QObject>
 #include <QStandardItemModel>
+#include <QTimer>
 
-#define AUTO_RESET_WIDGET(className, widget) \
-    { \
+#define AUTO_RESET_WIDGET(className, widget)                  \
+    {                                                         \
         connect(widget, &className::destroyed, this, [this] { \
-            widget = nullptr; \
-        }); \
+            widget = nullptr;                                 \
+        });                                                   \
     }
 
 HomePageModule::HomePageModule(FrameProxyInterface *frame, QObject *parent)
@@ -56,9 +55,7 @@ HomePageModule::~HomePageModule()
 }
 
 // 初始化
-void HomePageModule::initialize()
-{
-}
+void HomePageModule::initialize() { }
 
 // 预初始化
 void HomePageModule::preInitialize()
@@ -87,11 +84,11 @@ void HomePageModule::preInitialize()
         });
         connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::fixItemFinished, this, [this] {
             if (m_frameProxy) {
-                if(!m_sysCheckAdaptorModel->isProcessingFastFixing()){
+                if (!m_sysCheckAdaptorModel->isProcessingFastFixing()) {
                     m_frameProxy->setBackForwardButtonStatus(true);
                 }
-
-            } });
+            }
+        });
     }
 }
 
@@ -111,7 +108,10 @@ void HomePageModule::active(int index)
         m_homePage = new HomePage(m_homePageModel);
         AUTO_RESET_WIDGET(HomePage, m_homePage);
 
-        connect(m_homePage, &HomePage::notifyShowCheckPage, this, &HomePageModule::showProgressPage);
+        connect(m_homePage,
+                &HomePage::notifyShowCheckPage,
+                this,
+                &HomePageModule::showProgressPage);
     }
 
     // 优先显示检查过程（如果处理检查中）
@@ -144,19 +144,29 @@ void HomePageModule::deactive()
 
 // 打开体检页
 // 因重构弃用
-void HomePageModule::showCheckPage()
-{
-}
+void HomePageModule::showCheckPage() { }
 
 void HomePageModule::showProgressPage()
 {
     // 若体检页没有创建，则新建
     if (nullptr == m_progressWidget) {
         m_progressWidget = new CheckProcessingWidget;
-        connect(m_progressWidget, &CheckProcessingWidget::checkCanceled, this, &HomePageModule::onCheckCanceled);
-        connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::checkStarted, m_progressWidget, &CheckProcessingWidget::onCheckInitial);
-        connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::checkFinished, m_progressWidget, &CheckProcessingWidget::onCheckDone);
-        connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::stageChanged, m_progressWidget, &CheckProcessingWidget::onCheckMissionStarted);
+        connect(m_progressWidget,
+                &CheckProcessingWidget::checkCanceled,
+                this,
+                &HomePageModule::onCheckCanceled);
+        connect(m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::checkStarted,
+                m_progressWidget,
+                &CheckProcessingWidget::onCheckInitial);
+        connect(m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::checkFinished,
+                m_progressWidget,
+                &CheckProcessingWidget::onCheckDone);
+        connect(m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::stageChanged,
+                m_progressWidget,
+                &CheckProcessingWidget::onCheckMissionStarted);
 
         AUTO_RESET_WIDGET(CheckProcessingWidget, m_progressWidget);
     }
@@ -171,16 +181,38 @@ void HomePageModule::showResultPage()
     if (!m_resultWidget) {
         m_resultWidget = new SysCheckResultWidget;
         m_resultWidget->setResultModel(m_sysCheckAdaptorModel->getResultModel());
-        m_resultWidget->setHeaderContent(m_sysCheckAdaptorModel->getIssuePoint(), m_sysCheckAdaptorModel->getIssueCount());
+        m_resultWidget->setHeaderContent(m_sysCheckAdaptorModel->getIssuePoint(),
+                                         m_sysCheckAdaptorModel->getIssueCount());
 
-        connect(m_resultWidget, &SysCheckResultWidget::requestSetIgnore, m_sysCheckAdaptorModel, &SysCheckAdaptorModel::onRequestSetIgnore);
-        connect(m_resultWidget, &SysCheckResultWidget::requestFixAll, m_sysCheckAdaptorModel, &SysCheckAdaptorModel::onRequestFixAll);
-        connect(m_resultWidget, &SysCheckResultWidget::requestFixItem, m_sysCheckAdaptorModel, &SysCheckAdaptorModel::onRequestFixItem);
-        connect(m_resultWidget, &SysCheckResultWidget::requestCheckAgain, this, &HomePageModule::onRequestCheckAgain);
-        connect(m_resultWidget, &SysCheckResultWidget::requestQuit, this, &HomePageModule::onRequestQuitResultWidget);
+        connect(m_resultWidget,
+                &SysCheckResultWidget::requestSetIgnore,
+                m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::onRequestSetIgnore);
+        connect(m_resultWidget,
+                &SysCheckResultWidget::requestFixAll,
+                m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::onRequestFixAll);
+        connect(m_resultWidget,
+                &SysCheckResultWidget::requestFixItem,
+                m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::onRequestFixItem);
+        connect(m_resultWidget,
+                &SysCheckResultWidget::requestCheckAgain,
+                this,
+                &HomePageModule::onRequestCheckAgain);
+        connect(m_resultWidget,
+                &SysCheckResultWidget::requestQuit,
+                this,
+                &HomePageModule::onRequestQuitResultWidget);
 
-        connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::fixItemStarted, m_resultWidget, &SysCheckResultWidget::onFixStarted);
-        connect(m_sysCheckAdaptorModel, &SysCheckAdaptorModel::fixItemFinished, m_resultWidget, &SysCheckResultWidget::onFixFinished);
+        connect(m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::fixItemStarted,
+                m_resultWidget,
+                &SysCheckResultWidget::onFixStarted);
+        connect(m_sysCheckAdaptorModel,
+                &SysCheckAdaptorModel::fixItemFinished,
+                m_resultWidget,
+                &SysCheckResultWidget::onFixFinished);
 
         AUTO_RESET_WIDGET(SysCheckResultWidget, m_resultWidget);
     }
@@ -245,7 +277,8 @@ void HomePageModule::showHomepage()
     //    // 若体检首页没有创建，则新建
     //    if (nullptr == m_homePage) {
     //        m_homePage = new HomePage(m_homePageModel);
-    //        connect(m_homePage, &HomePage::notifyShowCheckPage, this, &HomePageModule::ShowCheckPage);
+    //        connect(m_homePage, &HomePage::notifyShowCheckPage, this,
+    //        &HomePageModule::ShowCheckPage);
     //    }
 
     //    // 若体检页已存在，则删除

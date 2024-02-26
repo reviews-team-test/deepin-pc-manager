@@ -19,9 +19,7 @@ DListViewMultiColFrame::DListViewMultiColFrame(QStandardItemModel *model, QWidge
     initConnection();
 }
 
-DListViewMultiColFrame::~DListViewMultiColFrame()
-{
-}
+DListViewMultiColFrame::~DListViewMultiColFrame() { }
 
 DListViewMultiCol *DListViewMultiColFrame::listViewMultiCol()
 {
@@ -49,5 +47,8 @@ void DListViewMultiColFrame::initUi()
 
 void DListViewMultiColFrame::initConnection()
 {
-    connect(m_listView, &DListViewMultiCol::headViewSortIndicatorChanged, this, &DListViewMultiColFrame::headViewSortIndicatorChanged);
+    connect(m_listView,
+            &DListViewMultiCol::headViewSortIndicatorChanged,
+            this,
+            &DListViewMultiColFrame::headViewSortIndicatorChanged);
 }

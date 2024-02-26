@@ -6,8 +6,8 @@
 #ifndef SYSTEMCHECKDEFINITION_H
 #define SYSTEMCHECKDEFINITION_H
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 #include <QString>
 
 #define MB_COUNT (1 << 20)
@@ -15,23 +15,23 @@
 
 #define SYS_VER_CHECK_TIMEOUT 40 * 1000
 
-#define FIXED_ROW(row, height) \
-    { \
-        mainLayout->setRowStretch(row, height); \
+#define FIXED_ROW(row, height)                        \
+    {                                                 \
+        mainLayout->setRowStretch(row, height);       \
         mainLayout->setRowMinimumHeight(row, height); \
     }
 
-#define FIXED_COL(column, weight) \
-    { \
-        mainLayout->setColumnStretch(column, weight); \
+#define FIXED_COL(column, weight)                          \
+    {                                                      \
+        mainLayout->setColumnStretch(column, weight);      \
         mainLayout->setColumnMinimumWidth(column, weight); \
     }
 
-#define FIXED_FONT_PIXEL_SIZE(widget, size) \
-    { \
+#define FIXED_FONT_PIXEL_SIZE(widget, size)  \
+    {                                        \
         QFont widget##Font = widget->font(); \
-        widget##Font.setPixelSize(size); \
-        widget->setFont(widget##Font); \
+        widget##Font.setPixelSize(size);     \
+        widget->setFont(widget##Font);       \
     }
 
 #define CHECK_MAX_POINT 100
@@ -39,37 +39,24 @@
 
 // 自动化标签
 #define ACCNAMESTR(content) #content
-#define SET_ACCESS_NAME_T(control, className, name) control->setAccessibleName(ACCNAMESTR(className##_##name));
+#define SET_ACCESS_NAME_T(control, className, name) \
+    control->setAccessibleName(ACCNAMESTR(className##_##name));
 
-enum SysCheckItemID {
-    SSH,
-    Disk,
-    Trash,
-    SystemUpdate,
-    DevMode,
-    AutoStartApp,
-    MaxLimit
-};
+enum SysCheckItemID { SSH, Disk, Trash, SystemUpdate, DevMode, AutoStartApp, MaxLimit };
 
-enum IgnoreStatus {
-    WithNoIgnore,
-    Ignored,
-    IgnoreCanceled
-};
+enum IgnoreStatus { WithNoIgnore, Ignored, IgnoreCanceled };
 
-enum CheckProgressStatus {
-    Success,
-    TimeOut,
-    Masked
-};
+enum CheckProgressStatus { Success, TimeOut, Masked };
 
 // 错误数据模型角色
 enum CheckResultModelRole {
     ID = Qt::UserRole + 1, // 检查项ID
-    CheckProgressFlag, // 检查项是完成还是超时还是被屏蔽（异常状态为系统版本检查超时， 病毒查杀冲突， SSH被隐藏）
+    CheckProgressFlag, // 检查项是完成还是超时还是被屏蔽（异常状态为系统版本检查超时，
+                       // 病毒查杀冲突， SSH被隐藏）
     IsIssueHappen, // 检查项是否存在问题
-    IsIgnored, //  检查项是否被设置为忽略状态
-    Details // 检查项问题详细数据(不要记录复杂数据，仅检查项UI需要显示的数据，如 int bool等，具体数据放在本model中处理)
+    IsIgnored,     //  检查项是否被设置为忽略状态
+    Details // 检查项问题详细数据(不要记录复杂数据，仅检查项UI需要显示的数据，如 int
+            // bool等，具体数据放在本model中处理)
 };
 
 class SystemCheckDocument : public QObject
@@ -109,18 +96,21 @@ const QString kOutOfDate = "#FF5C00";
 #define k75_90GreetingStatus SystemCheckDocument::tr("Your computer is in good condition")
 #define k60_75GreetingStatus SystemCheckDocument::tr("Your computer is at risk")
 #define k0_60GreetingStatus SystemCheckDocument::tr("Your computer is at high risk")
-#define k5DaysGreetingStatus SystemCheckDocument::tr("Your computer has not been checked for a long time")
+#define k5DaysGreetingStatus \
+    SystemCheckDocument::tr("Your computer has not been checked for a long time")
 #define kOutOfDateGreetingStatus SystemCheckDocument::tr("Your computer has not been checked yet")
 
 #define k90_100GreetingInfo SystemCheckDocument::tr("Great! Keep staying healthy please.")
 #define k75_90GreetingInfo SystemCheckDocument::tr("Start a check and perform some improvements.")
 #define k60_75GreetingInfo SystemCheckDocument::tr("Please check your system now.")
-#define k0_60GreetingInfo SystemCheckDocument::tr("It is strongly recommended to check and fix your system now.")
+#define k0_60GreetingInfo \
+    SystemCheckDocument::tr("It is strongly recommended to check and fix your system now.")
 #define k5DaysGreetingInfo SystemCheckDocument::tr("Have a new check right now.")
 #define kOutOfDateGreetingInfo SystemCheckDocument::tr("Try a full check.")
 
 #define kAbnormalResultTitle SystemCheckDocument::tr("%1 issue(s) found")
-#define kAbnormalResultTip SystemCheckDocument::tr("Fix issues right now to keep your computer healthy.")
+#define kAbnormalResultTip \
+    SystemCheckDocument::tr("Fix issues right now to keep your computer healthy.")
 #define kNormalResultTitle SystemCheckDocument::tr("Your computer is healthy")
 #define kNormalResultTip SystemCheckDocument::tr("Great! Keep staying healthy please.")
 
@@ -132,14 +122,10 @@ const QString kOutOfDate = "#FF5C00";
 // 注意 SSH检查略过，能窗口中略过检查和隐藏，不要在这里删除代码
 // configuration start
 const QList<QString> kSystemCheckTypeIconList = {
-    "dcc_syscheck_item_antivirus",
-    "dcc_syscheck_item_avupdate",
-    "dcc_syscheck_item_ssh",
-    "dcc_syscheck_item_disk",
-    "dcc_syscheck_item_garbage",
-    "dcc_syscheck_item_sysupdate",
-    "dcc_syscheck_item_dev",
-    "dcc_syscheck_item_autostart"};
+    "dcc_syscheck_item_antivirus", "dcc_syscheck_item_avupdate", "dcc_syscheck_item_ssh",
+    "dcc_syscheck_item_disk",      "dcc_syscheck_item_garbage",  "dcc_syscheck_item_sysupdate",
+    "dcc_syscheck_item_dev",       "dcc_syscheck_item_autostart"
+};
 
 #define kTypename1 SystemCheckDocument::tr("Viruses and Trojans")
 #define kTypename2 SystemCheckDocument::tr("Database version")
@@ -187,15 +173,14 @@ const QList<QString> kSystemCheckTypeIconList = {
 #define kStageinfo8 SystemCheckDocument::tr("Checking startup programs")
 
 // 检查项异常扣分规则
-const QList<int> kIssuePointInfoList {
-    30, // av
-    10, // av version
-    5, // ssh
-    15, // disk
-    5, // trash
-    5, // system update
-    5, // dev mode
-    5}; // autostart
+const QList<int> kIssuePointInfoList{ 30,  // av
+                                      10,  // av version
+                                      5,   // ssh
+                                      15,  // disk
+                                      5,   // trash
+                                      5,   // system update
+                                      5,   // dev mode
+                                      5 }; // autostart
 // 垃圾清理总量大于1G时，额外扣分
 const int kTrashSizeTooLargeAdjustPoint = 5;
 

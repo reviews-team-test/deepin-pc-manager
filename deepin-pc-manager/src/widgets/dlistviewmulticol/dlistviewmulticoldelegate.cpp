@@ -4,16 +4,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dlistviewmulticoldelegate.h"
+
 #include "dlistviewmulticolcommon.h"
 
-#include <QPainter>
-#include <DApplicationHelper>
+#include <DPaletteHelper>
+
 #include <QAbstractItemView>
-#include <QIcon>
-#include <QHelpEvent>
-#include <QToolTip>
 #include <QApplication>
+#include <QHelpEvent>
+#include <QIcon>
+#include <QPainter>
 #include <QPainterPath>
+#include <QToolTip>
 
 DWIDGET_USE_NAMESPACE
 
@@ -22,7 +24,9 @@ DListViewMultiColDelegate::DListViewMultiColDelegate(QObject *parent)
 {
 }
 
-void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DListViewMultiColDelegate::paint(QPainter *painter,
+                                      const QStyleOptionViewItem &option,
+                                      const QModelIndex &index) const
 {
     const QAbstractItemModel *ItemModel = index.model();
 
@@ -43,7 +47,7 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
         painter->setOpacity(1);
         painter->setRenderHint(QPainter::Antialiasing);
 
-        DPalette pa = DApplicationHelper::instance()->palette(styleOption.widget);
+        DPalette pa = DPaletteHelper::instance()->palette(styleOption.widget);
         QBrush backgroundBrush = pa.brush(DPalette::ColorType::ItemBackground);
 
         painter->fillPath(path, backgroundBrush);
@@ -59,7 +63,7 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
         painter->setOpacity(1);
         painter->setRenderHint(QPainter::Antialiasing);
 
-        DPalette pa = DApplicationHelper::instance()->palette(styleOption.widget);
+        DPalette pa = DPaletteHelper::instance()->palette(styleOption.widget);
         QBrush backgroundBrush = pa.brush(DPalette::ColorType::ObviousBackground);
 
         painter->fillPath(path, backgroundBrush);
@@ -75,7 +79,7 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
         painter->setOpacity(1);
         painter->setRenderHint(QPainter::Antialiasing);
 
-        DPalette pa = DApplicationHelper::instance()->palette(styleOption.widget);
+        DPalette pa = DPaletteHelper::instance()->palette(styleOption.widget);
         QBrush backgroundBrush = pa.brush(DPalette::ColorRole::Highlight);
 
         painter->fillPath(path, backgroundBrush);
@@ -85,7 +89,8 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
     // 画本行各列内容
     int leftColWidth = 0;
     QFontMetrics fontMetrics = styleOption.fontMetrics;
-    QList<int> headerWidthList = ItemModel->property(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST).value<QList<int>>();
+    QList<int> headerWidthList =
+        ItemModel->property(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST).value<QList<int>>();
     for (int i = 0; i < headerWidthList.size(); ++i) {
         int thisColWidth = headerWidthList[i];
 
@@ -102,7 +107,10 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
             QSize iconSize = ItemModel->property(PROPERTY_KEY_ITEM_ICON_SIZE).value<QSize>();
             int iconYOffset = (height - iconSize.height()) / 2; // 为垂直居中画图标
             int iconLeftSpace = 10;
-            QRect iconRect(iconLeftSpace + left + leftColWidth, top + iconYOffset, iconSize.width(), iconSize.height());
+            QRect iconRect(iconLeftSpace + left + leftColWidth,
+                           top + iconYOffset,
+                           iconSize.width(),
+                           iconSize.height());
             iconSectionWidth = iconLeftSpace + iconSize.width();
             icon.paint(painter, iconRect);
         }
@@ -111,7 +119,7 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
         // 画文字
         // 文字颜色
         painter->save();
-        QVariant colorVar = ItemModel->data(colIndex, Qt::ItemDataRole::TextColorRole);
+        QVariant colorVar = ItemModel->data(colIndex, Qt::ForegroundRole);
         if (QVariant::Type::Color == colorVar.type()) {
             painter->setPen(colorVar.value<QColor>());
         }
@@ -132,8 +140,10 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
                        thisColWidth - iconSectionWidth - textLeftSpace,
                        height);
         QString displayText = ItemModel->data(colIndex, Qt::ItemDataRole::DisplayRole).toString();
-        QString elidedDisplayText = fontMetrics.elidedText(displayText, Qt::TextElideMode::ElideMiddle,
-                                                           thisColWidth - iconSectionWidth - textLeftSpace);
+        QString elidedDisplayText =
+            fontMetrics.elidedText(displayText,
+                                   Qt::TextElideMode::ElideMiddle,
+                                   thisColWidth - iconSectionWidth - textLeftSpace);
         // 为防止文本换行，设置Qt::TextFlag::TextSingleLine属性
         painter->drawText(textRect, Qt::TextFlag::TextSingleLine, elidedDisplayText);
         leftColWidth += thisColWidth;
@@ -141,13 +151,17 @@ void DListViewMultiColDelegate::paint(QPainter *painter, const QStyleOptionViewI
     }
 }
 
-bool DListViewMultiColDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
+bool DListViewMultiColDelegate::helpEvent(QHelpEvent *event,
+                                          QAbstractItemView *view,
+                                          const QStyleOptionViewItem &option,
+                                          const QModelIndex &index)
 {
     const QAbstractItemModel *ItemModel = index.model();
     if (!ItemModel) {
         return QStyledItemDelegate::helpEvent(event, view, option, index);
     }
-    QList<int> headerWidthList = ItemModel->property(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST).value<QList<int>>();
+    QList<int> headerWidthList =
+        ItemModel->property(PROPERTY_KEY_HEADER_SECTION_WIDTH_LIST).value<QList<int>>();
     if (event->type() == QEvent::ToolTip) {
         int cursorPosX = event->pos().x();
         // 获取表头水平偏移，定表头初始x坐标
@@ -190,7 +204,8 @@ bool DListViewMultiColDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *
     return QStyledItemDelegate::helpEvent(event, view, option, index);
 }
 
-QSize DListViewMultiColDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize DListViewMultiColDelegate::sizeHint(const QStyleOptionViewItem &option,
+                                          const QModelIndex &index) const
 {
     // 原始尺寸
     QSize originSize = QStyledItemDelegate::sizeHint(option, index);
@@ -205,12 +220,16 @@ QSize DListViewMultiColDelegate::sizeHint(const QStyleOptionViewItem &option, co
     return QSize(originSize.width(), rowHeight);
 }
 
-QWidget *DListViewMultiColDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget *DListViewMultiColDelegate::createEditor(QWidget *parent,
+                                                 const QStyleOptionViewItem &option,
+                                                 const QModelIndex &index) const
 {
     return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
-void DListViewMultiColDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void DListViewMultiColDelegate::updateEditorGeometry(QWidget *editor,
+                                                     const QStyleOptionViewItem &option,
+                                                     const QModelIndex &index) const
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
 }

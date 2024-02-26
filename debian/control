@@ -4,12 +4,11 @@ Priority: optional
 Maintainer: Packages <packages@deepin.com>
 Build-Depends: debhelper (>= 11), 
 	libdtkwidget-dev, 
-	libdframeworkdbus-dev, 
 	libdtkgui-dev, 
 	qtbase5-dev, 
 	libgsettings-qt-dev,
 	qttools5-dev-tools,
-	libpcap-dev,
+	cmake,
         libqt5x11extras5-dev,
         libxext-dev,
         libncurses-dev,

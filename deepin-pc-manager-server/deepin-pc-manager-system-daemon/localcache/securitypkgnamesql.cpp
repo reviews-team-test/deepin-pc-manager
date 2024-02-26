@@ -6,21 +6,18 @@
 #include "securitypkgnamesql.h"
 
 #include <QDebug>
-#include <QProcess>
 #include <QFileInfo>
+#include <QProcess>
+
 SecurityPkgNameSql::SecurityPkgNameSql(QSqlDatabase db, QObject *parent)
     : QObject(parent)
     , m_db(db)
 {
 }
 
-SecurityPkgNameSql::~SecurityPkgNameSql()
-{
-}
+SecurityPkgNameSql::~SecurityPkgNameSql() { }
 
-void SecurityPkgNameSql::quit()
-{
-}
+void SecurityPkgNameSql::quit() { }
 
 // 新建(可执行文件->包名)映射数据表
 void SecurityPkgNameSql::createPackageLinkTable()
@@ -66,7 +63,7 @@ void SecurityPkgNameSql::queryPackageList()
             m_sPkgNameList.append(query.value(0).toString());
         }
         // 容器去重
-        m_sPkgNameList.toSet().toList();
+        m_sPkgNameList = QSet<QString>(m_sPkgNameList.begin(), m_sPkgNameList.end()).values();
     }
 
     // 获取包名及相关联文件
@@ -96,8 +93,8 @@ void SecurityPkgNameSql::getDesktopPackage()
     }
 
     // 解析出所有的桌面应用包名
-    char buf[1024] = {0};
-    std::string szTmp {""}, szResult {""}, szPackageName {""}, szDesktopName {""};
+    char buf[1024] = { 0 };
+    std::string szTmp{ "" }, szResult{ "" }, szPackageName{ "" }, szDesktopName{ "" };
     int nInsertCount = 0;
     while (fgets(buf, sizeof buf, pp)) {
         szTmp = buf;
@@ -139,16 +136,16 @@ void SecurityPkgNameSql::queryPackageInfo(const QString szPackageName)
     if (szPackageName == "")
         return;
 
-    char shellCmd[260] = {0};
-    strcpy(shellCmd, "dpkg -L ");
-    strcat(shellCmd, szPackageName.toStdString().c_str());
-    strcat(shellCmd, " | grep \"/usr/bin\\|/usr/local/bin\\|/usr/share\\|/usr/sbin\\|/opt/apps\"");
-
     QProcess *processSSH = new QProcess(this);
-    processSSH->start(QString::fromStdString(shellCmd));
+    processSSH->start(
+        "dpkg",
+        { "-L",
+          szPackageName,
+          " | grep \"/usr/bin\\|/usr/local/bin\\|/usr/share\\|/usr/sbin\\|/opt/apps\"" });
     processSSH->waitForStarted();
     processSSH->waitForFinished();
-    QString sProcessResultPath = QString::fromLocal8Bit(processSSH->readAllStandardOutput()).trimmed();
+    QString sProcessResultPath =
+        QString::fromLocal8Bit(processSSH->readAllStandardOutput()).trimmed();
     processSSH->close();
     processSSH->deleteLater();
 
@@ -160,26 +157,16 @@ void SecurityPkgNameSql::queryPackageInfo(const QString szPackageName)
         QFileInfo temDir(sPkgInfo);
         QString sSuffix = temDir.completeSuffix();
         // 过滤无关文件
-        if (sSuffix == "svg" || sSuffix == "png"
-            || sSuffix == "qm" || sSuffix == "htm"
-            || sSuffix == "gif" || sSuffix == "jpg"
-            || sSuffix == "kuip" || sSuffix == "mo"
-            || sSuffix == "qss" || sSuffix == "xml"
-            || sSuffix == "js" || sSuffix == "md"
-            || sSuffix == "docbook" || sSuffix == "bz2"
-            || sSuffix == "gz" || sSuffix == "pak"
-            || sSuffix == "so" || sSuffix == "db"
-            || sSuffix == "kui" || sSuffix == "data"
-            || sSuffix == "css" || sSuffix == "doc"
-            || sSuffix == "dps" || sSuffix == "et"
-            || sSuffix == "pp" || sSuffix == "woff"
-            || sSuffix == "xl" || sSuffix == "cfg"
-            || sSuffix == "ico" || sSuffix == "ini"
-            || sSuffix == "lex" || sSuffix == "dat"
-            || sSuffix == "thmx" || sSuffix == "eftx"
-            || sSuffix == "bmp" || sSuffix == "wmf"
-            || sSuffix == "wav" || sSuffix == "conf"
-            || sSuffix == "qph" || sSuffix == "ent") {
+        if (sSuffix == "svg" || sSuffix == "png" || sSuffix == "qm" || sSuffix == "htm"
+            || sSuffix == "gif" || sSuffix == "jpg" || sSuffix == "kuip" || sSuffix == "mo"
+            || sSuffix == "qss" || sSuffix == "xml" || sSuffix == "js" || sSuffix == "md"
+            || sSuffix == "docbook" || sSuffix == "bz2" || sSuffix == "gz" || sSuffix == "pak"
+            || sSuffix == "so" || sSuffix == "db" || sSuffix == "kui" || sSuffix == "data"
+            || sSuffix == "css" || sSuffix == "doc" || sSuffix == "dps" || sSuffix == "et"
+            || sSuffix == "pp" || sSuffix == "woff" || sSuffix == "xl" || sSuffix == "cfg"
+            || sSuffix == "ico" || sSuffix == "ini" || sSuffix == "lex" || sSuffix == "dat"
+            || sSuffix == "thmx" || sSuffix == "eftx" || sSuffix == "bmp" || sSuffix == "wmf"
+            || sSuffix == "wav" || sSuffix == "conf" || sSuffix == "qph" || sSuffix == "ent") {
             continue;
         }
         m_sPkgNameMap[sPkgInfo] = szPackageName;
@@ -203,7 +190,10 @@ void SecurityPkgNameSql::insertPackageLinkInfo(QMap<QString, QString> sPkgNameMa
     while (i.hasNext()) {
         i.next();
         QString sCmd;
-        sCmd = QString("insert into package_binary_file (binaryPath, packageName) values ('%1','%2')").arg(i.key()).arg(i.value());
+        sCmd =
+            QString("insert into package_binary_file (binaryPath, packageName) values ('%1','%2')")
+                .arg(i.key())
+                .arg(i.value());
         if (!query.exec(sCmd)) {
             qDebug() << "insert localcachedb error : " << query.lastError();
         }
