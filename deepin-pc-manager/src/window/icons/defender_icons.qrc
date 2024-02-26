@@ -9,6 +9,12 @@
         <file>icons/dcc_home_image_300px.svg</file>
         <file>icons/deepin-defender.svg</file>
         <file>icons/deepin-pc-manager.svg</file>
+        <file>icons/water_blue_back.svg</file>
+        <file>icons/water_blue_front.svg</file>
+        <file>icons/water_yellow_back.svg</file>
+        <file>icons/water_yellow_front.svg</file>
+        <file>icons/water_red_back.svg</file>
+        <file>icons/water_red_front.svg</file>
         <file>icons/dcc_network_protection_detection_image_300px.svg</file>
         <file>icons/dcc_startup_disable_29px.svg</file>
         <file>icons/dcc_startup_enable_29px.svg</file>

@@ -19,6 +19,9 @@
 // 授权
 #include "window/modules/authority/defenderauthoritywrapper.h"
 
+// 悬浮框
+#include "window/modules/hoverballs/hoverballsdlg.h"
+
 #include <DPinyin>
 #include <DSysInfo>
 #include <DTrashManager>
@@ -123,6 +126,12 @@ OperateDBusData::OperateDBusData(QObject *parent)
 
     // 初始化获取系统架构
     initSystemArchitecture();
+
+    // 电脑管家悬浮框
+    HoverBallsDlg *ballsDlg = new HoverBallsDlg;
+    ballsDlg->show();
+    ballsDlg->raise();
+    ballsDlg->activateWindow();
 }
 
 OperateDBusData::~OperateDBusData()
